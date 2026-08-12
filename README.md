@@ -1,56 +1,82 @@
-# Frappe Semgrep rules
+# Frappe Semgrep Rules Extended
 
-Semgrep rules specific to [Frappe Framework](https://github.com/frappe/frappe)
+Semgrep rules for Frappe applications, combining an organised mirror of
+[Frappe's rules](https://github.com/frappe/semgrep-rules) with locally maintained
+extensions.
 
-These rules guard against typical mistakes or bad practices while working on Frappe Framework apps. Frappe's own apps also use this to simplify repetitive checks in code review process.
+## Rule ownership
 
-## How to Use in my app
-
-### Github Action
-
-You can use a GitHub Action to automatically validate changes with semgrep rules on all PRs. 
-
-```yaml
-name: Linters
-
-on:
-  pull_request: { }
-
-jobs:
-  linters:
-    name: Frappe Linter
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-
-      - name: Download Semgrep rules
-        run: git clone --depth 1 https://github.com/frappe/semgrep-rules.git frappe-semgrep-rules
-
-      - name: Download semgrep
-        run: pip install semgrep
-
-      - name: Run Semgrep rules
-        run: semgrep ci --config ./frappe-semgrep-rules/rules
+```text
+rules/
+├── upstream/
+│   └── frappe/       # Relocated mirror of frappe/semgrep-rules
+├── backports/
+│   └── frappe-press/ # Publishing-audit rules pending shared upstream adoption
+└── custom/
+    └── performance/  # Rules maintained in this repository
 ```
 
+Files under `rules/upstream/frappe/` retain Frappe's relative layout and should
+only change through an upstream synchronisation. Repository-owned rules belong
+under a purpose-based category in `rules/custom/`. Rules sourced from another
+Frappe repository while awaiting adoption by `frappe/semgrep-rules` belong in
+`rules/backports/` with their source revision recorded.
 
-### Manually / running semgrep locally
+See [UPSTREAM.md](UPSTREAM.md) for the synchronisation procedure and
+[rules/custom/README.md](rules/custom/README.md) for the custom-rule contract.
 
-- Install and verify that semgrep works `semgrep --version`
-- clone the rules repository with `git clone`
-- Run semgrep specifying rules folder as config `semgrep --config=~/path/to/frappe-semgrep-rules/rules your_app_folder`
+## Run the rules
 
+Install Semgrep and scan an application with the combined ruleset:
 
-Tip: You can optionally pass `--severity=ERROR` to ignore rules that produce warnings and only catch errors. 
+```shell
+semgrep scan --config ./rules /path/to/frappe-app
+```
 
+The ownership boundary also supports selective scans:
 
-## How to contribute new rules
+```shell
+# Frappe-owned rules only
+semgrep scan --config ./rules/upstream/frappe /path/to/frappe-app
 
-- Read how Semgrep works: [Getting started with semgrep rules](https://semgrep.dev/docs/writing-rules/overview/)
-- Write a rule. Make sure it doesn't have too many false positives.
-- Write positive and negative test cases for rule you are adding: [Testing rules](https://semgrep.dev/docs/writing-rules/testing-rules/)
+# Repository-owned rules only
+semgrep scan --config ./rules/custom /path/to/frappe-app
+
+# Backported Frappe publishing-audit rules only
+semgrep scan --config ./rules/backports /path/to/frappe-app
+
+# One custom category
+semgrep scan --config ./rules/custom/performance /path/to/frappe-app
+```
+
+Use `--severity=ERROR` when a scan should report only error-level findings.
+
+## Test the rules
+
+```shell
+make test
+```
+
+Additional targets are available for focused verification:
+
+```shell
+make validate
+make test-upstream
+make test-backports
+make test-custom
+```
+
+Every rule must have positive and negative test cases. Test targets remain next
+to their rules and use the same basename so Semgrep can associate them.
+
+## Add a custom rule
+
+1. Choose an existing purpose-based directory under `rules/custom/`, or create
+   one when introducing the first rule in a new category.
+2. Add the rule YAML and its same-basename test targets.
+3. Give the rule a stable, repository-owned ID and provenance metadata.
+4. Run `make test-custom` and `make test`.
+
+Read Semgrep's [rule-writing overview](https://semgrep.dev/docs/writing-rules/overview/)
+and [testing documentation](https://semgrep.dev/docs/writing-rules/testing-rules/)
+before contributing a new rule.

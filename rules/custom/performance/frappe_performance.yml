@@ -1,0 +1,256 @@
+rules:
+  - id: frappe-n-plus-one-read-in-loop
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A Frappe database read runs inside a loop. This can scale as one query per
+      item. Fetch the required fields in bulk, pre-index the results, or add a
+      narrow nosemgrep explanation when the loop is intentionally bounded.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              for $ITEM in $ITERABLE:
+                ...
+          - pattern-inside: |
+              while $CONDITION:
+                ...
+      - pattern-either:
+          - pattern: frappe.get_doc(...)
+          - pattern: frappe.get_all(...)
+          - pattern: frappe.get_list(...)
+          - pattern: frappe.get_single(...)
+          - pattern: frappe.db.get_value(...)
+          - pattern: frappe.db.get_values(...)
+          - pattern: frappe.db.get_list(...)
+          - pattern: frappe.db.get_all(...)
+          - pattern: frappe.db.exists(...)
+          - pattern: frappe.db.count(...)
+          - pattern: frappe.db.sql(...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-get-all-then-get-doc
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Names fetched by get_all/get_list are expanded with get_doc inside a loop.
+      Fetch the needed fields or child rows in bulk and verify the query count.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: HIGH
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $NAMES = frappe.get_all(..., pluck="name", ...)
+              ...
+              for $NAME in $NAMES:
+                ...
+                frappe.get_doc(..., $NAME)
+                ...
+          - pattern: |
+              $NAMES = frappe.get_list(..., pluck="name", ...)
+              ...
+              for $NAME in $NAMES:
+                ...
+                frappe.get_doc(..., $NAME)
+                ...
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-unbounded-list-query
+    languages: [python]
+    severity: WARNING
+    message: >-
+      This query explicitly disables Frappe's page-length bound. Use pagination
+      or document why loading the complete result set is safe and bounded.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: HIGH
+      technology: [frappe]
+    pattern-either:
+      - pattern: frappe.get_all(..., limit_page_length=0, ...)
+      - pattern: frappe.get_list(..., limit_page_length=0, ...)
+      - pattern: frappe.db.get_all(..., limit_page_length=0, ...)
+      - pattern: frappe.db.get_list(..., limit_page_length=0, ...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-materialises-list-only-to-count
+    languages: [python]
+    severity: WARNING
+    message: >-
+      This materialises a Frappe result list only to count it. Use a count query
+      with equivalent permission semantics when only the count is needed.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: HIGH
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern: len(frappe.get_all(...))
+          - pattern: len(frappe.get_list(...))
+          - pattern: len(frappe.db.get_all(...))
+          - pattern: len(frappe.db.get_list(...))
+      - pattern-not: len(frappe.get_all(..., limit=$LIMIT, ...))
+      - pattern-not: len(frappe.get_all(..., limit_page_length=$LIMIT, ...))
+      - pattern-not: len(frappe.get_list(..., limit=$LIMIT, ...))
+      - pattern-not: len(frappe.get_list(..., limit_page_length=$LIMIT, ...))
+      - pattern-not: len(frappe.db.get_all(..., limit=$LIMIT, ...))
+      - pattern-not: len(frappe.db.get_all(..., limit_page_length=$LIMIT, ...))
+      - pattern-not: len(frappe.db.get_list(..., limit=$LIMIT, ...))
+      - pattern-not: len(frappe.db.get_list(..., limit_page_length=$LIMIT, ...))
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-database-write-in-loop
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A Frappe database write runs inside a loop. Prefer a bulk update or a
+      deliberately chunked operation, and verify transaction/query behaviour.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              for $ITEM in $ITERABLE:
+                ...
+          - pattern-inside: |
+              while $CONDITION:
+                ...
+      - pattern-either:
+          - pattern: frappe.db.set_value(...)
+          - pattern: frappe.db.set_single_value(...)
+          - pattern: frappe.db.delete(...)
+          - pattern: frappe.delete_doc(...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-enqueue-in-loop
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A background job is enqueued once per loop item. Confirm bounded fan-out,
+      deduplication, queue capacity, and enqueue-after-commit semantics.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              for $ITEM in $ITERABLE:
+                ...
+          - pattern-inside: |
+              while $CONDITION:
+                ...
+      - pattern-either:
+          - pattern: frappe.enqueue(...)
+          - pattern: frappe.enqueue_doc(...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
+  - id: frappe-client-request-in-loop
+    languages: [javascript]
+    severity: WARNING
+    message: >-
+      A Frappe client request runs inside a loop. Batch the server operation or
+      justify the bounded fan-out; serial await creates N network round trips.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              for ($INIT; $CONDITION; $UPDATE) {
+                ...
+              }
+          - pattern-inside: |
+              for (const $ITEM of $ITERABLE) {
+                ...
+              }
+          - pattern-inside: |
+              for (const $KEY in $OBJECT) {
+                ...
+              }
+          - pattern-inside: |
+              while ($CONDITION) {
+                ...
+              }
+      - pattern-either:
+          - pattern: frappe.call(...)
+          - pattern: frappe.xcall(...)
+          - pattern: frappe.db.get_value(...)
+          - pattern: frappe.db.get_list(...)
+          - pattern: frappe.db.get_doc(...)
+          - pattern: frappe.db.exists(...)
+          - pattern: frappe.db.count(...)
+          - pattern: frm.call(...)
+    paths:
+      exclude:
+        - "**/*.test.js"
+        - "**/tests/**"
+
+  - id: frappe-client-request-in-array-callback
+    languages: [javascript]
+    severity: WARNING
+    message: >-
+      A Frappe client request is issued once per array item. Prefer a batched
+      server method or document why the request fan-out is bounded.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern-inside: $ITEMS.forEach(($ITEM) => { ... })
+          - pattern-inside: $ITEMS.map(($ITEM) => { ... })
+          - pattern-inside: $ITEMS.forEach(async ($ITEM) => { ... })
+          - pattern-inside: $ITEMS.map(async ($ITEM) => { ... })
+      - pattern-either:
+          - pattern: frappe.call(...)
+          - pattern: frappe.xcall(...)
+          - pattern: frappe.db.get_value(...)
+          - pattern: frappe.db.get_list(...)
+          - pattern: frappe.db.get_doc(...)
+          - pattern: frappe.db.exists(...)
+          - pattern: frappe.db.count(...)
+          - pattern: frm.call(...)
+    paths:
+      exclude:
+        - "**/*.test.js"
+        - "**/tests/**"

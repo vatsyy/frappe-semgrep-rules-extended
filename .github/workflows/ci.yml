@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Test Rules
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: test-rules
       run: |
         pip install semgrep
