@@ -1,0 +1,41 @@
+rules:
+  - id: frappe-whitelisted-permission-bypass
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Whitelisted method $FUNC bypasses DocType permissions. Verify caller and
+      record-level authorisation before this operation; authentication alone is
+      not sufficient. Keep the bypass internal when remote access is not needed.
+    metadata:
+      origin: custom
+      category: security
+      confidence: HIGH
+      technology: [frappe]
+      cwe:
+        - "CWE-862: Missing Authorization"
+      references:
+        - https://docs.frappe.io/framework/user/en/api/database#frappedbget_list
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              def $FUNC(...):
+                ...
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              async def $FUNC(...):
+                ...
+      - pattern-either:
+          - pattern: frappe.get_all(...)
+          - pattern: frappe.get_list(..., ignore_permissions=True, ...)
+          - pattern: $DOC.save(..., ignore_permissions=True, ...)
+          - pattern: $DOC.insert(..., ignore_permissions=True, ...)
+          - pattern: $DOC.submit(..., ignore_permissions=True, ...)
+          - pattern: $DOC.cancel(..., ignore_permissions=True, ...)
+          - pattern: $DOC.delete(..., ignore_permissions=True, ...)
+          - pattern: frappe.delete_doc(..., ignore_permissions=True, ...)
+          - pattern: $DOC.flags.ignore_permissions = True
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"

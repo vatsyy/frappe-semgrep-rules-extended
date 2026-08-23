@@ -6,13 +6,18 @@ async function serialRequests(names) {
 }
 
 function callbackRequests(names) {
-  names.forEach(async (name) => {
+  names.forEach((name) => {
     // ruleid: frappe-client-request-in-array-callback
-    await frappe.db.get_doc("ToDo", name);
+    frappe.db.get_doc("ToDo", name);
   });
 }
 
 async function batchIsOk(names) {
   // ok: frappe-client-request-in-loop
   return frappe.call("app.api.read_many", { names });
+}
+
+function requestOutsideArrayCallbackIsOk(name) {
+  // ok: frappe-client-request-in-array-callback
+  return frappe.db.get_doc("ToDo", name);
 }

@@ -1,0 +1,17 @@
+{
+  "schema_name": "catalogue-current-state",
+  "schema_version": 1,
+  "required_claim_fields": [
+    "id",
+    "rule_id",
+    "rule_path",
+    "ownership",
+    "provenance",
+    "contract",
+    "state",
+    "admission",
+    "predecessors",
+    "replacements"
+  ],
+  "ownership": ["upstream", "backport", "noospheric"]
+}

@@ -70,6 +70,10 @@ git diff --check
 git status --short
 ```
 
+`make test` includes an ownership check that compares every relocated upstream
+file byte-for-byte with the recorded revision. CI therefore uses a full Git
+history checkout so this invariant remains independently verifiable.
+
 Record the imported upstream commit in this document as part of the reviewed
 synchronisation change.
 

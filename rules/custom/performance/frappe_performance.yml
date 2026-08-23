@@ -13,24 +13,48 @@ rules:
       technology: [frappe]
     patterns:
       - pattern-either:
-          - pattern-inside: |
-              for $ITEM in $ITERABLE:
-                ...
-          - pattern-inside: |
-              while $CONDITION:
-                ...
-      - pattern-either:
-          - pattern: frappe.get_doc(...)
-          - pattern: frappe.get_all(...)
-          - pattern: frappe.get_list(...)
-          - pattern: frappe.get_single(...)
-          - pattern: frappe.db.get_value(...)
-          - pattern: frappe.db.get_values(...)
-          - pattern: frappe.db.get_list(...)
-          - pattern: frappe.db.get_all(...)
-          - pattern: frappe.db.exists(...)
-          - pattern: frappe.db.count(...)
-          - pattern: frappe.db.sql(...)
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      for $ITEM in $ITERABLE:
+                        ...
+                        $READ(...)
+                        ...
+                  - pattern: |
+                      while $CONDITION:
+                        ...
+                        $READ(...)
+                        ...
+              - metavariable-regex:
+                  metavariable: $READ
+                  regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count|sql))$
+              - focus-metavariable: $READ
+          - patterns:
+              - pattern-either:
+                  - pattern: |
+                      for $ITEM in $ITERABLE:
+                        ...
+                        $READ($DOCTYPE, $NAME, ...)
+                        ...
+                  - pattern: |
+                      while $CONDITION:
+                        ...
+                        $READ($DOCTYPE, $NAME, ...)
+                        ...
+                  - pattern: |
+                      for $ITEM in $ITERABLE:
+                        ...
+                        $READ(doctype=$DOCTYPE, name=$NAME, ...)
+                        ...
+                  - pattern: |
+                      while $CONDITION:
+                        ...
+                        $READ(doctype=$DOCTYPE, name=$NAME, ...)
+                        ...
+              - metavariable-regex:
+                  metavariable: $READ
+                  regex: ^frappe\.get_doc$
+              - focus-metavariable: $READ
     paths:
       exclude:
         - "**/test_*.py"

@@ -1,0 +1,6 @@
+{
+  "schema_name": "rule-lifecycle",
+  "schema_version": 1,
+  "lifecycle_states": ["candidate", "evaluating", "accepted", "suspended", "retired"],
+  "outcomes": ["blocking", "monitor", "audit", "outside-portfolio"]
+}

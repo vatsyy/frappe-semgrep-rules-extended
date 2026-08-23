@@ -1,0 +1,5 @@
+{
+  "schema_name": "rule-portfolio-catalogue",
+  "schema_version": 1,
+  "required": ["schema_version", "catalogue_id", "claims", "retired_ids"]
+}

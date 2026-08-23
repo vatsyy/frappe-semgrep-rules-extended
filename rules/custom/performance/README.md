@@ -17,3 +17,6 @@ semgrep --test --strict --config rules/custom/performance/frappe_performance.yml
 
 Before promoting a rule to `ERROR`, review its baseline across Frappe apps and
 add a runtime query-count or request-count test for every intentional exception.
+The N+1 rule deliberately excludes the query that produces a loop iterable and
+the dictionary form of `frappe.get_doc`, which constructs a new document
+without reading one from the database.

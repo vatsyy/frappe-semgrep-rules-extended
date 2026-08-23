@@ -1,0 +1,30 @@
+rules:
+  - id: frappe-async-array-callback-misuse
+    languages: [javascript]
+    severity: ERROR
+    message: >-
+      This array method does not await its async callback. forEach discards the
+      returned Promise; filter, find, some, every and sort consume the Promise
+      as a synchronous callback result. Use for...of, Promise.all with map, or
+      an explicitly synchronous callback as appropriate.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: HIGH
+      technology: [frappe]
+      references:
+        - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    patterns:
+      - pattern-either:
+          - pattern: $ARRAY.forEach(...)
+          - pattern: $ARRAY.filter(...)
+          - pattern: $ARRAY.find(...)
+          - pattern: $ARRAY.some(...)
+          - pattern: $ARRAY.every(...)
+          - pattern: $ARRAY.sort(...)
+      - pattern-regex: >-
+          \.(?:forEach|filter|find|some|every|sort)\s*\(\s*async\b
+    paths:
+      exclude:
+        - "**/*.test.js"
+        - "**/tests/**"

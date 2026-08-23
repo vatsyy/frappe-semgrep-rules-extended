@@ -13,7 +13,9 @@ rules/
 ├── backports/
 │   └── frappe-press/ # Publishing-audit rules pending shared upstream adoption
 └── custom/
-    └── performance/  # Rules maintained in this repository
+    ├── correctness/  # Deterministic framework-adjacent language defects
+    ├── performance/  # Database, queue and client-request scaling risks
+    └── security/     # Permission bypasses at remote-call boundaries
 ```
 
 Files under `rules/upstream/frappe/` retain Frappe's relative layout and should
@@ -60,6 +62,8 @@ make test
 Additional targets are available for focused verification:
 
 ```shell
+make check-contract
+make check-governance
 make validate
 make test-upstream
 make test-backports
@@ -67,7 +71,9 @@ make test-custom
 ```
 
 Every rule must have positive and negative test cases. Test targets remain next
-to their rules and use the same basename so Semgrep can associate them.
+to their rules and use the same basename so Semgrep can associate them. The
+contract check also rejects duplicate IDs, incomplete ownership metadata and
+any byte-level change to the recorded Frappe upstream mirror.
 
 ## Add a custom rule
 
