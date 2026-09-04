@@ -1,0 +1,23 @@
+{
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "claims": [
+    {
+      "claim_id": "A",
+      "finding_population": 176,
+      "rule_id": "frappe-security-file-traversal",
+      "selected_cases": 36
+    },
+    {
+      "claim_id": "B",
+      "finding_population": 16,
+      "rule_id": "frappe-subprocess-exec",
+      "selected_cases": 20
+    }
+  ],
+  "sampling": {
+    "file_traversal": "first two SHA-256 identities per application, access-mode and path-form cluster",
+    "subprocess_exec": "complete current census",
+    "suppressions": "complete current census"
+  },
+  "schema_version": 1
+}

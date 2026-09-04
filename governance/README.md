@@ -21,3 +21,7 @@ make test
 Invented examples may validate these contracts, but they cannot establish Rule
 Confidence or admit a rule. Decision history, evidence packets and schema
 migrations are added by the subsequent foundation tickets.
+
+Rules CI is qualified only for Semgrep CE `1.174.0`. Changing that pin requires
+the post-pilot engine qualification in Ticket 25 and an appended governance
+decision; a mutable label or an unrecorded upgrade is not an authorised engine.

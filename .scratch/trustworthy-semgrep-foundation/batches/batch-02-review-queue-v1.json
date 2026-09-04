@@ -1,0 +1,924 @@
+{
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "finding_populations": {
+    "frappe-security-file-traversal": 176,
+    "frappe-subprocess-exec": 16
+  },
+  "independent_discovery_counts": {
+    "frappe-security-file-traversal": 1,
+    "frappe-subprocess-exec": 4
+  },
+  "records": [
+    {
+      "application": "erpnext",
+      "case_id": "170de9176cdb92e416a3fd5330c947c3c5b17d7a1309ef320a3c671c5c0557af",
+      "cluster": "default-read:constructed",
+      "context": "236: \t\tdoc.delete(ignore_permissions=True)\n237: \texcept frappe.exceptions.DoesNotExistError:\n238: \t\tpass\n239: \n240: \n241: def delete_company(company):\n242: \tfrappe.db.set_single_value(\"Global Defaults\", \"demo_company\", \"\")\n243: \tfrappe.delete_doc(\"Company\", company, ignore_permissions=True)\n244: \n245: \n246: def read_data_file_using_hooks(doctype):\n247: \tpath = os.path.join(os.path.dirname(__file__), \"demo_data\")\n248: \twith open(os.path.join(path, doctype + \".json\")) as f:\n249: \t\tdata = f.read()\n250: \n251: \treturn data\n252: \n253: \n254: def get_warehouse(company):\n255: \twarehouses = frappe.db.get_all(\"Warehouse\", {\"company\": company, \"is_group\": 0})\n256: \treturn warehouses[randint(0, 3)].name",
+      "end_line": 248,
+      "line": 248,
+      "matched_text": "\twith open(os.path.join(path, doctype + \".json\")) as f:",
+      "path": "erpnext/setup/demo.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "a6b388cb6b33d4752df586c526d92ef2691eff067ed1bac0e1c2f46fcca1656f",
+      "cluster": "default-read:constructed",
+      "context": "359: \t\tfor account_type in get_mandatory_account_types():\n360: \t\t\twriter.writerow(\n361: \t\t\t\t[\"\", \"\", \"\", \"\", 0, account_type.get(\"account_type\"), account_type.get(\"root_type\")]\n362: \t\t\t)\n363: \telse:\n364: \t\twriter = get_sample_template(writer, company)\n365: \n366: \treturn writer\n367: \n368: \n369: def get_sample_template(writer, company):\n370: \tcurrency = frappe.db.get_value(\"Company\", company, \"default_currency\")\n371: \twith open(os.path.join(os.path.dirname(__file__), \"coa_sample_template.csv\")) as f:\n372: \t\tfor row in f:\n373: \t\t\trow = [*row.strip().split(\",\"), currency]\n374: \t\t\twriter.writerow(row)\n375: \n376: \treturn writer\n377: \n378: \n379: @frappe.whitelist()\n380: def validate_accounts(file_doc, extension):\n381: \tif extension == \"csv\":\n382: \t\taccounts = generate_data_from_csv(file_doc, as_dict=True)\n383: \telse:",
+      "end_line": 371,
+      "line": 371,
+      "matched_text": "\twith open(os.path.join(os.path.dirname(__file__), \"coa_sample_template.csv\")) as f:",
+      "path": "erpnext/accounts/doctype/chart_of_accounts_importer/chart_of_accounts_importer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "0215343164d452c6a9db3f06a482c8af8b397ea46ba76a6cee97e046776be9e8",
+      "cluster": "default-read:framework-path",
+      "context": "1: import json\n2: \n3: import frappe\n4: \n5: \n6: def execute():\n7: \tuom_data = json.loads(\n8: \t\topen(frappe.get_app_path(\"erpnext\", \"setup\", \"setup_wizard\", \"data\", \"uom_data.json\")).read()\n9: \t)\n10: \tbulk_update_dict = {uom[\"uom_name\"]: {\"category\": uom[\"category\"]} for uom in uom_data}\n11: \tfrappe.db.bulk_update(\"UOM\", bulk_update_dict)",
+      "end_line": 8,
+      "line": 8,
+      "matched_text": "\t\topen(frappe.get_app_path(\"erpnext\", \"setup\", \"setup_wizard\", \"data\", \"uom_data.json\")).read()",
+      "path": "erpnext/patches/v16_0/uom_category.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "2a155d8c0ba3226ac40686fff3c14d00d35f4c00e501487d305186e7f638d924",
+      "cluster": "default-read:framework-path",
+      "context": "381: \n382: \n383: def update_item_variant_settings():\n384: \t# set no copy fields of an item doctype to item variant settings\n385: \tdoc = frappe.get_doc(\"Item Variant Settings\")\n386: \tdoc.set_default_fields()\n387: \tdoc.save()\n388: \n389: \n390: def add_uom_data():\n391: \t# add UOMs\n392: \tuoms = json.loads(\n393: \t\topen(frappe.get_app_path(\"erpnext\", \"setup\", \"setup_wizard\", \"data\", \"uom_data.json\")).read()\n394: \t)\n395: \tfor d in uoms:\n396: \t\tif d.get(\"category\") and not frappe.db.exists(\"UOM Category\", d.get(\"category\")):\n397: \t\t\tfrappe.get_doc({\"doctype\": \"UOM Category\", \"category_name\": d.get(\"category\")}).db_insert()\n398: \n399: \t\tif not frappe.db.exists(\"UOM\", d.get(\"uom_name\")):\n400: \t\t\tdoc = frappe.new_doc(\"UOM\")\n401: \t\t\tdoc.update(d)\n402: \t\t\tdoc.insert(ignore_permissions=True)\n403: \n404: \t# bootstrap uom conversion factors\n405: \tuom_conversions = json.loads(",
+      "end_line": 393,
+      "line": 393,
+      "matched_text": "\t\topen(frappe.get_app_path(\"erpnext\", \"setup\", \"setup_wizard\", \"data\", \"uom_data.json\")).read()",
+      "path": "erpnext/setup/setup_wizard/operations/install_fixtures.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "1c45eca604f65bb458dc59d2f07c384329e67bccd6ba785c0eb6f33ee2cba514",
+      "cluster": "default-read:variable",
+      "context": "122: \t\t\t)\n123: \t\t)\n124: \n125: \treturn file_doc, extension\n126: \n127: \n128: def generate_data_from_csv(file_doc, as_dict=False):\n129: \t\"\"\"read csv file and return the generated nested tree\"\"\"\n130: \n131: \tfile_path = file_doc.get_full_path()\n132: \n133: \tdata = []\n134: \twith open(file_path) as in_file:\n135: \t\tcsv_reader = list(csv.reader(in_file))\n136: \t\theaders = csv_reader[0]\n137: \t\tdel csv_reader[0]  # delete top row and headers row\n138: \n139: \t\tfor row in csv_reader:\n140: \t\t\tif as_dict:\n141: \t\t\t\tdata.append({frappe.scrub(header): row[index] for index, header in enumerate(headers)})\n142: \t\t\telse:\n143: \t\t\t\tif not row[1] and len(row) > 1:\n144: \t\t\t\t\trow[1] = row[0]\n145: \t\t\t\t\trow[3] = row[2]\n146: \t\t\t\tdata.append(row)",
+      "end_line": 134,
+      "line": 134,
+      "matched_text": "\twith open(file_path) as in_file:",
+      "path": "erpnext/accounts/doctype/chart_of_accounts_importer/chart_of_accounts_importer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "1c75fe094e7bbbef83fc562ba2e91d884696eed827cbd054bd58ffd40681de19",
+      "cluster": "default-read:variable",
+      "context": "168: \t\tfor template_dir in os.listdir(template_path):\n169: \t\t\tjson_file = os.path.join(template_path, template_dir, f\"{template_dir}.json\")\n170: \t\t\tif os.path.isfile(json_file):\n171: \t\t\t\ttemplates.append(json_file)\n172: \n173: \tif not templates:\n174: \t\treturn\n175: \n176: \t# ensure files are not exported\n177: \tfrappe.flags.in_import = True\n178: \n179: \tfor template_path in templates:\n180: \t\twith open(template_path) as f:\n181: \t\t\ttemplate_data = frappe._dict(frappe.parse_json(f.read()))\n182: \n183: \t\ttemplate_name = template_data.get(\"name\")\n184: \n185: \t\tif not frappe.db.exists(\"Financial Report Template\", template_name):\n186: \t\t\tdoc = frappe.get_doc(template_data)\n187: \t\t\tdoc.flags.ignore_mandatory = True\n188: \t\t\tdoc.flags.ignore_permissions = True\n189: \t\t\tdoc.flags.ignore_validate = True\n190: \t\t\tdoc.insert()\n191: \n192: \tfrappe.flags.in_import = False",
+      "end_line": 180,
+      "line": 180,
+      "matched_text": "\t\twith open(template_path) as f:",
+      "path": "erpnext/accounts/doctype/financial_report_template/financial_report_template.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "dcd33477cadf6a423bb5d18a2ccec6adedb9dd3223180c1f1dfe397e674309bd",
+      "cluster": "read-explicit:attribute-or-index",
+      "context": "3: \n4: \n5: import json\n6: \n7: import frappe\n8: from frappe.utils import getdate\n9: from frappe.utils.dateutils import parse_date\n10: \n11: \n12: @frappe.whitelist()\n13: def upload_bank_statement():\n14: \tif getattr(frappe, \"uploaded_file\", None):\n15: \t\twith open(frappe.uploaded_file, \"rb\") as upfile:\n16: \t\t\tfcontent = upfile.read()\n17: \telse:\n18: \t\tfcontent = frappe.local.uploaded_file\n19: \t\tfname = frappe.local.uploaded_filename\n20: \n21: \tif frappe.safe_encode(fname).lower().endswith(b\"csv\"):\n22: \t\tfrom frappe.utils.csvutils import read_csv_content\n23: \n24: \t\trows = read_csv_content(fcontent, False)\n25: \n26: \telif frappe.safe_encode(fname).lower().endswith(b\"xlsx\"):\n27: \t\tfrom frappe.utils.xlsxutils import read_xlsx_file_from_attached_file",
+      "end_line": 15,
+      "line": 15,
+      "matched_text": "\t\twith open(frappe.uploaded_file, \"rb\") as upfile:",
+      "path": "erpnext/accounts/doctype/bank_transaction/bank_transaction_upload.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "82bd3564942b729888605569ceeabfc35af2a68ffc5beb0b2c1e5c126e0e250a",
+      "cluster": "write:constructed",
+      "context": "21: \t\"tg\",  # Togo\n22: ]\n23: \n24: folder = Path(__file__).parent\n25: generic_charts = Path(folder).glob(\"syscohada*.json\")\n26: \n27: for file in generic_charts:\n28: \twith open(file) as f:\n29: \t\tchart = json.load(f)\n30: \tfor country in syscohada_countries:\n31: \t\tchart[\"country_code\"] = country\n32: \t\tjson_object = json.dumps(chart, indent=4)\n33: \t\twith open(Path(folder, file.name.replace(\"syscohada\", country)), \"w\") as outfile:\n34: \t\t\toutfile.write(json_object)",
+      "end_line": 33,
+      "line": 33,
+      "matched_text": "\t\twith open(Path(folder, file.name.replace(\"syscohada\", country)), \"w\") as outfile:",
+      "path": "erpnext/accounts/doctype/account/chart_of_accounts/verified/syscohada_chart_of_accounts.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "8129e428d51cc042d5343e33994580761258304c26eb95bde90e1114a8f821b9",
+      "cluster": "write:variable",
+      "context": "295: \tout = {}\n296: \tfor path in paths:\n297: \t\tfor n, account_name in enumerate(path):\n298: \t\t\tset_nested(\n299: \t\t\t\tout, path[: n + 1], charts_map[account_name]\n300: \t\t\t)  # setting the value of nested dictionary.\n301: \n302: \treturn out\n303: \n304: \n305: def build_response_as_excel(writer):\n306: \tfilename = frappe.generate_hash(\"\", 10)\n307: \twith open(filename, \"wb\") as f:\n308: \t\tf.write(cstr(writer.getvalue()).encode(\"utf-8\"))\n309: \tf = open(filename)\n310: \treader = csv.reader(f)\n311: \n312: \tfrom frappe.utils.xlsxutils import make_xlsx\n313: \n314: \txlsx_file = make_xlsx(reader, \"Chart of Accounts Importer Template\")\n315: \n316: \tf.close()\n317: \tos.remove(filename)\n318: \n319: \t# write out response as a xlsx type",
+      "end_line": 307,
+      "line": 307,
+      "matched_text": "\twith open(filename, \"wb\") as f:",
+      "path": "erpnext/accounts/doctype/chart_of_accounts_importer/chart_of_accounts_importer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "erpnext",
+      "case_id": "9a4227b97783bbad824643414ffe27bed60a992b91deb62e0d63c276d3c783ce",
+      "cluster": "write:variable",
+      "context": "115: \t\t\t\tfilters={\"account_category_name\": [\"in\", list(category_names)]},\n116: \t\t\t\tfields=[\"account_category_name\", \"description\"],\n117: \t\t\t)\n118: \n119: \t\t\tfor cat in db_categories:\n120: \t\t\t\texisting_categories[cat[\"account_category_name\"]] = cat\n121: \n122: \t\t# Sort by category name\n123: \t\tsorted_categories = sorted(existing_categories.values(), key=lambda x: x[\"account_category_name\"])\n124: \n125: \t\t# Write to file\n126: \t\tos.makedirs(os.path.dirname(categories_file), exist_ok=True)\n127: \t\twith open(categories_file, \"w\") as f:\n128: \t\t\tjson.dump(sorted_categories, f, indent=2)\n129: \n130: \n131: def sync_financial_report_templates(chart_of_accounts=None, existing_company=None):\n132: \tfrom erpnext.accounts.doctype.account.chart_of_accounts.chart_of_accounts import get_chart\n133: \n134: \t# If COA is being created for an existing company,\n135: \t# skip syncing templates as they are likely already present\n136: \tif existing_company:\n137: \t\treturn\n138: \n139: \t# Allow regional templates to completely override ERPNext",
+      "end_line": 127,
+      "line": 127,
+      "matched_text": "\t\twith open(categories_file, \"w\") as f:",
+      "path": "erpnext/accounts/doctype/financial_report_template/financial_report_template.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "3b6460301ce607851db4e7ddc17ed72f2cdeeac3ff1311537a9685e8f7a8c932",
+      "cluster": "default-read:constructed",
+      "context": "842: \t\t\tfrappe.connect()\n843: \t\t\tif args:\n844: \t\t\t\tif \"?\" in args:\n845: \t\t\t\t\tfrappe.local.form_dict = frappe._dict(\n846: \t\t\t\t\t\t[a.split(\"=\") for a in args.split(\"?\")[-1].split(\"&\")]\n847: \t\t\t\t\t)\n848: \t\t\t\telse:\n849: \t\t\t\t\tfrappe.local.form_dict = frappe._dict()\n850: \n851: \t\t\t\tif args.startswith(\"/api/method\"):\n852: \t\t\t\t\tfrappe.local.form_dict.cmd = args.split(\"?\", 1)[0].split(\"/\")[-1]\n853: \t\t\telif path:\n854: \t\t\t\twith open(os.path.join(\"..\", path)) as f:\n855: \t\t\t\t\targs = json.loads(f.read())\n856: \n857: \t\t\t\tfrappe.local.form_dict = frappe._dict(args)\n858: \n859: \t\t\tfrappe.handler.execute_cmd(frappe.form_dict.cmd)\n860: \n861: \t\t\tprint(frappe.response)\n862: \t\tfinally:\n863: \t\t\tfrappe.destroy()\n864: \tif not context.sites:\n865: \t\traise SiteNotSpecifiedError\n866: ",
+      "end_line": 854,
+      "line": 854,
+      "matched_text": "\t\t\t\twith open(os.path.join(\"..\", path)) as f:",
+      "path": "frappe/commands/utils.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "46773ca55b19c0d6778c50640724d538f3574803cc4da3f45a28d2fad242b258",
+      "cluster": "default-read:constructed",
+      "context": "34: \tdef validate(self):\n35: \t\tif not self.package_name:\n36: \t\t\tself.package_name = self.name.lower().replace(\" \", \"-\")\n37: \n38: \t\tallowed_characters = ascii_letters + digits + \"-\"\n39: \t\tif not all(c in allowed_characters for c in self.package_name):\n40: \t\t\tfrappe.throw(\"Package name can only contain letters, digits and hyphens\")\n41: \n42: \n43: @frappe.whitelist()\n44: def get_license_text(license_type: str) -> str | None:\n45: \tif license_type in LICENSES:\n46: \t\twith open(os.path.join(os.path.dirname(__file__), \"licenses\", license_type + \".md\")) as textfile:\n47: \t\t\treturn textfile.read()",
+      "end_line": 46,
+      "line": 46,
+      "matched_text": "\t\twith open(os.path.join(os.path.dirname(__file__), \"licenses\", license_type + \".md\")) as textfile:",
+      "path": "frappe/core/doctype/package/package.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "07f5fb278949376e9de4987b08a565d2b62830c169664116d23eb5d6a11d562b",
+      "cluster": "default-read:framework-path",
+      "context": "102: \n103: \n104: def load_meta(doctype):\n105: \treturn Meta(doctype)\n106: \n107: \n108: def get_table_columns(doctype):\n109: \treturn frappe.db.get_table_columns(doctype)\n110: \n111: \n112: def load_doctype_from_file(doctype):\n113: \tfname = frappe.scrub(doctype)\n114: \twith open(frappe.get_app_path(\"frappe\", \"core\", \"doctype\", fname, fname + \".json\")) as f:\n115: \t\ttxt = json.loads(f.read())\n116: \n117: \tfor d in txt.get(\"fields\", []):\n118: \t\td[\"doctype\"] = \"DocField\"\n119: \n120: \tfor d in txt.get(\"permissions\", []):\n121: \t\td[\"doctype\"] = \"DocPerm\"\n122: \n123: \ttxt[\"fields\"] = [BaseDocument(d) for d in txt[\"fields\"]]\n124: \tif \"permissions\" in txt:\n125: \t\ttxt[\"permissions\"] = [BaseDocument(d) for d in txt[\"permissions\"]]\n126: ",
+      "end_line": 114,
+      "line": 114,
+      "matched_text": "\twith open(frappe.get_app_path(\"frappe\", \"core\", \"doctype\", fname, fname + \".json\")) as f:",
+      "path": "frappe/model/meta.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "410d5f8e81cbfaf8e82f9eec30c5e4cb339b5500745e350d13d63039d622823b",
+      "cluster": "default-read:framework-path",
+      "context": "44: \tdef create_modules_folder(self):\n45: \t\t\"\"\"Creates a folder `[app]/[module]` and adds `__init__.py`\"\"\"\n46: \t\tmodule_path = frappe.get_app_path(self.app_name, self.name)\n47: \t\tif not os.path.exists(module_path):\n48: \t\t\tos.mkdir(module_path)\n49: \t\t\twith open(os.path.join(module_path, \"__init__.py\"), \"w\") as f:\n50: \t\t\t\tf.write(\"\")\n51: \n52: \tdef add_to_modules_txt(self):\n53: \t\t\"\"\"Adds to `[app]/modules.txt`\"\"\"\n54: \t\tmodules = None\n55: \t\tif not frappe.local.module_app.get(frappe.scrub(self.name)):\n56: \t\t\twith open(frappe.get_app_path(self.app_name, \"modules.txt\")) as f:\n57: \t\t\t\tcontent = f.read()\n58: \t\t\t\tif self.name not in content.splitlines():\n59: \t\t\t\t\tmodules = list(filter(None, content.splitlines()))\n60: \t\t\t\t\tmodules.append(self.name)\n61: \n62: \t\t\tif modules:\n63: \t\t\t\twith open(frappe.get_app_path(self.app_name, \"modules.txt\"), \"w\") as f:\n64: \t\t\t\t\tf.write(\"\\n\".join(modules))\n65: \n66: \t\t\t\tfrappe.clear_cache()\n67: \t\t\t\tfrappe.setup_module_map()\n68: ",
+      "end_line": 56,
+      "line": 56,
+      "matched_text": "\t\t\twith open(frappe.get_app_path(self.app_name, \"modules.txt\")) as f:",
+      "path": "frappe/core/doctype/module_def/module_def.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "030e27866169aca0dcfa7f73aae4e7eed580044f7b30ce194a87c34345a2fcea",
+      "cluster": "default-read:variable",
+      "context": "1091: \n1092: \t\treturn [\n1093: \t\t\tp.strip()\n1094: \t\t\tfor p in content.splitlines()\n1095: \t\t\tif (not ignore_empty_lines) or (p.strip() and not p.startswith(\"#\"))\n1096: \t\t]\n1097: \telse:\n1098: \t\treturn []\n1099: \n1100: \n1101: def get_file_json(path):\n1102: \t\"\"\"Read a file and return parsed JSON object.\"\"\"\n1103: \twith open(path) as f:\n1104: \t\treturn json.load(f)\n1105: \n1106: \n1107: def read_file(path, raise_not_found=False, as_base64=False):\n1108: \t\"\"\"Open a file and return its content as Unicode or Base64 string.\"\"\"\n1109: \tif isinstance(path, str):\n1110: \t\tpath = path.encode(\"utf-8\")\n1111: \n1112: \tif os.path.exists(path):\n1113: \t\tif as_base64:\n1114: \t\t\timport base64\n1115: ",
+      "end_line": 1103,
+      "line": 1103,
+      "matched_text": "\twith open(path) as f:",
+      "path": "frappe/__init__.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "056094db4d375844a0b4125e288377763ccce75fabe9351eabbd6df9c419751a",
+      "cluster": "default-read:variable",
+      "context": "10: \t\"\"\"Resetting creation datetimes for DocTypes\"\"\"\n11: \tDocType = _DocType(\"DocType\")\n12: \tdoctype_jsons = glob.glob(os.path.join(\"..\", \"apps\", \"frappe\", \"frappe\", \"**\", \"doctype\", \"**\", \"*.json\"))\n13: \n14: \tfrappe_modules = frappe.get_all(\"Module Def\", filters={\"app_name\": \"frappe\"}, pluck=\"name\")\n15: \tsite_doctypes = frappe.get_all(\n16: \t\t\"DocType\",\n17: \t\tfilters={\"module\": (\"in\", frappe_modules), \"custom\": False},\n18: \t\tfields=[\"name\", \"creation\"],\n19: \t)\n20: \n21: \tfor dt_path in doctype_jsons:\n22: \t\twith open(dt_path) as f:\n23: \t\t\ttry:\n24: \t\t\t\tfile_schema = frappe._dict(json.load(f))\n25: \t\t\texcept Exception:\n26: \t\t\t\tcontinue\n27: \n28: \t\t\tif not file_schema.name:\n29: \t\t\t\tcontinue\n30: \n31: \t\t\t_site_schema = [x for x in site_doctypes if x.name == file_schema.name]\n32: \t\t\tif not _site_schema:\n33: \t\t\t\tcontinue\n34: ",
+      "end_line": 22,
+      "line": 22,
+      "matched_text": "\t\twith open(dt_path) as f:",
+      "path": "frappe/patches/v14_0/reset_creation_datetime.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "e2e6292e7a7a47fc60d442289722dd2da43e7badbe33687fb59b14058ade0cf7",
+      "cluster": "read-explicit:attribute-or-index",
+      "context": "47: \n48: \tdef can_render(self):\n49: \t\treturn self.is_valid_file_path() and self.file_path\n50: \n51: \tdef is_valid_file_path(self):\n52: \t\textension = self.path.rsplit(\".\", 1)[-1] if \".\" in self.path else \"\"\n53: \t\tif extension in UNSUPPORTED_STATIC_PAGE_TYPES:\n54: \t\t\treturn False\n55: \t\treturn True\n56: \n57: \tdef render(self):\n58: \t\t# file descriptor to be left open, closed by middleware\n59: \t\tf = open(self.file_path, \"rb\")\n60: \t\tresponse = Response(wrap_file(frappe.local.request.environ, f), direct_passthrough=True)\n61: \t\tresponse.mimetype = mimetypes.guess_type(self.file_path)[0] or \"application/octet-stream\"\n62: \t\treturn response",
+      "end_line": 59,
+      "line": 59,
+      "matched_text": "\t\tf = open(self.file_path, \"rb\")",
+      "path": "frappe/website/page_renderers/static_page.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "5bceab1448311e6697aea482baf9e9dc8d4691c1097be861905a1628950f815b",
+      "cluster": "read-explicit:literal",
+      "context": "35: \t\"\"\"Derive a sensible default concurrency limit from gunicorn's max concurrency.\"\"\"\n36: \treturn max(1, gunicorn_max_concurrency() // 2)\n37: \n38: \n39: def gunicorn_max_concurrency() -> int:\n40: \t\"\"\"Detect max concurrent requests from the running gunicorn master's cmdline.\"\"\"\n41: \timport os\n42: \n43: \tfallback = 4\n44: \n45: \ttry:\n46: \t\tppid = os.getppid()\n47: \t\twith open(f\"/proc/{ppid}/cmdline\", \"rb\") as f:\n48: \t\t\targs = f.read().rstrip(b\"\\0\").decode().split(\"\\0\")\n49: \n50: \t\tif not any(\"gunicorn\" in a for a in args):\n51: \t\t\treturn fallback\n52: \n53: \t\tworkers = _extract_cli_int(args, \"-w\", \"--workers\") or fallback\n54: \t\tthreads = _extract_cli_int(args, \"--threads\") or 1\n55: \t\treturn workers * threads\n56: \texcept OSError:\n57: \t\treturn fallback\n58: \n59: ",
+      "end_line": 47,
+      "line": 47,
+      "matched_text": "\t\twith open(f\"/proc/{ppid}/cmdline\", \"rb\") as f:",
+      "path": "frappe/concurrency_limiter.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "9c5979ee9307358413375a35292ca9074b3368c34b3e11806b9506b837bb3379",
+      "cluster": "read-explicit:literal",
+      "context": "80: \tglobal scheduler_disabled_by_user\n81: \tscheduler_disabled_by_user = frappe.utils.scheduler.is_scheduler_disabled(verbose=False)\n82: \tif not scheduler_disabled_by_user:\n83: \t\tfrappe.utils.scheduler.disable_scheduler()\n84: \n85: \n86: @debug_timer\n87: def _decorate_all_methods_and_functions_with_type_checker():\n88: \tfrom frappe.utils.typing_validations import validate_argument_types\n89: \n90: \tdef _get_config_from_pyproject(app_path):\n91: \t\ttry:\n92: \t\t\twith open(f\"{app_path}/pyproject.toml\", \"rb\") as f:\n93: \t\t\t\tconfig = tomllib.load(f)\n94: \t\t\t\treturn (\n95: \t\t\t\t\tconfig.get(\"tool\", {})\n96: \t\t\t\t\t.get(\"frappe\", {})\n97: \t\t\t\t\t.get(\"testing\", {})\n98: \t\t\t\t\t.get(\"function_type_validation\", {})\n99: \t\t\t\t)\n100: \t\texcept FileNotFoundError:\n101: \t\t\treturn {}\n102: \t\texcept tomllib.TOMLDecodeError:\n103: \t\t\tlogger.warning(f\"Failed to parse pyproject.toml for app {app_path}\")\n104: \t\t\treturn {}",
+      "end_line": 92,
+      "line": 92,
+      "matched_text": "\t\t\twith open(f\"{app_path}/pyproject.toml\", \"rb\") as f:",
+      "path": "frappe/testing/environment.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "1a6704a7acb1211c038596e6b8e2a177f1a5fc0e074e31d7a900357e4b166ff3",
+      "cluster": "read-explicit:variable",
+      "context": "952: \tGet the header of a database dump file\n953: \n954: \t:param file_path: path to the database dump file\n955: \t:param file_bytes: number of bytes to read from the file\n956: \t:return: The first few bytes of the file as requested\n957: \t\"\"\"\n958: \n959: \t# Use `gzip` to open the file if the extension is `.gz`\n960: \tif file_path.endswith(\".gz\"):\n961: \t\twith gzip.open(file_path, \"rb\") as f:\n962: \t\t\treturn f.read(file_bytes).decode()\n963: \n964: \twith open(file_path, \"rb\") as f:\n965: \t\treturn f.read(file_bytes).decode()",
+      "end_line": 964,
+      "line": 964,
+      "matched_text": "\twith open(file_path, \"rb\") as f:",
+      "path": "frappe/installer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "2eec2b1cc021e5d7ff97f7228fd6371613ad3ee388f7c807f49ba0d0d652c954",
+      "cluster": "read-explicit:variable",
+      "context": "1104: \t\treturn json.load(f)\n1105: \n1106: \n1107: def read_file(path, raise_not_found=False, as_base64=False):\n1108: \t\"\"\"Open a file and return its content as Unicode or Base64 string.\"\"\"\n1109: \tif isinstance(path, str):\n1110: \t\tpath = path.encode(\"utf-8\")\n1111: \n1112: \tif os.path.exists(path):\n1113: \t\tif as_base64:\n1114: \t\t\timport base64\n1115: \n1116: \t\t\twith open(path, \"rb\") as f:\n1117: \t\t\t\tcontent = f.read()\n1118: \t\t\t\treturn base64.b64encode(content).decode(\"utf-8\")\n1119: \t\telse:\n1120: \t\t\twith open(path) as f:\n1121: \t\t\t\tcontent = f.read()\n1122: \t\t\t\treturn as_unicode(content)\n1123: \telif raise_not_found:\n1124: \t\traise OSError(f\"{path} Not Found\")\n1125: \telse:\n1126: \t\treturn None\n1127: \n1128: ",
+      "end_line": 1116,
+      "line": 1116,
+      "matched_text": "\t\t\twith open(path, \"rb\") as f:",
+      "path": "frappe/__init__.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "284e4ba370f02819ce202d1f80f1647d5558b51748bfac4cd4fc11b69d37d8a8",
+      "cluster": "write:attribute-or-index",
+      "context": "141: \n142: \t\ttry:\n143: \t\t\tversions[app][\"version\"] = frappe.get_attr(app + \".__version__\")\n144: \t\texcept AttributeError:\n145: \t\t\tversions[app][\"version\"] = \"0.0.1\"\n146: \n147: \treturn versions\n148: \n149: \n150: def get_app_branch(app):\n151: \t\"\"\"Return branch of an app.\"\"\"\n152: \ttry:\n153: \t\twith open(os.devnull, \"wb\") as null_stream:\n154: \t\t\tresult = subprocess.check_output(\n155: \t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--abbrev-ref\", \"HEAD\"],\n156: \t\t\t\tshell=False,\n157: \t\t\t\tstdin=null_stream,\n158: \t\t\t\tstderr=null_stream,\n159: \t\t\t)\n160: \t\tresult = safe_decode(result)\n161: \t\tresult = result.strip()\n162: \t\treturn result\n163: \texcept Exception:\n164: \t\treturn \"\"\n165: ",
+      "end_line": 153,
+      "line": 153,
+      "matched_text": "\t\twith open(os.devnull, \"wb\") as null_stream:",
+      "path": "frappe/utils/change_log.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "6464178b6aed22e96d187a2e4af3c46e858919f25deb77cda00a9ed4a5d1c34f",
+      "cluster": "write:attribute-or-index",
+      "context": "157: \t\t\t\tstdin=null_stream,\n158: \t\t\t\tstderr=null_stream,\n159: \t\t\t)\n160: \t\tresult = safe_decode(result)\n161: \t\tresult = result.strip()\n162: \t\treturn result\n163: \texcept Exception:\n164: \t\treturn \"\"\n165: \n166: \n167: def get_app_last_commit_ref(app):\n168: \ttry:\n169: \t\twith open(os.devnull, \"wb\") as null_stream:\n170: \t\t\tresult = subprocess.check_output(\n171: \t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--short=7\", \"HEAD\"],\n172: \t\t\t\tshell=False,\n173: \t\t\t\tstdin=null_stream,\n174: \t\t\t\tstderr=null_stream,\n175: \t\t\t)\n176: \t\tresult = safe_decode(result)\n177: \t\tresult = result.strip()\n178: \t\treturn result\n179: \texcept Exception:\n180: \t\treturn \"\"\n181: ",
+      "end_line": 169,
+      "line": 169,
+      "matched_text": "\t\twith open(os.devnull, \"wb\") as null_stream:",
+      "path": "frappe/utils/change_log.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "09c14c389875206653ba11fd17722a93fe1777c2024c17795c2d97076a67772b",
+      "cluster": "write:constructed",
+      "context": "151: \n152: \t# add .gitkeep file so that public folder is committed to git\n153: \t# this is needed because if public doesn't exist, bench build doesn't symlink the apps assets\n154: \twith open(os.path.join(dest, hooks.app_name, hooks.app_name, \"public\", \".gitkeep\"), \"w\") as f:\n155: \t\tf.write(\"\")\n156: \n157: \twith open(os.path.join(dest, hooks.app_name, hooks.app_name, \"__init__.py\"), \"w\") as f:\n158: \t\tf.write(frappe.as_unicode(init_template))\n159: \n160: \twith open(os.path.join(dest, hooks.app_name, \"pyproject.toml\"), \"w\") as f:\n161: \t\tf.write(frappe.as_unicode(pyproject_template.format(**hooks)))\n162: \n163: \twith open(os.path.join(dest, hooks.app_name, \".pre-commit-config.yaml\"), \"w\") as f:\n164: \t\tf.write(frappe.as_unicode(precommit_template.format(**hooks)))\n165: \n166: \tlicense_body = get_license_text(license_name=hooks.app_license)\n167: \twith open(os.path.join(dest, hooks.app_name, \"license.txt\"), \"w\") as f:\n168: \t\tf.write(frappe.as_unicode(license_body))\n169: \n170: \twith open(\n171: \t\tos.path.join(dest, hooks.app_name, hooks.app_name, frappe.scrub(hooks.app_title), \".frappe\"), \"w\"\n172: \t) as f:\n173: \t\tf.write(\"\")\n174: \n175: \tfrom frappe.deprecation_dumpster import boilerplate_modules_txt",
+      "end_line": 163,
+      "line": 163,
+      "matched_text": "\twith open(os.path.join(dest, hooks.app_name, \".pre-commit-config.yaml\"), \"w\") as f:",
+      "path": "frappe/utils/boilerplate.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "0c01e591840e9f110ac3dc1ff4b5e1a88e508db0f8cf3993f0632dc36c9621b0",
+      "cluster": "write:constructed",
+      "context": "189: \n190: \tapp_directory = os.path.join(dest, hooks.app_name)\n191: \n192: \tcopy_from_frappe(\".editorconfig\", app_directory)\n193: \tcopy_from_frappe(\".eslintrc\", app_directory)\n194: \n195: \tif hooks.create_github_workflow:\n196: \t\t_create_github_workflow_files(dest, hooks)\n197: \t\thooks.readme_ci_section = readme_ci_section\n198: \telse:\n199: \t\thooks.readme_ci_section = \"\"\n200: \n201: \twith open(os.path.join(dest, hooks.app_name, \"README.md\"), \"w\") as f:\n202: \t\tf.write(frappe.as_unicode(readme_template.format(**hooks)))\n203: \n204: \tif not no_git:\n205: \t\twith open(os.path.join(dest, hooks.app_name, \".gitignore\"), \"w\") as f:\n206: \t\t\tf.write(frappe.as_unicode(gitignore_template.format(app_name=hooks.app_name)))\n207: \n208: \t\t# initialize git repository\n209: \t\tapp_repo = git.Repo.init(app_directory, initial_branch=hooks.branch_name)\n210: \t\tapp_repo.git.add(A=True)\n211: \t\tapp_repo.index.commit(\"feat: Initialize App\")\n212: \n213: \tprint(f\"'{hooks.app_name}' created at {app_directory}\")",
+      "end_line": 201,
+      "line": 201,
+      "matched_text": "\twith open(os.path.join(dest, hooks.app_name, \"README.md\"), \"w\") as f:",
+      "path": "frappe/utils/boilerplate.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "8df83b71213abe4d85987dbc2fe1e069e7ed7ed01176b5fac795ce9da4ce72c6",
+      "cluster": "write:framework-path",
+      "context": "85: \t\tfor m in frappe.get_all(\"Module Def\", dict(package=self.package)):\n86: \t\t\tmodule = frappe.get_doc(\"Module Def\", m.name)\n87: \t\t\tfor l in module.meta.links:\n88: \t\t\t\tif l.link_doctype == \"Module Def\":\n89: \t\t\t\t\tcontinue\n90: \t\t\t\t# all documents of the type in the module\n91: \t\t\t\tfor d in frappe.get_all(l.link_doctype, dict(module=m.name)):\n92: \t\t\t\t\texport_doc(frappe.get_doc(l.link_doctype, d.name))\n93: \n94: \tdef export_package_files(self, package):\n95: \t\t# write readme\n96: \t\tif package.readme:\n97: \t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"README.md\"), \"w\") as readme:\n98: \t\t\t\treadme.write(package.readme)\n99: \n100: \t\t# write license\n101: \t\tif package.license:\n102: \t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"LICENSE.md\"), \"w\") as license:\n103: \t\t\t\tlicense.write(package.license)\n104: \n105: \t\t# write package.json as `frappe_package.json`\n106: \t\twith open(\n107: \t\t\tfrappe.get_site_path(\"packages\", package.package_name, package.package_name + \".json\"), \"w\"\n108: \t\t) as packagefile:\n109: \t\t\tpackagefile.write(frappe.as_json(package.as_dict(no_nulls=True)))",
+      "end_line": 97,
+      "line": 97,
+      "matched_text": "\t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"README.md\"), \"w\") as readme:",
+      "path": "frappe/core/doctype/package_release/package_release.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "dc1bffd93c781f7cdea49dc64afffbd8a37ab453e9714d6927f0db3284deeda5",
+      "cluster": "write:framework-path",
+      "context": "90: \t\t\t\t# all documents of the type in the module\n91: \t\t\t\tfor d in frappe.get_all(l.link_doctype, dict(module=m.name)):\n92: \t\t\t\t\texport_doc(frappe.get_doc(l.link_doctype, d.name))\n93: \n94: \tdef export_package_files(self, package):\n95: \t\t# write readme\n96: \t\tif package.readme:\n97: \t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"README.md\"), \"w\") as readme:\n98: \t\t\t\treadme.write(package.readme)\n99: \n100: \t\t# write license\n101: \t\tif package.license:\n102: \t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"LICENSE.md\"), \"w\") as license:\n103: \t\t\t\tlicense.write(package.license)\n104: \n105: \t\t# write package.json as `frappe_package.json`\n106: \t\twith open(\n107: \t\t\tfrappe.get_site_path(\"packages\", package.package_name, package.package_name + \".json\"), \"w\"\n108: \t\t) as packagefile:\n109: \t\t\tpackagefile.write(frappe.as_json(package.as_dict(no_nulls=True)))\n110: \n111: \tdef make_tarfile(self, package):\n112: \t\t# make tarfile\n113: \t\tfilename = f\"{self.name}.tar.gz\"\n114: \t\tsubprocess.check_output(",
+      "end_line": 102,
+      "line": 102,
+      "matched_text": "\t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"LICENSE.md\"), \"w\") as license:",
+      "path": "frappe/core/doctype/package_release/package_release.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "38d0bd3d59afcd6dc4b063f6c37454b3255fb338190e29af9158e1b1028a0602",
+      "cluster": "write:literal",
+      "context": "508: \t)\n509: \n510: \tfrappe.sendmail(\n511: \t\trecipients=frappe.conf.setup_wizard_exception_email,\n512: \t\tsender=frappe.session.user,\n513: \t\tsubject=f\"Setup failed: {frappe.local.site}\",\n514: \t\tmessage=message,\n515: \t\tdelayed=False,\n516: \t)\n517: \n518: \n519: def log_setup_wizard_exception(traceback, args):  # nosemgrep\n520: \twith open(\"../logs/setup-wizard.log\", \"w+\") as setup_log:\n521: \t\tsetup_log.write(traceback)\n522: \t\tsetup_log.write(json.dumps(args))\n523: \n524: \n525: def get_language_code(lang):\n526: \treturn frappe.db.get_value(\"Language\", {\"language_name\": lang})\n527: \n528: \n529: def enable_twofactor_all_roles():\n530: \tall_role = frappe.get_doc(\"Role\", {\"role_name\": \"All\"})\n531: \tall_role.two_factor_auth = True\n532: \tall_role.save(ignore_permissions=True)",
+      "end_line": 520,
+      "line": 520,
+      "matched_text": "\twith open(\"../logs/setup-wizard.log\", \"w+\") as setup_log:",
+      "path": "frappe/desk/page/setup_wizard/setup_wizard.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "615f434d7ee58c3d8d916e3c8dd9dd63cb42e92f9c40f23b300240793d0ab1fb",
+      "cluster": "write:literal",
+      "context": "51: \t\t\t\tself.draw.rectangle((x, y, x + SQUARE_SIZE, y + SQUARE_SIZE), fill=color, outline=color)\n52: \t\t\tself.hash >>= 1  # shift to right\n53: \t\t\tsquare_y += 1\n54: \t\t\tif square_y == GRID_SIZE:  # done with first column\n55: \t\t\t\tsquare_y = 0\n56: \t\t\t\tsquare_x += 1\n57: \n58: \tdef generate(self):\n59: \t\t\"\"\"\n60: \t\tSave and show calculated identicon\n61: \t\t\"\"\"\n62: \t\tself.calculate()\n63: \t\twith open(\"identicon.png\", \"wb\") as out:\n64: \t\t\tself.image.save(out, \"PNG\")\n65: \t\tself.image.show()\n66: \n67: \tdef base64(self, format=\"PNG\"):\n68: \t\t\"\"\"\n69: \t\tReturn the identicon's base64\n70: \n71: \t\tCreated by: liuzheng712\n72: \t\tBug report: https://github.com/liuzheng712/identicons/issues\n73: \t\t\"\"\"\n74: \t\tself.calculate()\n75: ",
+      "end_line": 63,
+      "line": 63,
+      "matched_text": "\t\twith open(\"identicon.png\", \"wb\") as out:",
+      "path": "frappe/utils/identicon.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "08a1e0f969db73d85ca62c3be554d040baf5f98a95300044d460188d4c84600d",
+      "cluster": "write:variable",
+      "context": "171: \t\tif path:\n172: \t\t\t# js\n173: \t\t\tif not os.path.exists(path + \".js\"):\n174: \t\t\t\twith open(path + \".js\", \"w\") as f:\n175: \t\t\t\t\tf.write(\n176: \t\t\t\t\t\t\"\"\"frappe.ready(function() {\n177: \t// bind events here\n178: })\"\"\"\n179: \t\t\t\t\t)\n180: \n181: \t\t\t# py\n182: \t\t\tif not os.path.exists(path + \".py\"):\n183: \t\t\t\twith open(path + \".py\", \"w\") as f:\n184: \t\t\t\t\tf.write(\n185: \t\t\t\t\t\t\"\"\"import frappe\n186: \n187: def get_context(context):\n188: \t# do your magic here\n189: \tpass\n190: \"\"\"\n191: \t\t\t\t\t)\n192: \n193: \tdef get_context(self, context):\n194: \t\t\"\"\"Build context to render the `web_form.html` template\"\"\"\n195: \t\tcontext.in_edit_mode = False",
+      "end_line": 183,
+      "line": 183,
+      "matched_text": "\t\t\t\twith open(path + \".py\", \"w\") as f:",
+      "path": "frappe/website/doctype/web_form/web_form.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "09b5105b628613b9b3306108859d725bb98040b7a14b3b1f42fb71a88c11e373",
+      "cluster": "write:variable",
+      "context": "186: \t\tself.validate_standard()\n187: \t\tclear_notification_cache()\n188: \n189: \tdef clear_cache(self):\n190: \t\tsuper().clear_cache()\n191: \t\tclear_notification_cache()\n192: \n193: \tdef on_update(self):\n194: \t\tpath = export_module_json(self, self.is_standard, self.module)\n195: \t\tif path and self.message:\n196: \t\t\textension = FORMATS.get(self.message_type, \".md\")\n197: \t\t\tfile_path = path + extension\n198: \t\t\twith open(file_path, \"w\") as f:\n199: \t\t\t\tf.write(self.message)\n200: \n201: \t\t\t# py\n202: \t\t\tif not os.path.exists(path + \".py\"):\n203: \t\t\t\twith open(path + \".py\", \"w\") as f:\n204: \t\t\t\t\tf.write(\n205: \t\t\t\t\t\t\"\"\"import frappe\n206: \n207: def get_context(context):\n208: \t# do your magic here\n209: \tpass\n210: \"\"\"",
+      "end_line": 198,
+      "line": 198,
+      "matched_text": "\t\t\twith open(file_path, \"w\") as f:",
+      "path": "frappe/email/doctype/notification/notification.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "wiki",
+      "case_id": "096d251dac9e16334c255f8ddb4a2df4e79f1fbb29c801b182bed40e5db58c7d",
+      "cluster": "default-read:literal",
+      "context": "119: \t\ttitle = lines[heading_index].strip(\"#\").strip(\" \") if heading_index != -1 else route.split(os.sep)[-1]\n120: \t\tcontent = \"\".join(lines[heading_index + 1 :]) if heading_index != -1 else \"\".join(lines)\n121: \t\tif \"shifted to landing page\" in content:\n122: \t\t\treturn\n123: \n124: \t\tif content:\n125: \t\t\tfor prev, new in self.docs_change_dict.items():\n126: \t\t\t\tcontent = content.replace(prev, new)\n127: \t\t\tcontent = content.replace(self.docs_directory.strip(\"w\"), f\"/{self.documentation_route}\")\n128: \n129: \t\t\tif file.endswith(\"index.md\") or file.endswith(\"contents.md\"):\n130: \t\t\t\ttry:\n131: \t\t\t\t\twith open(f\"{root}{os.sep}index.txt\") as f:\n132: \t\t\t\t\t\tlines = f.readlines()\n133: \t\t\t\t\tcontent = content.replace(\"{index}\", \"<ul><li>\" + \"<li>\".join(lines) + \"</ul>\")\n134: \t\t\t\texcept Exception:\n135: \t\t\t\t\tcontent = content.replace(\"{index}\", \"<ul><li>\" + \"<li>\".join(files) + \"</ul>\")\n136: \n137: \t\t\t\troute = f\"{parent}\".strip(\"/\")\n138: \n139: \t\telse:\n140: \t\t\tcontent = f\"<a href='{parent}'>{parent}</a>\"\n141: \n142: \t\twiki_page = frappe.new_doc(\"Wiki Page\")\n143: \t\twiki_page_dict = {",
+      "end_line": 131,
+      "line": 131,
+      "matched_text": "\t\t\t\t\twith open(f\"{root}{os.sep}index.txt\") as f:",
+      "path": "wiki/wiki/doctype/migrate_to_wiki/migrate_to_wiki.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "wiki",
+      "case_id": "c5502d9bcdd552ab786a6d25ee3314d8237af5d9681b7ecd9b8d9a6a04c0811a",
+      "cluster": "default-read:literal",
+      "context": "95: \t\t\t\t\"parenttype\": \"Wiki Sidebar\",\n96: \t\t\t\t\"parentfield\": \"sidebar_items\",\n97: \t\t\t}\n98: \t\t\twiki_sidebar_item.update(wiki_sidebar_item_dict)\n99: \t\t\twiki_sidebar_item.save()\n100: \n101: \tdef migrate_file(self, root, file, files):\n102: \t\tif file == \"index.md\" and \"contents.md\" in files:\n103: \t\t\treturn\n104: \t\theading_index = -1\n105: \t\tif not file.endswith(\".md\"):\n106: \t\t\treturn\n107: \t\twith open(f\"{root}{os.sep}{file}\") as f:\n108: \t\t\tlines = f.readlines()\n109: \t\tfor index, line in enumerate(lines):\n110: \t\t\tif line.startswith(\"#\"):\n111: \t\t\t\theading_index = index\n112: \t\t\t\tbreak\n113: \n114: \t\tparent = f\"{self.documentation_route}{os.sep}{root[root.find(self.docs_directory) + len(self.docs_directory) + 1: ]}\".replace(\n115: \t\t\t\"//\", \"/\"\n116: \t\t).strip(\"/\")\n117: \t\troute = f\"{parent}{os.sep}{file[:-3]}\"\n118: \n119: \t\ttitle = lines[heading_index].strip(\"#\").strip(\" \") if heading_index != -1 else route.split(os.sep)[-1]",
+      "end_line": 107,
+      "line": 107,
+      "matched_text": "\t\twith open(f\"{root}{os.sep}{file}\") as f:",
+      "path": "wiki/wiki/doctype/migrate_to_wiki/migrate_to_wiki.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "wiki",
+      "case_id": "eea6a58063e09a3bcb363f94069900aace4bd04fdedbc1c8a928208e76a9a109",
+      "cluster": "read-explicit:literal",
+      "context": "234: \t\t\t\t\tfile_doc.save(ignore_permissions=True)\n235: \t\t\t\texcept Exception as ex:\n236: \t\t\t\t\tprint(ex)\n237: \n238: \t\t\tfor file in files:\n239: \t\t\t\tif file == \"__init__.py\":\n240: \t\t\t\t\tcontinue\n241: \t\t\t\tif os.path.exists(\n242: \t\t\t\t\tf\"{os.getcwd()}{os.sep}{frappe.local.site}{os.sep}public{os.sep}files{os.sep}{file}\"\n243: \t\t\t\t):\n244: \t\t\t\t\tif self.create_new_assets:\n245: \t\t\t\t\t\ttry:\n246: \t\t\t\t\t\t\twith open(f\"{root}{os.sep}{file}\", \"rb\") as f:\n247: \t\t\t\t\t\t\t\tcontent_hash = get_content_hash(f.read())\n248: \t\t\t\t\t\texcept OSError:\n249: \t\t\t\t\t\t\tfrappe.msgprint(\n250: \t\t\t\t\t\t\t\tfrappe._(\"File {0} does not exist\").format(f\"{root}{os.sep}{file}\")\n251: \t\t\t\t\t\t\t)\n252: \t\t\t\t\t\t\traise\n253: \n254: \t\t\t\t\t\tnew_file_name = get_file_name(file, content_hash[-6:])\n255: \t\t\t\t\t\tshutil.copy(\n256: \t\t\t\t\t\t\tf\"{root}{os.sep}{file}\",\n257: \t\t\t\t\t\t\tf\"{os.getcwd()}{os.sep}{frappe.local.site}{os.sep}public{os.sep}files{os.sep}{new_file_name}\",\n258: \t\t\t\t\t\t)",
+      "end_line": 246,
+      "line": 246,
+      "matched_text": "\t\t\t\t\t\t\twith open(f\"{root}{os.sep}{file}\", \"rb\") as f:",
+      "path": "wiki/wiki/doctype/migrate_to_wiki/migrate_to_wiki.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "6567d9c242bb3ca00c9efb0b1ab57a2b08b7da4f92dc8fd1d73820e6aa0f5e72",
+      "cluster": "whitelisted-direct-parameter",
+      "context": "357: \t\tfrappe.throw(_(\"You need to install pycups to use this feature!\"))\n358: \n359: \ttry:\n360: \t\tcups.setServer(print_settings.server_ip)\n361: \t\tcups.setPort(print_settings.port)\n362: \t\tconn = cups.Connection()\n363: \t\toutput = PdfWriter()\n364: \t\toutput = frappe.get_print(\n365: \t\t\tdoctype, name, print_format, doc=doc, no_letterhead=no_letterhead, as_pdf=True, output=output\n366: \t\t)\n367: \t\tif not file_path:\n368: \t\t\tfile_path = os.path.join(\"/\", \"tmp\", f\"frappe-pdf-{frappe.generate_hash()}.pdf\")\n369: \t\toutput.write(open(file_path, \"wb\"))\n370: \t\tconn.printFile(print_settings.printer_name, file_path, name, {})\n371: \texcept OSError as e:\n372: \t\tif (\n373: \t\t\t\"ContentNotFoundError\" in e.message\n374: \t\t\tor \"ContentOperationNotPermittedError\" in e.message\n375: \t\t\tor \"UnknownContentError\" in e.message\n376: \t\t\tor \"RemoteHostClosedError\" in e.message\n377: \t\t):\n378: \t\t\tfrappe.throw(_(\"PDF generation failed\"))\n379: \texcept cups.IPPError:\n380: \t\tfrappe.throw(_(\"Printing failed\"))",
+      "end_line": 369,
+      "line": 369,
+      "matched_text": "\t\toutput.write(open(file_path, \"wb\"))",
+      "path": "frappe/utils/print_format.py",
+      "record_type": "independent-search",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "onedrive_offsite_backup",
+      "case_id": "c795335d99c28ccc71f18837d2594be132a08658b325906638c613983f8f8bec",
+      "cluster": "suppression",
+      "context": "496:         transfer_started_callback,\n497:         transfer_elapsed_callback,\n498:     ):\n499:         resumed_offset = upload_state[\"next_offset\"]\n500:         hash_accumulator, hash_offset = self._hash_accumulator_for_resume(\n501:             local_path,\n502:             upload_state,\n503:         )\n504:         response_payload = {}\n505: \n506:         # The path comes from a server-generated, fingerprint-validated source manifest.\n507:         with (\n508:             open(  # nosemgrep: frappe-security-file-traversal -- manifest validation restricts this to the four server-generated backup paths\n509:                 local_path, \"rb\"\n510:             ) as handle\n511:         ):\n512:             if resumed_offset:\n513:                 handle.seek(hash_offset)\n514:                 replay_bytes = resumed_offset - hash_offset\n515:                 self._update_hash_for_prefix(handle, hash_accumulator, replay_bytes)\n516:                 handle.seek(resumed_offset)\n517:             response_payload = self._upload_remaining_chunks(\n518:                 handle,\n519:                 file_size,\n520:                 upload_state,",
+      "end_line": 508,
+      "line": 508,
+      "matched_text": "            open(  # nosemgrep: frappe-security-file-traversal -- manifest validation restricts this to the four server-generated backup paths",
+      "path": "onedrive_offsite_backup/utils/onedrive_client.py",
+      "record_type": "suppression",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "application": "frappe",
+      "case_id": "4adaca8992cafa6ddb9c6c2525995a84b2828103aa16f8932d096715c69918fb",
+      "cluster": "Popen:dynamic-expression",
+      "context": "183: \t\t\t# hide cmd window\n184: \t\t\tstartupinfo = subprocess.STARTUPINFO()\n185: \t\t\tstartupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW\n186: \t\t\tstartupinfo.wShowWindow = subprocess.SW_HIDE\n187: \t\t\tself._chromium_process = subprocess.Popen(\n188: \t\t\t\tcommand_args,\n189: \t\t\t\tstdout=subprocess.PIPE,\n190: \t\t\t\tstderr=subprocess.PIPE,\n191: \t\t\t\tstartupinfo=startupinfo,\n192: \t\t\t\ttext=True,\n193: \t\t\t)\n194: \t\telse:\n195: \t\t\tself._chromium_process = subprocess.Popen(\n196: \t\t\t\tcommand_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True\n197: \t\t\t)\n198: \t\treturn self._chromium_process\n199: \n200: \tdef _set_devtools_url(self):\n201: \t\t\"\"\"\n202: \t\tMonitor Chromium's stderr for the DevTools WebSocket URL\n203: \t\t----------------\n204: \t\tother approch: if we choose port using find_available_port we can avoid this entirely and fetch_devtools_url() method.\n205: \n206: \t\tNOTE:\t1) in current approch output to stderr is pretty consistent.\n207: \t\t                2) other approch may seem reliable but it is slow compared to this in testing.\n208: \n209: \t\tTODO:",
+      "end_line": 197,
+      "line": 195,
+      "matched_text": "\t\t\tself._chromium_process = subprocess.Popen(\n\t\t\t\tcommand_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True\n\t\t\t)",
+      "path": "frappe/utils/pdf_generator/chrome_pdf_generator.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "552bb1878ee683473a38d0953cef27635c890a02665f523ff86f16943f3d79a0",
+      "cluster": "Popen:dynamic-expression",
+      "context": "175: \t\t\tfrappe.throw(_(\"Could not start Chromium. Check logs for details.\"))\n176: \n177: \t# Apply the decorator to monitor Chromium subprocess usage for development / debugging purposes.\n178: \t# it will print and write usage data to a file ( defaults to chrome_process_usage.json).\n179: \t# from print_designer.pdf_generator.monitor_subprocess import monitor_subprocess_usage\n180: \t# @monitor_subprocess_usage(interval=0.1)\n181: \tdef _start_chromium_process(self, command_args):\n182: \t\tif platform.system().lower() == \"windows\":\n183: \t\t\t# hide cmd window\n184: \t\t\tstartupinfo = subprocess.STARTUPINFO()\n185: \t\t\tstartupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW\n186: \t\t\tstartupinfo.wShowWindow = subprocess.SW_HIDE\n187: \t\t\tself._chromium_process = subprocess.Popen(\n188: \t\t\t\tcommand_args,\n189: \t\t\t\tstdout=subprocess.PIPE,\n190: \t\t\t\tstderr=subprocess.PIPE,\n191: \t\t\t\tstartupinfo=startupinfo,\n192: \t\t\t\ttext=True,\n193: \t\t\t)\n194: \t\telse:\n195: \t\t\tself._chromium_process = subprocess.Popen(\n196: \t\t\t\tcommand_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True\n197: \t\t\t)\n198: \t\treturn self._chromium_process\n199: \n200: \tdef _set_devtools_url(self):\n201: \t\t\"\"\"\n202: \t\tMonitor Chromium's stderr for the DevTools WebSocket URL\n203: \t\t----------------\n204: \t\tother approch: if we choose port using find_available_port we can avoid this entirely and fetch_devtools_url() method.\n205: ",
+      "end_line": 193,
+      "line": 187,
+      "matched_text": "\t\t\tself._chromium_process = subprocess.Popen(\n\t\t\t\tcommand_args,\n\t\t\t\tstdout=subprocess.PIPE,\n\t\t\t\tstderr=subprocess.PIPE,\n\t\t\t\tstartupinfo=startupinfo,\n\t\t\t\ttext=True,\n\t\t\t)",
+      "path": "frappe/utils/pdf_generator/chrome_pdf_generator.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "f3313341a0e54bf5eb15009b01e966ca5e3860dd60c26f8ac7d61c97670d4f78",
+      "cluster": "Popen:dynamic-expression",
+      "context": "72: \t\timport psutil\n73: \n74: \t\tif psutil.LINUX:\n75: \t\t\tpsutil.Process().nice(19)\n76: \t\t\tpsutil.Process().ionice(psutil.IOPRIO_CLASS_IDLE)\n77: \t\telif psutil.WINDOWS:\n78: \t\t\tpsutil.Process().nice(psutil.IDLE_PRIORITY_CLASS)\n79: \t\t\tpsutil.Process().ionice(psutil.IOPRIO_VERYLOW)\n80: \t\telse:\n81: \t\t\tpsutil.Process().nice(19)\n82: \t\t\t# ionice not supported\n83: \n84: \tproc = subprocess.Popen(\n85: \t\tcommand,\n86: \t\tstdout=None if output else subprocess.PIPE,\n87: \t\tstderr=None if output else subprocess.PIPE,\n88: \t\tshell=shell,\n89: \t\tcwd=cwd,\n90: \t\tpreexec_fn=set_low_prio,\n91: \t\tenv=env,\n92: \t)\n93: \n94: \treturn_ = proc.wait()\n95: \n96: \tif return_ and raise_err:\n97: \t\traise subprocess.CalledProcessError(return_, command)\n98: \n99: \treturn return_\n100: \n101: \n102: def call_command(cmd, context):\n103: \treturn click.Context(cmd, obj=context).forward(cmd)\n104: ",
+      "end_line": 92,
+      "line": 84,
+      "matched_text": "\tproc = subprocess.Popen(\n\t\tcommand,\n\t\tstdout=None if output else subprocess.PIPE,\n\t\tstderr=None if output else subprocess.PIPE,\n\t\tshell=shell,\n\t\tcwd=cwd,\n\t\tpreexec_fn=set_low_prio,\n\t\tenv=env,\n\t)",
+      "path": "frappe/commands/__init__.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "cea13af9a72c44251d4995f070d90cf3eaf67fee5acd5b77ab3da0af144544ef",
+      "cluster": "check_output:dynamic-expression",
+      "context": "84: \n85: \n86: def get_output(command, shell=True):\n87: \t\"\"\"\n88: \tExecute a shell command and return its output.\n89: \n90: \t:param command: Command to execute\n91: \t:param shell: Whether to use shell\n92: \t:return: Command output as string\n93: \t\"\"\"\n94: \tprint(command)\n95: \tcommand = shlex.split(command)\n96: \treturn subprocess.check_output(command, shell=shell, encoding=\"utf8\").strip()\n97: \n98: \n99: def has_skip_ci_label(pr_number, repo=\"frappe/frappe\"):\n100: \t\"\"\"Check if the PR has the 'Skip CI' label.\"\"\"\n101: \treturn has_label(pr_number, \"Skip CI\", repo)\n102: \n103: \n104: def has_run_server_tests_label(pr_number, repo=\"frappe/frappe\"):\n105: \t\"\"\"Check if the PR has the 'Run Server Tests' label.\"\"\"\n106: \treturn has_label(pr_number, \"Run Server Tests\", repo)\n107: \n108: ",
+      "end_line": 96,
+      "line": 96,
+      "matched_text": "\treturn subprocess.check_output(command, shell=shell, encoding=\"utf8\").strip()",
+      "path": ".github/helper/roulette.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "3ece3efd54dae46bdef0bf0873aaea6b952b9fd26ea38c796e31ccb04b53abe0",
+      "cluster": "check_output:literal-list",
+      "context": "577: \t\t\t_(\"{} not found in PATH! This is required to access the console.\").format(bin_name),\n578: \t\t\texc=frappe.ExecutableNotFound,\n579: \t\t)\n580: \tos.execv(bin, [bin, *args])\n581: \n582: \n583: @click.command(\"jupyter\")\n584: @pass_context\n585: def jupyter(context: CliCtxObj):\n586: \t\"\"\"Start an interactive jupyter notebook\"\"\"\n587: \tinstalled_packages = (\n588: \t\tr.split(\"==\", 1)[0]\n589: \t\tfor r in subprocess.check_output([sys.executable, \"-m\", \"pip\", \"freeze\"], encoding=\"utf8\")\n590: \t)\n591: \n592: \tif \"jupyter\" not in installed_packages:\n593: \t\tsubprocess.check_output([sys.executable, \"-m\", \"pip\", \"install\", \"jupyter\"])\n594: \n595: \tsite = get_site(context)\n596: \tfrappe.init(site)\n597: \n598: \tjupyter_notebooks_path = os.path.abspath(frappe.get_site_path(\"jupyter_notebooks\"))\n599: \tsites_path = os.path.abspath(frappe.get_site_path(\"..\"))\n600: \n601: \ttry:",
+      "end_line": 589,
+      "line": 589,
+      "matched_text": "\t\tfor r in subprocess.check_output([sys.executable, \"-m\", \"pip\", \"freeze\"], encoding=\"utf8\")",
+      "path": "frappe/commands/utils.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "464a3d57a779d63b39e8a441b4f243160712f392b135f500357f0f62ac65524f",
+      "cluster": "check_output:literal-list",
+      "context": "107: \t\t\tfrappe.get_site_path(\"packages\", package.package_name, package.package_name + \".json\"), \"w\"\n108: \t\t) as packagefile:\n109: \t\t\tpackagefile.write(frappe.as_json(package.as_dict(no_nulls=True)))\n110: \n111: \tdef make_tarfile(self, package):\n112: \t\t# make tarfile\n113: \t\tfilename = f\"{self.name}.tar.gz\"\n114: \t\tsubprocess.check_output(\n115: \t\t\t[\"tar\", \"czf\", filename, package.package_name], cwd=frappe.get_site_path(\"packages\")\n116: \t\t)\n117: \n118: \t\t# move file\n119: \t\tsubprocess.check_output(\n120: \t\t\t[\"mv\", frappe.get_site_path(\"packages\", filename), frappe.get_site_path(\"public\", \"files\")]\n121: \t\t)\n122: \n123: \t\t# make attachment\n124: \t\tfile = frappe.get_doc(\n125: \t\t\tdoctype=\"File\",\n126: \t\t\tfile_url=\"/\" + os.path.join(\"files\", filename),\n127: \t\t\tattached_to_doctype=self.doctype,\n128: \t\t\tattached_to_name=self.name,\n129: \t\t)\n130: \n131: \t\t# Set path to tarball\n132: \t\tself.path = file.file_url\n133: ",
+      "end_line": 121,
+      "line": 119,
+      "matched_text": "\t\tsubprocess.check_output(\n\t\t\t[\"mv\", frappe.get_site_path(\"packages\", filename), frappe.get_site_path(\"public\", \"files\")]\n\t\t)",
+      "path": "frappe/core/doctype/package_release/package_release.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "471003fa33da1178da151c3ed400c3195d2eb805a66cff71ffd53b02e9b96ffd",
+      "cluster": "check_output:literal-list",
+      "context": "158: \t\t\t\tstderr=null_stream,\n159: \t\t\t)\n160: \t\tresult = safe_decode(result)\n161: \t\tresult = result.strip()\n162: \t\treturn result\n163: \texcept Exception:\n164: \t\treturn \"\"\n165: \n166: \n167: def get_app_last_commit_ref(app):\n168: \ttry:\n169: \t\twith open(os.devnull, \"wb\") as null_stream:\n170: \t\t\tresult = subprocess.check_output(\n171: \t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--short=7\", \"HEAD\"],\n172: \t\t\t\tshell=False,\n173: \t\t\t\tstdin=null_stream,\n174: \t\t\t\tstderr=null_stream,\n175: \t\t\t)\n176: \t\tresult = safe_decode(result)\n177: \t\tresult = result.strip()\n178: \t\treturn result\n179: \texcept Exception:\n180: \t\treturn \"\"\n181: \n182: \n183: def check_for_update():\n184: \tif frappe.get_system_settings(\"disable_system_update_notification\") or not frappe.is_setup_complete():\n185: \t\treturn\n186: \n187: \tupdates = frappe._dict(major=[], minor=[], patch=[])",
+      "end_line": 175,
+      "line": 170,
+      "matched_text": "\t\t\tresult = subprocess.check_output(\n\t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--short=7\", \"HEAD\"],\n\t\t\t\tshell=False,\n\t\t\t\tstdin=null_stream,\n\t\t\t\tstderr=null_stream,\n\t\t\t)",
+      "path": "frappe/utils/change_log.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "557bd7879aaac8babdbdf7f8f0bf2817bbdcdaf17a381d84d08265565bdf868a",
+      "cluster": "check_output:literal-list",
+      "context": "412: \t\t# remove visible-pdf class to unhide\n413: \t\ttag.attrs[\"class\"].remove(\"visible-pdf\")\n414: \n415: \tfor tag in soup.find_all(attrs={\"class\": \"hidden-pdf\"}):\n416: \t\t# remove tag from html\n417: \t\ttag.extract()\n418: \n419: \n420: @frappe.whitelist()\n421: @redis_cache(ttl=60 * 60)\n422: def is_wkhtmltopdf_valid():\n423: \ttry:\n424: \t\toutput = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])\n425: \t\treturn \"qt\" in output.decode(\"utf-8\").lower()\n426: \texcept Exception:\n427: \t\treturn False\n428: \n429: \n430: def get_wkhtmltopdf_version():\n431: \twkhtmltopdf_version = frappe.cache.hget(\"wkhtmltopdf_version\", None)\n432: \n433: \tif not wkhtmltopdf_version:\n434: \t\ttry:\n435: \t\t\tres = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])\n436: \t\t\twkhtmltopdf_version = res.decode(\"utf-8\").split(\" \")[1]",
+      "end_line": 424,
+      "line": 424,
+      "matched_text": "\t\toutput = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])",
+      "path": "frappe/utils/pdf.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "769e5c55c49f4ef206b7c71d554541b3cd471ce2e2a3c15fdeaa0113c7517c9f",
+      "cluster": "check_output:literal-list",
+      "context": "581: \n582: \n583: @click.command(\"jupyter\")\n584: @pass_context\n585: def jupyter(context: CliCtxObj):\n586: \t\"\"\"Start an interactive jupyter notebook\"\"\"\n587: \tinstalled_packages = (\n588: \t\tr.split(\"==\", 1)[0]\n589: \t\tfor r in subprocess.check_output([sys.executable, \"-m\", \"pip\", \"freeze\"], encoding=\"utf8\")\n590: \t)\n591: \n592: \tif \"jupyter\" not in installed_packages:\n593: \t\tsubprocess.check_output([sys.executable, \"-m\", \"pip\", \"install\", \"jupyter\"])\n594: \n595: \tsite = get_site(context)\n596: \tfrappe.init(site)\n597: \n598: \tjupyter_notebooks_path = os.path.abspath(frappe.get_site_path(\"jupyter_notebooks\"))\n599: \tsites_path = os.path.abspath(frappe.get_site_path(\"..\"))\n600: \n601: \ttry:\n602: \t\tos.stat(jupyter_notebooks_path)\n603: \texcept OSError:\n604: \t\tprint(f\"Creating folder to keep jupyter notebooks at {jupyter_notebooks_path}\")\n605: \t\tos.mkdir(jupyter_notebooks_path)",
+      "end_line": 593,
+      "line": 593,
+      "matched_text": "\t\tsubprocess.check_output([sys.executable, \"-m\", \"pip\", \"install\", \"jupyter\"])",
+      "path": "frappe/commands/utils.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "897e683aa7330df29db7ce401f6fec140b38bf6b5653f33c25fe1c0fda88c466",
+      "cluster": "check_output:literal-list",
+      "context": "423: \ttry:\n424: \t\toutput = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])\n425: \t\treturn \"qt\" in output.decode(\"utf-8\").lower()\n426: \texcept Exception:\n427: \t\treturn False\n428: \n429: \n430: def get_wkhtmltopdf_version():\n431: \twkhtmltopdf_version = frappe.cache.hget(\"wkhtmltopdf_version\", None)\n432: \n433: \tif not wkhtmltopdf_version:\n434: \t\ttry:\n435: \t\t\tres = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])\n436: \t\t\twkhtmltopdf_version = res.decode(\"utf-8\").split(\" \")[1]\n437: \t\t\tfrappe.cache.hset(\"wkhtmltopdf_version\", None, wkhtmltopdf_version)\n438: \t\texcept Exception:\n439: \t\t\tpass\n440: \n441: \treturn wkhtmltopdf_version or \"0\"\n442: \n443: \n444: def pdf_contains_js(file_content: bytes):\n445: \t\"\"\"\n446: \tCheck if a PDF file contains JavaScript.\n447: ",
+      "end_line": 435,
+      "line": 435,
+      "matched_text": "\t\t\tres = subprocess.check_output([\"wkhtmltopdf\", \"--version\"])",
+      "path": "frappe/utils/pdf.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "ce01806fc7ccabf8dc74b3b94fa74254e2a4334ca4a01ff8c664c74418c0a1a3",
+      "cluster": "check_output:literal-list",
+      "context": "102: \t\t\twith open(frappe.get_site_path(\"packages\", package.package_name, \"LICENSE.md\"), \"w\") as license:\n103: \t\t\t\tlicense.write(package.license)\n104: \n105: \t\t# write package.json as `frappe_package.json`\n106: \t\twith open(\n107: \t\t\tfrappe.get_site_path(\"packages\", package.package_name, package.package_name + \".json\"), \"w\"\n108: \t\t) as packagefile:\n109: \t\t\tpackagefile.write(frappe.as_json(package.as_dict(no_nulls=True)))\n110: \n111: \tdef make_tarfile(self, package):\n112: \t\t# make tarfile\n113: \t\tfilename = f\"{self.name}.tar.gz\"\n114: \t\tsubprocess.check_output(\n115: \t\t\t[\"tar\", \"czf\", filename, package.package_name], cwd=frappe.get_site_path(\"packages\")\n116: \t\t)\n117: \n118: \t\t# move file\n119: \t\tsubprocess.check_output(\n120: \t\t\t[\"mv\", frappe.get_site_path(\"packages\", filename), frappe.get_site_path(\"public\", \"files\")]\n121: \t\t)\n122: \n123: \t\t# make attachment\n124: \t\tfile = frappe.get_doc(\n125: \t\t\tdoctype=\"File\",\n126: \t\t\tfile_url=\"/\" + os.path.join(\"files\", filename),\n127: \t\t\tattached_to_doctype=self.doctype,\n128: \t\t\tattached_to_name=self.name,",
+      "end_line": 116,
+      "line": 114,
+      "matched_text": "\t\tsubprocess.check_output(\n\t\t\t[\"tar\", \"czf\", filename, package.package_name], cwd=frappe.get_site_path(\"packages\")\n\t\t)",
+      "path": "frappe/core/doctype/package_release/package_release.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "d110a2eee0293469c5d5613ca4d25a606624b3ab55293a45e5637cc16c6296c8",
+      "cluster": "check_output:literal-list",
+      "context": "807: \tfrappe.init(site_name)\n808: \tabs_site_path = os.path.abspath(frappe.get_site_path())\n809: \n810: \t# Copy the files to the parent directory and extract\n811: \tshutil.copy2(os.path.abspath(file_path), abs_site_path)\n812: \n813: \t# Get the file name splitting the file path on\n814: \ttar_name = os.path.split(file_path)[1]\n815: \ttar_path = os.path.join(abs_site_path, tar_name)\n816: \n817: \ttry:\n818: \t\tif file_path.endswith(\".tar\"):\n819: \t\t\tsubprocess.check_output([\"tar\", \"xvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)\n820: \t\telif file_path.endswith(\".tgz\"):\n821: \t\t\tsubprocess.check_output([\"tar\", \"zxvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)\n822: \texcept Exception:\n823: \t\traise\n824: \tfinally:\n825: \t\tfrappe.destroy()\n826: \n827: \treturn tar_path\n828: \n829: \n830: def is_downgrade(sql_file_path, verbose=False):\n831: \t\"\"\"Check if input db backup will get downgraded on current bench",
+      "end_line": 819,
+      "line": 819,
+      "matched_text": "\t\t\tsubprocess.check_output([\"tar\", \"xvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)",
+      "path": "frappe/installer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "d5cb79a7abd0dec45f367067e6aa7d47f9c042edf54c7ae7f22dc4f402520c6d",
+      "cluster": "check_output:literal-list",
+      "context": "142: \t\ttry:\n143: \t\t\tversions[app][\"version\"] = frappe.get_attr(app + \".__version__\")\n144: \t\texcept AttributeError:\n145: \t\t\tversions[app][\"version\"] = \"0.0.1\"\n146: \n147: \treturn versions\n148: \n149: \n150: def get_app_branch(app):\n151: \t\"\"\"Return branch of an app.\"\"\"\n152: \ttry:\n153: \t\twith open(os.devnull, \"wb\") as null_stream:\n154: \t\t\tresult = subprocess.check_output(\n155: \t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--abbrev-ref\", \"HEAD\"],\n156: \t\t\t\tshell=False,\n157: \t\t\t\tstdin=null_stream,\n158: \t\t\t\tstderr=null_stream,\n159: \t\t\t)\n160: \t\tresult = safe_decode(result)\n161: \t\tresult = result.strip()\n162: \t\treturn result\n163: \texcept Exception:\n164: \t\treturn \"\"\n165: \n166: \n167: def get_app_last_commit_ref(app):\n168: \ttry:\n169: \t\twith open(os.devnull, \"wb\") as null_stream:\n170: \t\t\tresult = subprocess.check_output(\n171: \t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--short=7\", \"HEAD\"],",
+      "end_line": 159,
+      "line": 154,
+      "matched_text": "\t\t\tresult = subprocess.check_output(\n\t\t\t\t[\"git\", \"-C\", f\"../apps/{app}\", \"rev-parse\", \"--abbrev-ref\", \"HEAD\"],\n\t\t\t\tshell=False,\n\t\t\t\tstdin=null_stream,\n\t\t\t\tstderr=null_stream,\n\t\t\t)",
+      "path": "frappe/utils/change_log.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "ea59e71021e1debc4caf0884dc167de8f28f311de6307f20f8f724189ba2bd2a",
+      "cluster": "check_output:literal-list",
+      "context": "809: \n810: \t# Copy the files to the parent directory and extract\n811: \tshutil.copy2(os.path.abspath(file_path), abs_site_path)\n812: \n813: \t# Get the file name splitting the file path on\n814: \ttar_name = os.path.split(file_path)[1]\n815: \ttar_path = os.path.join(abs_site_path, tar_name)\n816: \n817: \ttry:\n818: \t\tif file_path.endswith(\".tar\"):\n819: \t\t\tsubprocess.check_output([\"tar\", \"xvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)\n820: \t\telif file_path.endswith(\".tgz\"):\n821: \t\t\tsubprocess.check_output([\"tar\", \"zxvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)\n822: \texcept Exception:\n823: \t\traise\n824: \tfinally:\n825: \t\tfrappe.destroy()\n826: \n827: \treturn tar_path\n828: \n829: \n830: def is_downgrade(sql_file_path, verbose=False):\n831: \t\"\"\"Check if input db backup will get downgraded on current bench\n832: \n833: \tThis function is only tested with mariadb.",
+      "end_line": 821,
+      "line": 821,
+      "matched_text": "\t\t\tsubprocess.check_output([\"tar\", \"zxvf\", tar_path, \"--strip\", \"2\"], cwd=abs_site_path)",
+      "path": "frappe/installer.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "92d527b7b5e74c57a1c7c1fcd7d4cb7f7181369146833d62deefff2d9f5416a1",
+      "cluster": "subprocess:dynamic-expression",
+      "context": "100: \t\tif self.custom:\n101: \t\t\tself.delete_old_theme_files(folder_path)\n102: \n103: \t\t# add a random suffix\n104: \t\tsuffix = frappe.generate_hash(length=8) if self.custom else \"style\"\n105: \t\tfile_name = frappe.scrub(self.name) + \"_\" + suffix + \".css\"\n106: \t\toutput_path = join_path(folder_path, file_name)\n107: \n108: \t\tself.theme_scss = content = get_scss(self)\n109: \t\tcontent = content.replace(\"\\n\", \"\\\\n\")\n110: \t\tcommand = [\"node\", \"generate_bootstrap_theme.js\", output_path, content]\n111: \n112: \t\tprocess = Popen(command, cwd=frappe.get_app_source_path(\"frappe\"), stdout=PIPE, stderr=PIPE)\n113: \n114: \t\tstderr = process.communicate()[1]\n115: \n116: \t\tif stderr:\n117: \t\t\tstderr = frappe.safe_decode(stderr)\n118: \t\t\tstderr = stderr.replace(\"\\n\", \"<br>\")\n119: \t\t\tfrappe.throw(f'<div style=\"font-family: monospace;\">{stderr}</div>')\n120: \t\telse:\n121: \t\t\tself.theme_url = \"/files/website_theme/\" + file_name\n122: \n123: \t\tfrappe.msgprint(_(\"Compiled Successfully\"), alert=True)\n124: ",
+      "end_line": 112,
+      "line": 112,
+      "matched_text": "\t\tprocess = Popen(command, cwd=frappe.get_app_source_path(\"frappe\"), stdout=PIPE, stderr=PIPE)",
+      "path": "frappe/website/doctype/website_theme/website_theme.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "e2aea279fcf30bec465ef7d51b39faa4253b666e33c10c91a3b7fc4e32c83fc1",
+      "cluster": "subprocess:dynamic-expression",
+      "context": "467: \n468: \twith tempfile.TemporaryFile() as stdout, tempfile.TemporaryFile() as stderr:\n469: \t\tkwargs = {\n470: \t\t\t\"shell\": True,\n471: \t\t\t\"stdout\": stdout,\n472: \t\t\t\"stderr\": stderr,\n473: \t\t\t\"executable\": shutil.which(\"bash\") or \"/bin/bash\",\n474: \t\t}\n475: \n476: \t\tif low_priority:\n477: \t\t\tkwargs[\"preexec_fn\"] = lambda: os.nice(10)\n478: \n479: \t\tp = Popen(cmd, **kwargs)\n480: \t\texit_code = p.wait()\n481: \n482: \t\tstdout.seek(0)\n483: \t\tout = stdout.read()\n484: \n485: \t\tstderr.seek(0)\n486: \t\terr = stderr.read()\n487: \n488: \tfailed = check_exit_code and exit_code\n489: \n490: \tif verbose or failed:\n491: \t\tif err:",
+      "end_line": 479,
+      "line": 479,
+      "matched_text": "\t\tp = Popen(cmd, **kwargs)",
+      "path": "frappe/utils/__init__.py",
+      "record_type": "finding",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "03b2f51451967eaef1e9c936c2bb39d4646c68c5dcbe761d92fed1f0939ac304",
+      "cluster": "interpolated-shell-helper",
+      "context": "924: \tif path.endswith(\".gz\"):\n925: \t\texecutable_name = \"zgrep\"\n926: \telse:\n927: \t\texecutable_name = \"grep\"\n928: \n929: \tif os.path.getsize(path):\n930: \t\tif (executable := which(executable_name)) is None:\n931: \t\t\tfrappe.throw(\n932: \t\t\t\tf\"`{executable_name}` not found in PATH! This is required to take a backup.\",\n933: \t\t\t\texc=frappe.ExecutableNotFound,\n934: \t\t\t)\n935: \t\ttry:\n936: \t\t\tfrappe.utils.execute_in_shell(f\"{executable} -m1 __Auth {path}\", check_exit_code=True)\n937: \t\t\treturn\n938: \t\texcept Exception:\n939: \t\t\terror_message = \"Table `__Auth` not found in file.\"\n940: \telse:\n941: \t\terror_message = f\"{path} is an empty file!\"\n942: \n943: \tif error_message:\n944: \t\tclick.secho(error_message, fg=\"red\")\n945: \n946: \tif _raise:\n947: \t\traise frappe.InvalidDatabaseFile\n948: ",
+      "end_line": 936,
+      "line": 936,
+      "matched_text": "\t\t\tfrappe.utils.execute_in_shell(f\"{executable} -m1 __Auth {path}\", check_exit_code=True)",
+      "path": "frappe/installer.py",
+      "record_type": "independent-search",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "8cef2c6312d18f570cbf567518d6fbf82c6f518e1fdf7622f6f9726035b30c2f",
+      "cluster": "interpolated-shell-helper",
+      "context": "391: \t\tprint(\"Invalid path\", sql_file_path)\n392: \t\tsys.exit(1)\n393: \n394: \tsite = get_site(context)\n395: \tverbose = context.verbose or verbose\n396: \tfrappe.init(site)\n397: \tfrappe.connect()\n398: \n399: \tif frappe.conf.db_type == \"sqlite\":\n400: \t\tclick.secho(\"Partial restore is not supported for SQLite databases\", fg=\"red\")\n401: \t\tsys.exit(1)\n402: \n403: \terr, out = frappe.utils.execute_in_shell(f\"file {sql_file_path}\", check_exit_code=True)\n404: \tif err:\n405: \t\tclick.secho(\"Failed to detect type of backup file\", fg=\"red\")\n406: \t\tsys.exit(1)\n407: \n408: \tif \"cipher\" in out.decode().split(\":\")[-1].strip():\n409: \t\tif encryption_key:\n410: \t\t\tclick.secho(\"Encrypted backup file detected. Decrypting using provided key.\", fg=\"yellow\")\n411: \t\t\tkey = encryption_key\n412: \n413: \t\telse:\n414: \t\t\tclick.secho(\"Encrypted backup file detected. Decrypting using site config.\", fg=\"yellow\")\n415: \t\t\tkey = get_or_generate_backup_encryption_key()",
+      "end_line": 403,
+      "line": 403,
+      "matched_text": "\terr, out = frappe.utils.execute_in_shell(f\"file {sql_file_path}\", check_exit_code=True)",
+      "path": "frappe/commands/site.py",
+      "record_type": "independent-search",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "baec525f28776b2b8aadb4c6b21655d6339e1a84b2dcd81389add8c776d466f2",
+      "cluster": "interpolated-shell-helper",
+      "context": "565: \n566: \n567: @functools.lru_cache\n568: def get_site_name(hostname):\n569: \treturn hostname.split(\":\", 1)[0]\n570: \n571: \n572: def get_disk_usage():\n573: \t\"\"\"get disk usage of files folder\"\"\"\n574: \tfiles_path = get_files_path()\n575: \tif not os.path.exists(files_path):\n576: \t\treturn 0\n577: \t_err, out = execute_in_shell(f\"du -hsm {files_path}\")\n578: \treturn cint(out.split(\"\\n\")[-2].split(\"\\t\")[0])\n579: \n580: \n581: def touch_file(path):\n582: \twith open(path, \"a\"):\n583: \t\tos.utime(path, None)\n584: \treturn path\n585: \n586: \n587: def get_test_client(use_cookies=True) -> Client:\n588: \t\"\"\"Return an test instance of the Frappe WSGI.\"\"\"\n589: \tfrom frappe.app import application",
+      "end_line": 577,
+      "line": 577,
+      "matched_text": "\t_err, out = execute_in_shell(f\"du -hsm {files_path}\")",
+      "path": "frappe/utils/__init__.py",
+      "record_type": "independent-search",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "application": "frappe",
+      "case_id": "f465be6ebef94b08ac2c64026bdfcb7a788f1f160d679260cdc0eb2ad12058dd",
+      "cluster": "interpolated-shell-helper",
+      "context": "245: \t\t\tf\"File {sql_file_path} not found. Trying to check in alternative directories.\", fg=\"yellow\"\n246: \t\t)\n247: \t\tfor dir in dirs:\n248: \t\t\tpotential_path = Path(dir) / Path(sql_file_path)\n249: \t\t\tif potential_path.exists():\n250: \t\t\t\tsql_file_path = str(potential_path.resolve())\n251: \t\t\t\tclick.secho(f\"File {sql_file_path} found.\", fg=\"green\")\n252: \t\t\t\tbreak\n253: \t\telse:\n254: \t\t\tclick.secho(f\"File {sql_file_path} not found.\", fg=\"red\")\n255: \t\t\tsys.exit(1)\n256: \n257: \terr, out = frappe.utils.execute_in_shell(f\"file {sql_file_path}\", check_exit_code=True)\n258: \tif err:\n259: \t\tclick.secho(\"Failed to detect type of backup file\", fg=\"red\")\n260: \t\tsys.exit(1)\n261: \n262: \tif \"AES\" in out.decode().split(\":\")[-1].strip():\n263: \t\tif encryption_key:\n264: \t\t\tclick.secho(\"Encrypted backup file detected. Decrypting using provided key.\", fg=\"yellow\")\n265: \n266: \t\telse:\n267: \t\t\tclick.secho(\"Encrypted backup file detected. Decrypting using site config.\", fg=\"yellow\")\n268: \t\t\tencryption_key = get_or_generate_backup_encryption_key()\n269: ",
+      "end_line": 257,
+      "line": 257,
+      "matched_text": "\terr, out = frappe.utils.execute_in_shell(f\"file {sql_file_path}\", check_exit_code=True)",
+      "path": "frappe/commands/site.py",
+      "record_type": "independent-search",
+      "review": {
+        "basis": "pending",
+        "label": "pending"
+      },
+      "rule_id": "frappe-subprocess-exec"
+    }
+  ],
+  "sample_counts": {
+    "frappe-security-file-traversal": 36,
+    "frappe-subprocess-exec": 20
+  },
+  "sampling": {
+    "file_traversal": "first two SHA-256 identities per application, access-mode and path-form cluster",
+    "subprocess_exec": "complete current census",
+    "suppressions": "complete current census"
+  },
+  "scan": "scan-results/batch-02-baseline-20260826",
+  "schema_version": 1,
+  "suppression_populations": {
+    "frappe-security-file-traversal": 1,
+    "frappe-subprocess-exec": 0
+  }
+}

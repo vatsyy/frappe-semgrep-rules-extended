@@ -1,0 +1,30 @@
+{
+  "after_scan_id": "karam_finance-7a92fde4798c-81ee8865f3a7",
+  "before_scan_id": "karam_finance-7a92fde4798c-af2ae31453ab",
+  "counts": {
+    "moved": 0,
+    "new": 1,
+    "persisting": 7,
+    "resolved": 4
+  },
+  "moved": [],
+  "new": [
+    "4d38de71bf253d6804ca4eeabbfa6083cd97b823080e9cd7a96658685d1743f5"
+  ],
+  "persisting": [
+    "177f630afe6dd8a4333795be61bef0c8ca2b11e079fe85b2fc967ae4c81f30ac",
+    "22559183cb722e9432e180718c0979eabc0bf490e969895c327537ac98a49051",
+    "26d9dee653cecb6e1ff26372726406e7d10d02b75278bed167bb112b841cdcd3",
+    "2ab1a7d723e326fb68e2915c9684bcdbf9b2e957552d8585f38cbb5817cce5d7",
+    "54cd938ebc98b0e0cab6d17bb784bc595c02f693d742822953b1cba92160f80d",
+    "65a665fce5203d6bcbe55d8d961d9fdad8f583d16de6760e3aa611c3a11e1df9",
+    "74e0296a74f83e98fb50290783955d2282c1923f4a9d7d112728963825c77301"
+  ],
+  "resolved": [
+    "79ea38f8b1501edafc440c08980ab65738103badcbcc216e42021ff1e6b1ba59",
+    "91e77ff0c748ca9d233543e4bb44b2f539e586583332b1c5965c53c720eb5916",
+    "935327f22c70b5af2cd5b421e6531ed3a912d2eb8732b61316d2ec851140fb09",
+    "bd47f4bccc433b7ac0070b980ccde9fe6cedcd2e339c32a9ceea10a744810d5d"
+  ],
+  "schema_version": 1
+}

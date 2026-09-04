@@ -1,0 +1,16 @@
+{
+  "schema_name": "canonical-scan-provenance",
+  "schema_version": 1,
+  "required": [
+    "scan_id",
+    "generated_at",
+    "engine",
+    "rules",
+    "catalogue",
+    "source",
+    "exclusions",
+    "resource_settings",
+    "engine_settings",
+    "portfolio_execution"
+  ]
+}

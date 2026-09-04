@@ -1,0 +1,928 @@
+{
+  "allocation_commitment_sha256": "6e1530347d90a7bb510a07a632cede778051ad129fc820c728e419475bc6355d",
+  "claims": [
+    {
+      "cases": [
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "049587e1400f40e7af763de3df735fa388ddcfae465fd0804a1b62c74c4aeacf",
+          "context": "2368: \t\t\t\t});\n2369: \t\t\t}\n2370: \t\t}\n2371: \t}\n2372: \n2373: \tapply_product_discount(args) {\n2374: \t\tconst items = this.frm.doc.items.filter((d) => d.is_free_item) || [];\n2375: \n2376: \t\tconst exist_items = items.map((row) => {\n2377: \t\t\treturn { item_code: row.item_code, pricing_rules: row.pricing_rules };\n2378: \t\t});\n2379: \n2380: \t\targs.free_item_data.forEach(async (pr_row) => {\n2381: \t\t\tlet row_to_modify = {};\n2382: \n2383: \t\t\t// If there are no free items, or if the current free item doesn't exist in the table, add it\n2384: \t\t\tif (\n2385: \t\t\t\t!items ||\n2386: \t\t\t\t!exist_items.filter((e_row) => {\n2387: \t\t\t\t\treturn e_row.item_code == pr_row.item_code && e_row.pricing_rules == pr_row.pricing_rules;\n2388: \t\t\t\t}).length\n2389: \t\t\t) {\n2390: \t\t\t\trow_to_modify = frappe.model.add_child(this.frm.doc, this.frm.doc.doctype + \" Item\", \"items\");\n2391: \t\t\t} else if (items) {\n2392: \t\t\t\trow_to_modify = items.filter(",
+          "label": "pending",
+          "line": 2380,
+          "path": "erpnext/public/js/controllers/transaction.js"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "23976a59569aec66a1149d0d6c802cf69210d7ef2dda1f5ad8a10caca4172e3a",
+          "context": "143: \t\t\tthis.init_chart();\n144: \t\t}\n145: \n146: \t\tthis.set_link_title_field_value();\n147: \t}\n148: \n149: \tset_link_title_field_value() {\n150: \t\tlet rows = this.datatable?.datamanager?.rows;\n151: \t\tlet link_col_indices = this.datatable?.datamanager?.columns\n152: \t\t\t?.filter((c) => c.docfield?.fieldtype === \"Link\")\n153: \t\t\t.map((c) => c.colIndex);\n154: \n155: \t\tObject.keys(this.link_title_doctype_fields).forEach(async (key) => {\n156: \t\t\tlet link_title = await this.get_link_title_field_value(\n157: \t\t\t\tthis.link_title_doctype_fields[key],\n158: \t\t\t\tkey\n159: \t\t\t);\n160: \n161: \t\t\tif (link_title === undefined) return;\n162: \n163: \t\t\t// update visible DOM elements and cell tooltip\n164: \t\t\tdocument.querySelectorAll(`a[data-name=\"${key}\"]`).forEach((el) => {\n165: \t\t\t\tif (el.textContent === link_title) return;\n166: \t\t\t\tel.textContent = link_title;\n167: ",
+          "label": "pending",
+          "line": 155,
+          "path": "frappe/public/js/frappe/views/reports/report_view.js"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "63dcc2e691010012be5020b85bd9e5eaefe5b46f8435b1baf7044a6effe45bf4",
+          "context": "1099: \t\t\t})\n1100: \t\t\t.then((r) => {\n1101: \t\t\t\tif (!r.exc && r.message.length > 0) {\n1102: \t\t\t\t\treturn r.message;\n1103: \t\t\t\t} else {\n1104: \t\t\t\t\treturn [];\n1105: \t\t\t\t}\n1106: \t\t\t});\n1107: \t},\n1108: \n1109: \tset_timesheet_data: function (frm, timesheets) {\n1110: \t\tfrm.clear_table(\"timesheets\");\n1111: \t\ttimesheets.forEach(async (timesheet) => {\n1112: \t\t\tif (frm.doc.currency != timesheet.currency) {\n1113: \t\t\t\tconst exchange_rate = await frm.events.get_exchange_rate(\n1114: \t\t\t\t\tfrm,\n1115: \t\t\t\t\ttimesheet.currency,\n1116: \t\t\t\t\tfrm.doc.currency\n1117: \t\t\t\t);\n1118: \t\t\t\tfrm.events.append_time_log(frm, timesheet, exchange_rate);\n1119: \t\t\t} else {\n1120: \t\t\t\tfrm.events.append_time_log(frm, timesheet, 1.0);\n1121: \t\t\t}\n1122: \t\t});\n1123: \t\tfrm.trigger(\"calculate_timesheet_totals\");",
+          "label": "pending",
+          "line": 1111,
+          "path": "erpnext/accounts/doctype/sales_invoice/sales_invoice.js"
+        }
+      ],
+      "claim_id": "A",
+      "title": "Async array-callback semantics"
+    },
+    {
+      "cases": [
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "eaefafe75c26d73d31840aa62261e7d1925636ca9cdc58a4d8577a768c0ae090",
+          "context": "13: app_description = \"Karam-specific finance, reconciliation, reporting, numbering, and operational controls for ERPNext.\"\n14: app_email = \"repast_pesos42@icloud.com\"\n15: app_license = \"mit\"\n16: app_include_js = [\n17:     \"currency_formatter.bundle.js\",\n18:     \"/assets/karam_finance/js/report_utils/report_table_ux.js\",\n19:     \"/assets/karam_finance/js/karam_general/item_price_on_rate_mismatch_state.js\",\n20:     \"/assets/karam_finance/js/karam_general/item_price_on_rate_mismatch_prompt.js\",\n21:     \"/assets/karam_finance/js/karam_general/item_price_on_rate_mismatch.js\",\n22: ]\n23: \n24: # DocType class overrides\n25: override_doctype_class = {\n26:     \"Bank Clearance\": \"karam_finance.overrides.bank_clearance.KaramBankClearance\",\n27: }\n28: \n29: # DocType JS includes (generated from curated list)\n30: doctype_js = dict.fromkeys(\n31:     _KARAM_DOCTYPES, \"public/js/karam_series/karam_series_filter.js\"\n32: )\n33: doctype_js[\"Bank Clearance\"] = \"public/js/overrides/bank_clearance.js\"\n34: doctype_js[\"Stock Settings\"] = (\n35:     \"public/js/karam_general/stock_settings_item_price_mismatch.js\"\n36: )\n37: doctype_list_js = {\n38:     \"Reporting Currency GLE\": (\n39:         \"public/js/reporting_currency/reporting_currency_gle_list.js\"",
+          "label": "pending",
+          "line": 25,
+          "path": "karam_finance/hooks.py"
+        }
+      ],
+      "claim_id": "B",
+      "title": "DocType controller-override compatibility"
+    },
+    {
+      "cases": [
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "00f926c2983ad832d73e83f2c65b41d7850d3aaf6c880f80a2bac3794944ca94",
+          "context": "333: \t\t\t)\"\"\"\n334: \t\t)\n335: \n336: \tif account or (party_type and party) or account_type:\n337: \t\tprecision = get_currency_precision()\n338: \t\tif in_account_currency:\n339: \t\t\tselect_field = (\n340: \t\t\t\t\"sum(round(debit_in_account_currency, %s)) - sum(round(credit_in_account_currency, %s))\"\n341: \t\t\t)\n342: \t\telse:\n343: \t\t\tselect_field = \"sum(round(debit, %s)) - sum(round(credit, %s))\"\n344: \n345: \t\tbal = frappe.db.sql(\n346: \t\t\t\"\"\"\n347: \t\t\tSELECT {}\n348: \t\t\tFROM `tabGL Entry` gle\n349: \t\t\tWHERE {}\"\"\".format(select_field, \" and \".join(cond)),\n350: \t\t\t(precision, precision),\n351: \t\t)[0][0]\n352: \t\t# if bal is None, return 0\n353: \t\treturn flt(bal)\n354: \n355: \n356: def get_count_on(account, fieldname, date):\n357: \tcond = [\"is_cancelled=0\"]\n358: \tif date:\n359: \t\tcond.append(\"posting_date <= %s\" % frappe.db.escape(cstr(date)))\n360: \telse:\n361: \t\t# get balance of all entries that exist\n362: \t\tdate = nowdate()\n363: ",
+          "label": "pending",
+          "line": 345,
+          "path": "erpnext/accounts/utils.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "034d87e177f8aa01978cff150d635d6d037b62ba70431c98dcdea288c17ae6ce",
+          "context": "1189: \t\t\t\t\t\"docstatus\": [\"!=\", 2],\n1190: \t\t\t\t\t\"name\": [\"!=\", self.name],\n1191: \t\t\t\t},\n1192: \t\t\t\t\"name\",\n1193: \t\t\t)\n1194: \t\t]\n1195: \n1196: \t\tif other_ste:\n1197: \t\t\tproduction_item, qty = frappe.db.get_value(\n1198: \t\t\t\t\"Work Order\", self.work_order, [\"production_item\", \"qty\"]\n1199: \t\t\t)\n1200: \t\t\targs = [*other_ste, production_item]\n1201: \t\t\tfg_qty_already_entered = frappe.db.sql(\n1202: \t\t\t\t\"\"\"select sum(transfer_qty)\n1203: \t\t\t\tfrom `tabStock Entry Detail`\n1204: \t\t\t\twhere parent in ({})\n1205: \t\t\t\t\tand item_code = {}\n1206: \t\t\t\t\tand ifnull(s_warehouse,'')='' \"\"\".format(\", \".join([\"%s\" * len(other_ste)]), \"%s\"),\n1207: \t\t\t\targs,\n1208: \t\t\t)[0][0]\n1209: \t\t\tif fg_qty_already_entered and fg_qty_already_entered >= qty:\n1210: \t\t\t\tfrappe.throw(\n1211: \t\t\t\t\t_(\"Stock Entries already created for Work Order {0}: {1}\").format(\n1212: \t\t\t\t\t\tself.work_order, \", \".join(other_ste)\n1213: \t\t\t\t\t),\n1214: \t\t\t\t\tDuplicateEntryForWorkOrderError,\n1215: \t\t\t\t)\n1216: \n1217: \tdef set_actual_qty(self):\n1218: \t\tfrom erpnext.stock.stock_ledger import is_negative_stock_allowed\n1219: \n1220: \t\tfor d in self.get(\"items\"):",
+          "label": "pending",
+          "line": 1201,
+          "path": "erpnext/stock/doctype/stock_entry/stock_entry.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "078824cb989da41121fd93866f2c5a6f6f4bfd8370821c553873d15645522051",
+          "context": "142: \t\t\t),\n143: \t\t\t(filters.get(\"company\"), year_start_date, year_end_date),\n144: \t\t\tas_list=1,\n145: \t\t)\n146: \n147: \t\tfor d in range(len(data1)):\n148: \t\t\t# to add blanck column\n149: \t\t\tdt = data1[d]\n150: \t\t\tdt.insert(ind, \"\")\n151: \t\t\tdata.append(dt)\n152: \n153: \t\t\t# to get distinct value of col specified by group_by in filter\n154: \t\t\trow = frappe.db.sql(\n155: \t\t\t\t\"\"\"select DISTINCT({}) from `tab{}` t1, `tab{} Item` t2 {}\n156: \t\t\t\t\t\twhere t2.parent = t1.name and t1.company = {} and {} between {} and {}\n157: \t\t\t\t\t\tand t1.docstatus = 1 and {} = {} {} {}\n158: \t\t\t\t\t\"\"\".format(\n159: \t\t\t\t\tsel_col,\n160: \t\t\t\t\tconditions[\"trans\"],\n161: \t\t\t\t\tconditions[\"trans\"],\n162: \t\t\t\t\tconditions[\"addl_tables\"],\n163: \t\t\t\t\t\"%s\",\n164: \t\t\t\t\tposting_date,\n165: \t\t\t\t\t\"%s\",\n166: \t\t\t\t\t\"%s\",\n167: \t\t\t\t\tconditions[\"group_by\"],\n168: \t\t\t\t\t\"%s\",\n169: \t\t\t\t\tconditions.get(\"addl_tables_relational_cond\"),\n170: \t\t\t\t\tcond,\n171: \t\t\t\t),\n172: \t\t\t\t(filters.get(\"company\"), year_start_date, year_end_date, data1[d][0]),\n173: \t\t\t\tas_list=1,\n174: \t\t\t)\n175: \n176: \t\t\tfor i in range(len(row)):\n177: \t\t\t\tdes = [\"\" for q in range(len(conditions[\"columns\"]))]\n178: \n179: \t\t\t\t# get data for group_by filter\n180: \t\t\t\trow1 = frappe.db.sql(\n181: \t\t\t\t\t\"\"\" select t4.default_currency AS currency , {} , {} from `tab{}` t1, `tab{} Item` t2 {}\n182: \t\t\t\t\t\t\twhere t2.parent = t1.name and t1.company = {} and {} between {} and {}\n183: \t\t\t\t\t\t\tand t1.docstatus = 1 and {} = {} and {} = {} {} {}\n184: \t\t\t\t\t\t\"\"\".format(\n185: \t\t\t\t\t\tsel_col,\n186: \t\t\t\t\t\tconditions[\"period_wise_select\"],",
+          "label": "pending",
+          "line": 154,
+          "path": "erpnext/controllers/trends.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "08764db1dbafba75c9755905214ed9b396e421cb4aec1d141ab7c826484e8d00",
+          "context": "293: \t\tupdate_cardinality(column, cardinality)\n294: \n295: \treturn {\n296: \t\t\"table_name\": table.strip(\"`\"),\n297: \t\t\"total_rows\": total_rows,\n298: \t\t\"schema\": schema,\n299: \t\t\"indexes\": indexes,\n300: \t}\n301: \n302: \n303: @redis_cache\n304: def _get_column_cardinality(table, column):\n305: \treturn frappe.db.sql(f\"select count(distinct {column}) from {table}\")[0][0]\n306: \n307: \n308: def get_doctype_name(table_name: str) -> str:\n309: \treturn table_name.removeprefix(\"tab\")",
+          "label": "pending",
+          "line": 305,
+          "path": "frappe/core/doctype/recorder/recorder.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "08ce8347266476d6d675b723b165dd08dc275bc310cf85c89d6689cdf49df92f",
+          "context": "525: \t\tcondition += \"\"\" and `tab{child_doc}`.warehouse in ({warehouses})\n526: \t\t\t\"\"\".format(child_doc=child_doctype, warehouses=\",\".join([\"%s\"] * len(warehouses)))\n527: \n528: \t\tvalues.extend(warehouses)\n529: \n530: \tif items:\n531: \t\tcondition += \" and `tab{child_doc}`.{apply_on} in ({items})\".format(\n532: \t\t\tchild_doc=child_doctype, apply_on=apply_on, items=\",\".join([\"%s\"] * len(items))\n533: \t\t)\n534: \n535: \t\tvalues.extend(items)\n536: \n537: \tdata_set = frappe.db.sql(\n538: \t\tf\"\"\" SELECT `tab{child_doctype}`.stock_qty,\n539: \t\t\t`tab{child_doctype}`.amount\n540: \t\tFROM `tab{child_doctype}`, `tab{doctype}`\n541: \t\tWHERE\n542: \t\t\t`tab{child_doctype}`.parent = `tab{doctype}`.name and `tab{doctype}`.{date_field}\n543: \t\t\tbetween %s and %s and `tab{doctype}`.docstatus = 1\n544: \t\t\t{condition} group by `tab{child_doctype}`.name\n545: \t\"\"\",\n546: \t\ttuple(values),\n547: \t\tas_dict=1,\n548: \t)\n549: \n550: \tfor data in data_set:\n551: \t\tsum_qty += data.get(\"stock_qty\")\n552: \t\tsum_amt += data.get(\"amount\")\n553: \n554: \treturn [sum_qty, sum_amt]\n555: \n556: \n557: def apply_pricing_rule_on_transaction(doc):\n558: \tconditions = \"apply_on = 'Transaction'\"\n559: \n560: \tvalues = {}",
+          "label": "pending",
+          "line": 537,
+          "path": "erpnext/accounts/doctype/pricing_rule/utils.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0cde1c7ce48bdfd6a876b929e9eb4bf0865945a51bc27b469c76ff068ae74d44",
+          "context": "1205: \t\tfields=[\"name\", \"full_name\"],\n1206: \t\tlimit_start=start,\n1207: \t\tlimit_page_length=page_len,\n1208: \t\torder_by=\"name asc\",\n1209: \t\tor_filters=or_filters,\n1210: \t\tas_list=True,\n1211: \t)\n1212: \n1213: \n1214: def get_total_users():\n1215: \t\"\"\"Return total number of system users.\"\"\"\n1216: \treturn flt(\n1217: \t\tfrappe.db.sql(\n1218: \t\t\t\"\"\"SELECT SUM(`simultaneous_sessions`)\n1219: \t\tFROM `tabUser`\n1220: \t\tWHERE `enabled` = 1\n1221: \t\tAND `user_type` = 'System User'\n1222: \t\tAND `name` NOT IN ({})\"\"\".format(\", \".join([\"%s\"] * len(STANDARD_USERS))),\n1223: \t\t\tSTANDARD_USERS,\n1224: \t\t)[0][0]\n1225: \t)\n1226: \n1227: \n1228: def get_system_users(exclude_users: Iterable[str] | str | None = None, limit: int | None = None):\n1229: \t_excluded_users = list(STANDARD_USERS)\n1230: \tif isinstance(exclude_users, str):\n1231: \t\t_excluded_users.append(exclude_users)\n1232: \telif isinstance(exclude_users, Iterable):\n1233: \t\t_excluded_users.extend(exclude_users)\n1234: \n1235: \treturn frappe.get_all(\n1236: \t\t\"User\",",
+          "label": "pending",
+          "line": 1217,
+          "path": "frappe/core/doctype/user/user.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "1216b481e205f9540cb9b37d52f1ecf90e799ca2343e4bbffc8697b9e1569fc9",
+          "context": "85: \t\torder by posting_datetime desc, creation desc\n86: \t\tlimit 1\"\"\",\n87: \t\t(item_code, warehouse),\n88: \t)\n89: \n90: \treturn flt(balance_qty[0][0]) if balance_qty else 0.0\n91: \n92: \n93: def get_reserved_qty(item_code, warehouse):\n94: \tdont_reserve_on_return = frappe.get_cached_value(\n95: \t\t\"Selling Settings\", \"Selling Settings\", \"dont_reserve_sales_order_qty_on_sales_return\"\n96: \t)\n97: \treserved_qty = frappe.db.sql(\n98: \t\tf\"\"\"\n99: \t\tselect\n100: \t\t\tsum(dnpi_qty * ((so_item_qty - so_item_delivered_qty - if(dont_reserve_qty_on_return, so_item_returned_qty, 0)) / so_item_qty))\n101: \t\tfrom\n102: \t\t\t(\n103: \t\t\t\t(select\n104: \t\t\t\t\tqty as dnpi_qty,\n105: \t\t\t\t\t(\n106: \t\t\t\t\t\tselect qty from `tabSales Order Item`\n107: \t\t\t\t\t\twhere name = dnpi.parent_detail_docname\n108: \t\t\t\t\t\tand (delivered_by_supplier is null or delivered_by_supplier = 0)\n109: \t\t\t\t\t) as so_item_qty,\n110: \t\t\t\t\t(\n111: \t\t\t\t\t\tselect delivered_qty from `tabSales Order Item`\n112: \t\t\t\t\t\twhere name = dnpi.parent_detail_docname\n113: \t\t\t\t\t\tand delivered_by_supplier = 0\n114: \t\t\t\t\t) as so_item_delivered_qty,\n115: \t\t\t\t\t(\n116: \t\t\t\t\t\tselect returned_qty from `tabSales Order Item`\n117: \t\t\t\t\t\twhere name = dnpi.parent_detail_docname\n118: \t\t\t\t\t\tand delivered_by_supplier = 0\n119: \t\t\t\t\t) as so_item_returned_qty,\n120: \t\t\t\t\t{dont_reserve_on_return} as dont_reserve_qty_on_return,\n121: \t\t\t\t\tparent, name\n122: \t\t\t\tfrom\n123: \t\t\t\t(\n124: \t\t\t\t\tselect qty, parent_detail_docname, parent, name\n125: \t\t\t\t\tfrom `tabPacked Item` dnpi_in\n126: \t\t\t\t\twhere item_code = %s and warehouse = %s\n127: \t\t\t\t\tand parenttype='Sales Order'\n128: \t\t\t\t\tand item_code != parent_item\n129: \t\t\t\t\tand exists (select * from `tabSales Order` so\n130: \t\t\t\t\twhere name = dnpi_in.parent and docstatus = 1 and status not in ('On Hold', 'Closed'))\n131: \t\t\t\t) dnpi)\n132: \t\t\tunion\n133: \t\t\t\t(select stock_qty as dnpi_qty, qty as so_item_qty,\n134: \t\t\t\t\tdelivered_qty as so_item_delivered_qty,\n135: \t\t\t\t\treturned_qty as so_item_returned_qty,\n136: \t\t\t\t\t{dont_reserve_on_return}, parent, name\n137: \t\t\t\tfrom `tabSales Order Item` so_item\n138: \t\t\t\twhere item_code = %s and warehouse = %s\n139: \t\t\t\tand (so_item.delivered_by_supplier is null or so_item.delivered_by_supplier = 0)\n140: \t\t\t\tand exists(select * from `tabSales Order` so\n141: \t\t\t\t\twhere so.name = so_item.parent and so.docstatus = 1\n142: \t\t\t\t\tand so.status not in ('On Hold', 'Closed')))\n143: \t\t\t) tab\n144: \t\twhere\n145: \t\t\tso_item_qty >= so_item_delivered_qty\n146: \t\"\"\",\n147: \t\t(item_code, warehouse, item_code, warehouse),\n148: \t)\n149: \n150: \treturn flt(reserved_qty[0][0]) if reserved_qty else 0\n151: \n152: \n153: def get_indented_qty(item_code, warehouse):\n154: \t# Ordered Qty is always maintained in stock UOM\n155: \tinward_qty = frappe.db.sql(\n156: \t\t\"\"\"\n157: \t\tselect sum(mr_item.stock_qty - mr_item.ordered_qty)\n158: \t\tfrom `tabMaterial Request Item` mr_item, `tabMaterial Request` mr\n159: \t\twhere mr_item.item_code=%s and mr_item.warehouse=%s\n160: \t\t\tand mr.material_request_type in ('Purchase', 'Manufacture', 'Customer Provided', 'Material Transfer')",
+          "label": "pending",
+          "line": 97,
+          "path": "erpnext/stock/stock_balance.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "1673161a24e68e365fdd1aa4fc5ef4e85d5c3e79d6c5c1e6b43bc074e3c250c8",
+          "context": "14: \n15: \tupdate_column_table_map = {}\n16: \n17: \tfor field in fields:\n18: \t\tupdate_column_table_map.setdefault(field.TABLE_NAME, [])\n19: \n20: \t\tupdate_column_table_map[field.TABLE_NAME].append(\n21: \t\t\tf\"`{field.COLUMN_NAME}`=COALESCE(`{field.COLUMN_NAME}`, 0)\"\n22: \t\t)\n23: \n24: \tfor table in frappe.db.get_tables():\n25: \t\tif update_column_table_map.get(table) and frappe.db.exists(\"DocType\", re.sub(\"^tab\", \"\", table)):\n26: \t\t\tfrappe.db.sql(\n27: \t\t\t\t\"\"\"UPDATE `{table}` SET {columns}\"\"\".format(\n28: \t\t\t\t\ttable=table, columns=\", \".join(update_column_table_map.get(table))\n29: \t\t\t\t)\n30: \t\t\t)",
+          "label": "pending",
+          "line": 26,
+          "path": "frappe/patches/v12_0/replace_null_values_in_tables.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "174e7871cd788fc30b9b0ce8d56bb28f8c354d70eacc6571cd42fa32cb45b86d",
+          "context": "158: \n159: \tif doctype not in frappe.get_hooks(\"default_log_clearing_doctypes\", {}):\n160: \t\traise frappe.ValidationError(f\"Unsupported logging DocType: {doctype}\")\n161: \n162: \toriginal = get_table_name(doctype)\n163: \ttemporary = f\"{original} temp_table\"\n164: \tbackup = f\"{original} backup_table\"\n165: \n166: \ttry:\n167: \t\tif frappe.db.db_type == \"postgres\":\n168: \t\t\tfrappe.db.sql_ddl(f'CREATE TABLE \"{temporary}\" (LIKE \"{original}\" INCLUDING ALL)')\n169: \n170: \t\t\tfrappe.db.sql(\n171: \t\t\t\tf\"\"\"INSERT INTO \"{temporary}\"\n172: \t\t\t\t\tSELECT * FROM \"{original}\"\n173: \t\t\t\t\tWHERE \"{original}\".\"creation\" > NOW() - INTERVAL '{days}' DAY\"\"\"\n174: \t\t\t)\n175: \t\t\tfrappe.db.sql_ddl(f'ALTER TABLE \"{original}\" RENAME TO \"{backup}\"')\n176: \t\t\tfrappe.db.sql_ddl(f'ALTER TABLE \"{temporary}\" RENAME TO \"{original}\"')\n177: \t\telif frappe.db.db_type == \"mariadb\":\n178: \t\t\tfrappe.db.sql_ddl(f\"CREATE TABLE `{temporary}` LIKE `{original}`\")\n179: \n180: \t\t\t# Copy all recent data to new table\n181: \t\t\tfrappe.db.sql(\n182: \t\t\t\tf\"\"\"INSERT INTO `{temporary}`\n183: \t\t\t\t\tSELECT * FROM `{original}`\n184: \t\t\t\t\tWHERE `{original}`.`creation` > NOW() - INTERVAL '{days}' DAY\"\"\"\n185: \t\t\t)\n186: \t\t\tfrappe.db.sql_ddl(f\"RENAME TABLE `{original}` TO `{backup}`, `{temporary}` TO `{original}`\")",
+          "label": "pending",
+          "line": 170,
+          "path": "frappe/core/doctype/log_settings/log_settings.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "1a4cafbcb684f68a41ecf24568ccee28532c9ecaca7787e0ae61fdd9ce8ce022",
+          "context": "10: \t\trename_field(\"Timesheet Detail\", \"billable\", \"is_billable\")\n11: \n12: \tbase_currency = frappe.defaults.get_global_default(\"currency\")\n13: \n14: \tfrappe.db.sql(\n15: \t\t\"\"\"UPDATE `tabTimesheet Detail`\n16: \t\t\tSET base_billing_rate = billing_rate,\n17: \t\t\tbase_billing_amount = billing_amount,\n18: \t\t\tbase_costing_rate = costing_rate,\n19: \t\t\tbase_costing_amount = costing_amount\"\"\"\n20: \t)\n21: \n22: \tfrappe.db.sql(\n23: \t\tf\"\"\"UPDATE `tabTimesheet`\n24: \t\t\tSET currency = '{base_currency}',\n25: \t\t\texchange_rate = 1.0,\n26: \t\t\tbase_total_billable_amount = total_billable_amount,\n27: \t\t\tbase_total_billed_amount = total_billed_amount,\n28: \t\t\tbase_total_costing_amount = total_costing_amount\"\"\"\n29: \t)",
+          "label": "pending",
+          "line": 22,
+          "path": "erpnext/patches/v13_0/update_timesheet_changes.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "1ca1ed161e44531db12ec75f78e77c93b55b4288fdfce170291bd5cb73fde182",
+          "context": "876: \t\t\"\"\"MariaDB stores a mapping between `key_name` and `column_name`.\n877: \t\tReturn the `column_name` associated with the `key_name` passed.\n878: \n879: \t\tArgs:\n880: \t\t        key_name (str): The name of the database index.\n881: \n882: \t\tRaises:\n883: \t\t        IndexError: If the key is not found in the table.\n884: \n885: \t\tReturn:\n886: \t\t        str: The column name associated with the key.\n887: \t\t\"\"\"\n888: \t\treturn frappe.db.sql(\n889: \t\t\tf\"\"\"\n890: \t\t\tSHOW\n891: \t\t\t\tINDEX\n892: \t\t\tFROM\n893: \t\t\t\t`tab{self.doctype}`\n894: \t\t\tWHERE\n895: \t\t\t\tkey_name=%s\n896: \t\t\tAND\n897: \t\t\t\tNon_unique=0\n898: \t\t\t\"\"\",\n899: \t\t\tkey_name,\n900: \t\t\tas_dict=True,\n901: \t\t)[0].get(\"Column_name\")\n902: \n903: \tdef get_label_from_fieldname(self, fieldname):\n904: \t\t\"\"\"Return the associated label for fieldname.\n905: \n906: \t\tArgs:\n907: \t\t        fieldname (str): The fieldname in the DocType to use to pull the label.\n908: \n909: \t\tReturn:\n910: \t\t        str: The label associated with the fieldname, if found, otherwise `None`.\n911: \t\t\"\"\"\n912: \t\tdf = self.meta.get_field(fieldname)\n913: \t\tif df:",
+          "label": "pending",
+          "line": 888,
+          "path": "frappe/model/base_document.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "1e9a8f200a074fedfe7c706648775e1403af51140b1ebae8b4a1d9a130528351",
+          "context": "1237: \t\tfilters={\n1238: \t\t\t\"enabled\": 1,\n1239: \t\t\t\"user_type\": (\"!=\", \"Website User\"),\n1240: \t\t\t\"name\": (\"not in\", _excluded_users),\n1241: \t\t},\n1242: \t\tpluck=\"name\",\n1243: \t\tlimit=limit,\n1244: \t)\n1245: \n1246: \n1247: def get_active_users():\n1248: \t\"\"\"Return number of system users who logged in, in the last 3 days.\"\"\"\n1249: \treturn frappe.db.sql(\n1250: \t\t\"\"\"select count(*) from `tabUser`\n1251: \t\twhere enabled = 1 and user_type != 'Website User'\n1252: \t\tand name not in ({})\n1253: \t\tand hour(timediff(now(), last_active)) < 72\"\"\".format(\", \".join([\"%s\"] * len(STANDARD_USERS))),\n1254: \t\tSTANDARD_USERS,\n1255: \t)[0][0]\n1256: \n1257: \n1258: def get_website_users():\n1259: \t\"\"\"Return total number of website users.\"\"\"\n1260: \treturn frappe.db.count(\"User\", filters={\"enabled\": True, \"user_type\": \"Website User\"})\n1261: \n1262: \n1263: def get_active_website_users():\n1264: \t\"\"\"Return number of website users who logged in, in the last 3 days.\"\"\"\n1265: \treturn frappe.db.sql(\n1266: \t\t\"\"\"select count(*) from `tabUser`\n1267:         where enabled = 1 and user_type = 'Website User'",
+          "label": "pending",
+          "line": 1249,
+          "path": "frappe/core/doctype/user/user.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "2b0feae321271dc67b63c0ffd31ca8016bcfd7a2ff4bd2545c50b9f3fedbbf2f",
+          "context": "34:         \"rc.manual_entry\",\n35:     ]\n36: \n37:     if filters.get(\"show_remarks\"):\n38:         remarks_length = safe_int(filters.get(\"_remarks_length\", 0))\n39:         if remarks_length:\n40:             fields.append(f\"substr(rc.remarks, 1, {remarks_length}) as remarks\")\n41:         else:\n42:             fields.append(\"rc.remarks\")\n43: \n44:     order_by = get_order_by_clause(filters)\n45: \n46:     gl_entries = frappe.db.sql(  # nosemgrep: frappe-sql-injection-format-string, frappe-prefer-query-builder\n47:         f\"\"\"\n48:         select {\", \".join(fields)}\n49:         from `tabReporting Currency GLE` rc\n50:         where rc.company=%(company)s {get_conditions(filters)}\n51:         {order_by}\n52:         \"\"\",\n53:         filters,\n54:         as_dict=1,\n55:     )\n56: \n57:     party_name_map = get_party_name_map(gl_entries)\n58:     for gl_entry in gl_entries:\n59:         if gl_entry.party_type and gl_entry.party:\n60:             gl_entry.party_name = party_name_map.get(gl_entry.party_type, {}).get(\n61:                 gl_entry.party\n62:             )\n63:         gl_entry.debit = gl_entry.reporting_debit or 0\n64:         gl_entry.credit = gl_entry.reporting_credit or 0\n65:         gl_entry.debit_in_account_currency = gl_entry.debit\n66:         gl_entry.credit_in_account_currency = gl_entry.credit\n67: ",
+          "label": "pending",
+          "line": 46,
+          "path": "karam_finance/reporting_currency/report/general_ledger_(reporting)/glrc_queries.py"
+        }
+      ],
+      "claim_id": "C",
+      "title": "Formatted SQL structure or data risk"
+    },
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "01437327502618c170af0cfc1dfa1187b872e6422d39322a062fdd4e53068458",
+          "context": "340: \t\t\tfrappe.throw(_(\"You don't have permission to create Report records.\"), frappe.PermissionError)\n341: \t\tif not frappe.has_permission(doctype, \"read\"):\n342: \t\t\tfrappe.throw(\n343: \t\t\t\t_(\"You don't have permission to create report for {0}\").format(_(doctype)),\n344: \t\t\t\tfrappe.PermissionError,\n345: \t\t\t)\n346: \t\treport = frappe.new_doc(\"Report\")\n347: \t\treport.report_name = name\n348: \t\treport.ref_doctype = doctype\n349: \n350: \treport.report_type = \"Report Builder\"\n351: \treport.json = report_settings\n352: \treport.save(ignore_permissions=True)\n353: \tfrappe.msgprint(\n354: \t\t_(\"Report {0} saved\").format(frappe.bold(report.name)),\n355: \t\tindicator=\"green\",\n356: \t\talert=True,\n357: \t)\n358: \treturn report.name\n359: \n360: \n361: @frappe.whitelist(methods=[\"POST\", \"DELETE\"])\n362: def delete_report(name):\n363: \t\"\"\"Delete reports of type Report Builder from Report View\"\"\"\n364: ",
+          "label": "pending",
+          "line": 352,
+          "path": "frappe/desk/reportview.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0164044614629c074e647fd8b7e96beeb54e8a262912dcba23aacb515e0905a8",
+          "context": "113: \n114: @frappe.whitelist()\n115: def mark_as_trash(communication: str):\n116: \t\"\"\"Set email status to trash.\"\"\"\n117: \tset_value(\"Communication\", communication, \"email_status\", \"Trash\")\n118: \n119: \n120: @frappe.whitelist()\n121: def mark_as_spam(communication: str, sender: str):\n122: \t\"\"\"Set email status to spam.\"\"\"\n123: \temail_rule = frappe.db.get_value(\"Email Rule\", {\"email_id\": sender})\n124: \tif not email_rule:\n125: \t\tfrappe.get_doc({\"doctype\": \"Email Rule\", \"email_id\": sender, \"is_spam\": 1}).insert(\n126: \t\t\tignore_permissions=True\n127: \t\t)\n128: \tset_value(\"Communication\", communication, \"email_status\", \"Spam\")\n129: \n130: \n131: def link_communication_to_document(doc, reference_doctype, reference_name, ignore_communication_links):\n132: \tif not ignore_communication_links:\n133: \t\tdoc.reference_doctype = reference_doctype\n134: \t\tdoc.reference_name = reference_name\n135: \t\tdoc.status = \"Linked\"\n136: \t\tdoc.save(ignore_permissions=True)",
+          "label": "pending",
+          "line": 125,
+          "path": "frappe/email/inbox.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0300e8184dee13a6c5c89bddbe1fa5a168be2c8c7c0a01f0f6ce763c910e2d2e",
+          "context": "823: \telse:\n824: \t\t# insert\n825: \t\tignore_mandatory = True if (files or web_form.allow_incomplete) else False\n826: \n827: \t\t# login_required, key_required + valid web_form_request (for_update),\n828: \t\t# and allow_edit (updates) are enforced above; open forms allow Guest create.\n829: \t\tdoc.insert(ignore_permissions=True, ignore_mandatory=ignore_mandatory)\n830: \t\tif web_form_request:\n831: \t\t\tweb_form_request.append(\"references\", {\"link_doctype\": doctype, \"link_name\": doc.name})\n832: \t\t\tif not web_form_request.first_used_on:\n833: \t\t\t\tweb_form_request.first_used_on = now_datetime()\n834: \t\t\t# Request key validated above; Guest holders cannot save Web Form Request otherwise.\n835: \t\t\tweb_form_request.save(ignore_permissions=True)\n836: \n837: \t# add files\n838: \tif files:\n839: \t\tfor f in files:\n840: \t\t\tfieldname, filedata = f\n841: \n842: \t\t\t# remove earlier attached file (if exists)\n843: \t\t\tif doc.get(fieldname):\n844: \t\t\t\tremove_file_by_url(doc.get(fieldname), doctype=doctype, name=doc.name)\n845: \n846: \t\t\t# save new file\n847: \t\t\tfilename, dataurl = filedata.split(\",\", 1)",
+          "label": "pending",
+          "line": 835,
+          "path": "frappe/website/doctype/web_form/web_form.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0347cc1040609b7bc97483acbe3c9027db807e788c886d6a6fefa463b93d6d4b",
+          "context": "996: \tfor fieldname, raw_value in kwargs.items():\n997: \t\tif not meta.has_field(fieldname):\n998: \t\t\tcontinue\n999: \t\ttry:\n1000: \t\t\tfilters[fieldname] = json.loads(raw_value)\n1001: \t\texcept (TypeError, ValueError):\n1002: \t\t\tfilters[fieldname] = raw_value\n1003: \n1004: \tfilters[\"name\"] = [\"in\", reference_names]\n1005: \n1006: \tfields = get_web_form_list_fields(web_form_doc, web_form_request_key)\n1007: \n1008: \treturn frappe.get_list(\n1009: \t\tweb_form_doc.doc_type,\n1010: \t\tfields=fields,\n1011: \t\tfilters=filters,\n1012: \t\tlimit_start=cint(limit_start),\n1013: \t\tlimit_page_length=min(cint(limit), 100),\n1014: \t\t# Valid key + show_list verified above; filters restrict to request references.\n1015: \t\tignore_permissions=True,\n1016: \t\torder_by=\"creation desc\",\n1017: \t\tdistinct=True,\n1018: \t)\n1019: \n1020: \n1021: @frappe.whitelist(allow_guest=True)\n1022: @frappe.read_only()\n1023: def get_form_data(\n1024: \tdoctype: str,\n1025: \tdocname: str | None = None,\n1026: \tweb_form_name: str | None = None,\n1027: \tweb_form_request_key: str | None = None,\n1028: ):\n1029: \tweb_form = frappe.get_doc(\"Web Form\", web_form_name)\n1030: \tweb_form.raise_if_unpublished()",
+          "label": "pending",
+          "line": 1008,
+          "path": "frappe/website/doctype/web_form/web_form.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "035459bf482dc0d1f741ff3faf327378b0b79b15245f8ebdb0ce0bd65e8ae51d",
+          "context": "135: \t\tif address:\n136: \t\t\treturn address[0].name\n137: \n138: \treturn\n139: \n140: \n141: @frappe.whitelist()\n142: def get_default_address(doctype: str, name: str | None, sort_key: str = \"is_primary_address\") -> str | None:\n143: \t\"\"\"Return default Address name for the given doctype, name.\"\"\"\n144: \tif sort_key not in [\"is_shipping_address\", \"is_primary_address\"]:\n145: \t\treturn None\n146: \n147: \taddresses = frappe.get_all(\n148: \t\t\"Address\",\n149: \t\tfilters=[\n150: \t\t\t[\"Dynamic Link\", \"link_doctype\", \"=\", doctype],\n151: \t\t\t[\"Dynamic Link\", \"link_name\", \"=\", name],\n152: \t\t\t[\"disabled\", \"=\", 0],\n153: \t\t],\n154: \t\tpluck=\"name\",\n155: \t\torder_by=f\"{sort_key} DESC\",\n156: \t\tlimit=1,\n157: \t)\n158: \n159: \treturn addresses[0] if addresses else None\n160: \n161: \n162: @frappe.whitelist()\n163: def get_address_display(address_dict: dict | str | None) -> str | None:\n164: \treturn render_address(address_dict)\n165: \n166: \n167: def render_address(address: dict | str | None, check_permissions=True) -> str | None:\n168: \tif not address:\n169: \t\treturn",
+          "label": "pending",
+          "line": 147,
+          "path": "frappe/contacts/doctype/address/address.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "044ee4ae511174c06f3c9e506b9846e7b0be54b5f9cec2fa3828f6e134dea797",
+          "context": "128: ):\n129: \tlp_details = frappe._dict()\n130: \n131: \tif not loyalty_program:\n132: \t\tloyalty_program = frappe.db.get_value(\"Customer\", customer, \"loyalty_program\")\n133: \n134: \t\tif not loyalty_program and not silent:\n135: \t\t\tfrappe.throw(_(\"Customer isn't enrolled in any Loyalty Program\"))\n136: \t\telif silent and not loyalty_program:\n137: \t\t\treturn frappe._dict({\"loyalty_programs\": None})\n138: \n139: \tif not company:\n140: \t\tcompany = frappe.db.get_default(\"company\") or frappe.get_all(\"Company\")[0].name\n141: \n142: \tloyalty_program = frappe.get_doc(\"Loyalty Program\", loyalty_program)\n143: \tlp_details.update({\"loyalty_program\": loyalty_program.name})\n144: \tlp_details.update(loyalty_program.as_dict())\n145: \treturn lp_details\n146: \n147: \n148: @frappe.whitelist()\n149: def get_redeemption_factor(loyalty_program=None, customer=None):\n150: \tcustomer_loyalty_program = None\n151: \tif not loyalty_program:\n152: \t\tcustomer_loyalty_program = frappe.db.get_value(\"Customer\", customer, \"loyalty_program\")",
+          "label": "pending",
+          "line": 140,
+          "path": "erpnext/accounts/doctype/loyalty_program/loyalty_program.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "07e5c90c353785062be7af5caf12e227233b296ae8470f06d014b01df3cf8b8e",
+          "context": "923: @frappe.whitelist(allow_guest=True)\n924: def get_all_languages(with_language_name: bool = False) -> list:\n925: \t\"\"\"Return all enabled language codes ar, ch etc.\"\"\"\n926: \n927: \tdef get_all_language_with_name():\n928: \t\treturn frappe.get_all(\"Language\", [\"language_code\", \"language_name\"], {\"enabled\": 1})\n929: \n930: \tif with_language_name:\n931: \t\treturn frappe.cache.get_value(\"languages_with_name\", get_all_language_with_name)\n932: \telse:\n933: \t\tlanguages = frappe.client_cache.get_value(\"languages\")\n934: \t\tif not languages:\n935: \t\t\tlanguages = frappe.get_all(\"Language\", filters={\"enabled\": 1}, pluck=\"name\")\n936: \t\t\tfrappe.client_cache.set_value(\"languages\", languages)\n937: \t\treturn languages\n938: \n939: \n940: def get_preferred_language_cookie():\n941: \treturn frappe.request.cookies.get(\"preferred_language\")\n942: \n943: \n944: def get_translated_doctypes():\n945: \tdts = frappe.get_all(\"DocType\", {\"translated_doctype\": 1}, pluck=\"name\")\n946: \tcustom_dts = frappe.get_all(\n947: \t\t\"Property Setter\", {\"property\": \"translated_doctype\", \"value\": \"1\"}, pluck=\"doc_type\"",
+          "label": "pending",
+          "line": 935,
+          "path": "frappe/translate.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "090f2fa5393c107975bc8fae2239c4301650a86613fd5d8b8e1d7da1da27fcf2",
+          "context": "385: \n386: \twb.save(file_path)\n387: \treturn True\n388: \n389: \n390: @frappe.whitelist()\n391: def get_import_status(docname):\n392: \timport_status = {}\n393: \n394: \tdata_import = frappe.get_doc(\"Bank Statement Import\", docname)\n395: \timport_status[\"status\"] = data_import.status\n396: \n397: \tlogs = frappe.get_all(\n398: \t\t\"Data Import Log\",\n399: \t\tfields=[{\"COUNT\": \"*\", \"as\": \"count\"}, \"success\"],\n400: \t\tfilters={\"data_import\": docname},\n401: \t\tgroup_by=\"success\",\n402: \t)\n403: \n404: \ttotal_payload_count = 0\n405: \n406: \tfor log in logs:\n407: \t\ttotal_payload_count += log.get(\"count\", 0)\n408: \t\tif log.get(\"success\"):\n409: \t\t\timport_status[\"success\"] = log.get(\"count\")\n410: \t\telse:\n411: \t\t\timport_status[\"failed\"] = log.get(\"count\")\n412: \n413: \timport_status[\"total_records\"] = total_payload_count\n414: ",
+          "label": "pending",
+          "line": 397,
+          "path": "erpnext/accounts/doctype/bank_statement_import/bank_statement_import.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0978a95690a212e2c9b1bcae5938e3f002c68d1252355c3cf0b7669d1edc7755",
+          "context": "182: def get_voucher_type(doctype, txt, searchfield, start, page_len, filters):\n183: \tchild_doctypes = frappe.get_all(\n184: \t\t\"DocField\",\n185: \t\tfilters={\"fieldname\": \"serial_and_batch_bundle\"},\n186: \t\tfields=[\"parent\"],\n187: \t\tdistinct=True,\n188: \t)\n189: \n190: \tquery_filters = {\"options\": [\"in\", [d.parent for d in child_doctypes]]}\n191: \tif txt:\n192: \t\tquery_filters[\"parent\"] = [\"like\", f\"%{txt}%\"]\n193: \n194: \treturn frappe.get_all(\"DocField\", filters=query_filters, fields=[\"parent\"], as_list=True, distinct=True)\n195: \n196: \n197: @frappe.whitelist()\n198: @frappe.validate_and_sanitize_search_inputs\n199: def get_serial_nos(doctype, txt, searchfield, start, page_len, filters):\n200: \tquery_filters = {}\n201: \n202: \tif txt:\n203: \t\tquery_filters[\"serial_no\"] = [\"like\", f\"%{txt}%\"]\n204: \n205: \tif filters.get(\"voucher_no\"):\n206: \t\tserial_batch_bundle = frappe.get_cached_value(",
+          "label": "pending",
+          "line": 194,
+          "path": "erpnext/stock/report/serial_and_batch_summary/serial_and_batch_summary.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0d86de9bf7c76780816ed807a580cbc2d2a61731f82975bcc33b1b864bd9fd69",
+          "context": "264: def download_import_log(data_import_name: str):\n265: \tdata_import: DataImport = frappe.get_doc(\"Data Import\", data_import_name)\n266: \tdata_import.check_permission(\"read\")\n267: \tdata_import.download_import_log()\n268: \n269: \n270: @frappe.whitelist()\n271: def get_import_status(data_import_name: str):\n272: \tdata_import: DataImport = frappe.get_doc(\"Data Import\", data_import_name)\n273: \tdata_import.check_permission(\"read\")\n274: \n275: \timport_status = {\"status\": data_import.status}\n276: \tlogs = frappe.get_all(\n277: \t\t\"Data Import Log\",\n278: \t\tfields=[{\"COUNT\": \"*\", \"as\": \"count\"}, \"success\"],\n279: \t\tfilters={\"data_import\": data_import_name},\n280: \t\tgroup_by=\"success\",\n281: \t)\n282: \n283: \ttotal_payload_count = data_import.payload_count\n284: \n285: \tfor log in logs:\n286: \t\tif log.get(\"success\"):\n287: \t\t\timport_status[\"success\"] = log.get(\"count\")\n288: \t\telse:\n289: \t\t\timport_status[\"failed\"] = log.get(\"count\")\n290: \n291: \timport_status[\"total_records\"] = total_payload_count\n292: \n293: \treturn import_status",
+          "label": "pending",
+          "line": 276,
+          "path": "frappe/core/doctype/data_import/data_import.py"
+        },
+        {
+          "application": "payments",
+          "basis": "pending",
+          "case_id": "15d9a723828a8e7dfe9df17842b1c1c90c6f3c93bee262239fb2d69534b442f6",
+          "context": "198: \t\t\t{\n199: \t\t\t\t\"paymob_payment_id\": str(paymob_payment_id),\n200: \t\t\t\t\"order_id\": str(paymob_order_id),\n201: \t\t\t}\n202: \t\t)\n203: \n204: \t\tintegration_request_doc.data = frappe.as_json(integration_request_dict)\n205: \n206: \t\tif is_payment_successful:\n207: \t\t\tif capture_status == \"CAPTURED\":\n208: \t\t\t\tintegration_request_doc.status = \"Completed\"\n209: \n210: \t\t\tintegration_request_doc.save(ignore_permissions=True)\n211: \t\t\tfrappe.db.commit()\n212: \n213: \t\t\thandle_payment_success(integration_request_dict)\n214: \n215: \t\telse:\n216: \t\t\tintegration_request_doc.error = (\n217: \t\t\t\tf\"Payment Status: {payment_status}, Response Code: {txn_response_code}\"\n218: \t\t\t)\n219: \t\t\tintegration_request_doc.save(ignore_permissions=True)\n220: \t\t\tfrappe.db.commit()\n221: \t\t\tfrappe.log_error(frappe.get_traceback(), \"Paymob Payment not authorized\")\n222: ",
+          "label": "pending",
+          "line": 210,
+          "path": "payments/payment_gateways/doctype/paymob_settings/paymob_settings.py"
+        },
+        {
+          "application": "payments",
+          "basis": "pending",
+          "case_id": "1bedae4867e63782b8e5559e8868aa475c7a92892dc25cf447095741a1031dac",
+          "context": "620: \tfrappe.conf.converted_rupee_to_paisa = True\n621: \n622: \n623: @frappe.whitelist(allow_guest=True)\n624: def razorpay_subscription_callback():\n625: \ttry:\n626: \t\tdata = frappe.local.form_dict\n627: \n628: \t\tvalidate_payment_callback(data)\n629: \n630: \t\tdata.update({\"payment_gateway\": \"Razorpay\"})\n631: \n632: \t\tdoc = frappe.get_doc(\n633: \t\t\t{\n634: \t\t\t\t\"data\": json.dumps(frappe.local.form_dict),\n635: \t\t\t\t\"doctype\": \"Integration Request\",\n636: \t\t\t\t\"request_description\": \"Subscription Notification\",\n637: \t\t\t\t\"is_remote_request\": 1,\n638: \t\t\t\t\"status\": \"Queued\",\n639: \t\t\t}\n640: \t\t).insert(ignore_permissions=True)\n641: \t\tfrappe.db.commit()\n642: \n643: \t\tfrappe.enqueue(\n644: \t\t\tmethod=\"payments.payment_gateways.doctype.razorpay_settings.razorpay_settings.handle_subscription_notification\",\n645: \t\t\tqueue=\"long\",\n646: \t\t\ttimeout=600,\n647: \t\t\tis_async=True,\n648: \t\t\t**{\"doctype\": \"Integration Request\", \"docname\": doc.name},\n649: \t\t)\n650: \n651: \texcept frappe.InvalidStatusError:\n652: \t\tpass",
+          "label": "pending",
+          "line": 632,
+          "path": "payments/payment_gateways/doctype/razorpay_settings/razorpay_settings.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "21dc6f874e3ace1cfbcbed04758934a893f554c436af15dd91e846f96464000f",
+          "context": "36: @frappe.whitelist()  # nosemgrep \u2014 RC module, UI-controlled access\n37: def get_accounts_under_parent(parent_account: str) -> list[dict[str, Any]]:\n38:     \"\"\"Return all descendant accounts for the selected parent account.\"\"\"\n39:     if not parent_account:\n40:         frappe.throw(_(\"Please select a parent account first.\"))\n41: \n42:     parent_details = frappe.db.get_value(\n43:         \"Account\", parent_account, [\"lft\", \"rgt\", \"company\"], as_dict=True\n44:     )\n45:     if not parent_details:\n46:         frappe.throw(_(\"Account {0} was not found.\").format(parent_account))\n47: \n48:     child_accounts = frappe.get_all(\n49:         \"Account\",\n50:         fields=[\"name as account\", \"is_group\"],\n51:         filters={\n52:             \"lft\": [\">\", parent_details.lft],\n53:             \"rgt\": [\"<\", parent_details.rgt],\n54:             \"company\": parent_details.company,\n55:         },\n56:         order_by=\"lft asc\",\n57:         limit=0,\n58:     )\n59: \n60:     return child_accounts or []",
+          "label": "pending",
+          "line": 48,
+          "path": "karam_finance/reporting_currency/doctype/reporting_currency_settings/reporting_currency_settings.py"
+        },
+        {
+          "application": "payments",
+          "basis": "pending",
+          "case_id": "2393d8e49b6cc0ca590be39d270556a865cac90aa02faeb3997d964b7737632d",
+          "context": "207: \t\t\tif capture_status == \"CAPTURED\":\n208: \t\t\t\tintegration_request_doc.status = \"Completed\"\n209: \n210: \t\t\tintegration_request_doc.save(ignore_permissions=True)\n211: \t\t\tfrappe.db.commit()\n212: \n213: \t\t\thandle_payment_success(integration_request_dict)\n214: \n215: \t\telse:\n216: \t\t\tintegration_request_doc.error = (\n217: \t\t\t\tf\"Payment Status: {payment_status}, Response Code: {txn_response_code}\"\n218: \t\t\t)\n219: \t\t\tintegration_request_doc.save(ignore_permissions=True)\n220: \t\t\tfrappe.db.commit()\n221: \t\t\tfrappe.log_error(frappe.get_traceback(), \"Paymob Payment not authorized\")\n222: \n223: \texcept Exception:\n224: \t\tfrappe.log_error(frappe.get_traceback(), \"Paymob Callback Error\")\n225: \n226: \n227: def get_integration_request(paymob_order_id):\n228: \t\"\"\"Fetch Integration Request linked to Paymob order.\"\"\"\n229: \n230: \tintegration_requests = frappe.get_all(\n231: \t\t\"Integration Request\",",
+          "label": "pending",
+          "line": 219,
+          "path": "payments/payment_gateways/doctype/paymob_settings/paymob_settings.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "2416095f13ebd41370b15469ae7b7c0751ef9ea8e9c9e2ac2cba6fa8ba46357d",
+          "context": "3074: \t\t\tif check_if_child_table_updated(\n3075: \t\t\t\tdoc_before_update.get(table), self.get(table), child_tables[table]\n3076: \t\t\t):\n3077: \t\t\t\treturn True\n3078: \n3079: \t\treturn False\n3080: \n3081: \t@frappe.whitelist()\n3082: \tdef repost_accounting_entries(self):\n3083: \t\trepost_ledger = frappe.new_doc(\"Repost Accounting Ledger\")\n3084: \t\trepost_ledger.company = self.company\n3085: \t\trepost_ledger.append(\"vouchers\", {\"voucher_type\": self.doctype, \"voucher_no\": self.name})\n3086: \t\trepost_ledger.flags.ignore_permissions = True\n3087: \t\trepost_ledger.insert()\n3088: \t\trepost_ledger.submit()\n3089: \n3090: \tdef get_advance_payment_doctypes(self, payment_type=None) -> list:\n3091: \t\treturn _get_advance_payment_doctypes(payment_type=payment_type)\n3092: \n3093: \tdef set_transaction_currency_and_rate_in_gl_map(self, gl_entries):\n3094: \t\tfor x in gl_entries:\n3095: \t\t\tx[\"transaction_currency\"] = self.currency\n3096: \t\t\tx[\"transaction_exchange_rate\"] = self.get(\"conversion_rate\") or 1\n3097: \n3098: \tdef after_mapping(self, source_doc):",
+          "label": "pending",
+          "line": 3086,
+          "path": "erpnext/controllers/accounts_controller.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "28433537d14f760e2fc968091736483cdcb95470255a25ab04fc2ba71c5dff3e",
+          "context": "4261: \t\t\t\t\tchild_item.margin_type = \"\"\n4262: \t\t\t\t\tchild_item.margin_rate_or_amount = 0\n4263: \t\t\t\t\tchild_item.rate_with_margin = child_item.price_list_rate\n4264: \t\t\t\t\tchild_item.discount_percentage = 0\n4265: \t\t\t\t\tchild_item.discount_amount = flt(child_item.rate_with_margin) - flt(child_item.rate)\n4266: \n4267: \t\tchild_item.flags.ignore_validate_update_after_submit = True\n4268: \t\tif new_child_flag:\n4269: \t\t\tparent.load_from_db()\n4270: \t\t\tchild_item.idx = len(parent.items) + 1\n4271: \t\t\tchild_item.insert()\n4272: \t\telse:\n4273: \t\t\tchild_item.save(ignore_permissions=True)\n4274: \n4275: \tparent.reload()\n4276: \tparent.flags.ignore_validate_update_after_submit = True\n4277: \tparent.set_qty_as_per_stock_uom()\n4278: \tparent.calculate_taxes_and_totals()\n4279: \tparent.set_total_in_words()\n4280: \tif parent_doctype == \"Sales Order\" and not parent.is_subcontracted:\n4281: \t\tmake_packing_list(parent)\n4282: \t\tparent.set_gross_profit()\n4283: \tfrappe.get_cached_doc(\"Authorization Control\").validate_approving_authority(\n4284: \t\tparent.doctype, parent.company, parent.base_grand_total\n4285: \t)",
+          "label": "pending",
+          "line": 4273,
+          "path": "erpnext/controllers/accounts_controller.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "2e14bd1b95ef60bdaa135e733a9458de234264f00ee67339190374bd835308c2",
+          "context": "148: \t\tcommunications = frappe.get_all(\n149: \t\t\t\"Communication\",\n150: \t\t\tfilters={\n151: \t\t\t\t\"reference_doctype\": \"Issue\",\n152: \t\t\t\t\"reference_name\": comm_to_split_from.reference_name,\n153: \t\t\t\t\"creation\": (\">=\", comm_to_split_from.creation),\n154: \t\t\t},\n155: \t\t)\n156: \n157: \t\tfor communication in communications:\n158: \t\t\tdoc = frappe.get_doc(\"Communication\", communication.name)\n159: \t\t\tdoc.reference_name = replicated_issue.name\n160: \t\t\tdoc.save(ignore_permissions=True)\n161: \n162: \t\tfrappe.get_doc(\n163: \t\t\t{\n164: \t\t\t\t\"doctype\": \"Comment\",\n165: \t\t\t\t\"comment_type\": \"Info\",\n166: \t\t\t\t\"reference_doctype\": \"Issue\",\n167: \t\t\t\t\"reference_name\": replicated_issue.name,\n168: \t\t\t\t\"content\": \" - Split the Issue from <a href='/app/Form/Issue/{}'>{}</a>\".format(\n169: \t\t\t\t\tself.name, frappe.bold(self.name)\n170: \t\t\t\t),\n171: \t\t\t}\n172: \t\t).insert(ignore_permissions=True)",
+          "label": "pending",
+          "line": 160,
+          "path": "erpnext/support/doctype/issue/issue.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "575e68139023d0b0b882db1f03144104ec075daf1137329cdb092563e51a1b43",
+          "context": "699: \tif user_is_guest and (not wiki_page.allow_guest or wiki_settings.disable_guest_access):\n700: \t\tfrappe.local.response.http_status_code = 403\n701: \t\tfrappe.throw(_(\"You are not permitted to access this page\"), frappe.PermissionError)\n702: \n703: \tif not all([content, page_title, next_page, prev_page]):\n704: \t\tmd_content = wiki_page.content\n705: \n706: \t\tcontent = frappe.utils.md_to_html(md_content)\n707: \t\ttoc_html = wiki_page.calculate_toc_html(content) if wiki_settings.enable_table_of_contents else None\n708: \t\tpage_title = wiki_page.title\n709: \n710: \t\twiki_space_name = frappe.get_value(\"Wiki Group Item\", {\"wiki_page\": wiki_page_name}, \"parent\")\n711: \t\tsidebar_items = frappe.get_all(\n712: \t\t\t\"Wiki Group Item\",\n713: \t\t\tfilters={\"parent\": wiki_space_name, \"hide_on_sidebar\": 0},\n714: \t\t\tfields=[\"wiki_page\", \"idx\"],\n715: \t\t\torder_by=\"idx\",\n716: \t\t)\n717: \n718: \t\tcurrent_idx = next(\n719: \t\t\t(i for i, item in enumerate(sidebar_items) if item.wiki_page == wiki_page_name), -1\n720: \t\t)\n721: \t\tnext_page = prev_page = None\n722: \n723: \t\tif current_idx != -1:\n724: \t\t\tif current_idx > 0:\n725: \t\t\t\tprev_page = frappe.get_value(\n726: \t\t\t\t\t\"Wiki Page\", sidebar_items[current_idx - 1].wiki_page, [\"title\", \"route\"], as_dict=True\n727: \t\t\t\t)\n728: \t\t\tif current_idx < len(sidebar_items) - 1:",
+          "label": "pending",
+          "line": 711,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "6a9c039f0a09764fcb51c656d888fb6a09da5b8a64be7bbe1881308e5813b459",
+          "context": "6: \n7: \n8: class WikiSettings(Document):\n9: \tdef on_update(self):\n10: \t\tfor key in frappe.cache().hgetall(\"wiki_sidebar\").keys():\n11: \t\t\tfrappe.cache().hdel(\"wiki_sidebar\", key)\n12: \n13: \t\tclear_wiki_page_cache()\n14: \n15: \n16: @frappe.whitelist()\n17: def get_all_spaces():\n18: \treturn frappe.get_all(\"Wiki Space\", pluck=\"route\")\n19: \n20: \n21: @frappe.whitelist()\n22: def clear_wiki_page_cache():\n23: \tfor route in frappe.get_all(\"Wiki Page\", pluck=\"route\"):\n24: \t\tfrappe.cache().hdel(\"website_page\", route)\n25: \n26: \treturn True",
+          "label": "pending",
+          "line": 18,
+          "path": "wiki/wiki/doctype/wiki_settings/wiki_settings.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "a1e89eadbda4dd104f9f95c56fed098ba75cbbb1ef21a31c708129a1343466ad",
+          "context": "11: \t\t\tfrappe.cache().hdel(\"wiki_sidebar\", key)\n12: \n13: \t\tclear_wiki_page_cache()\n14: \n15: \n16: @frappe.whitelist()\n17: def get_all_spaces():\n18: \treturn frappe.get_all(\"Wiki Space\", pluck=\"route\")\n19: \n20: \n21: @frappe.whitelist()\n22: def clear_wiki_page_cache():\n23: \tfor route in frappe.get_all(\"Wiki Page\", pluck=\"route\"):\n24: \t\tfrappe.cache().hdel(\"website_page\", route)\n25: \n26: \treturn True",
+          "label": "pending",
+          "line": 23,
+          "path": "wiki/wiki/doctype/wiki_settings/wiki_settings.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "c511aa2c42853a4529d5c0e624b47b977b48578a7a4e025aa672e76c664866b0",
+          "context": "485: \n486: \t\tif \"filename=\" in headers:\n487: \t\t\tfilename = headers.split(\"filename=\")[-1]\n488: \n489: \t\t\t# decode filename\n490: \t\t\tif not isinstance(filename, str):\n491: \t\t\t\tfilename = str(filename, \"utf-8\")\n492: \t\telse:\n493: \t\t\tmtype = headers.split(\";\")[0]\n494: \t\t\tfilename = get_random_filename(content_type=mtype)\n495: \n496: \t\t_file = frappe.get_doc({\"doctype\": \"File\", \"file_name\": filename, \"content\": content, \"decode\": True})\n497: \t\t_file.save(ignore_permissions=True)\n498: \t\tfile_url = _file.file_url\n499: \t\tfile_ids[\"name\"] += [_file.name]\n500: \t\tif not frappe.flags.has_dataurl:\n501: \t\t\tfrappe.flags.has_dataurl = True\n502: \n503: \t\treturn f'<img src=\"{file_url}\"'\n504: \n505: \tif content and isinstance(content, str):\n506: \t\tcontent = re.sub(r'<img[^>]*src\\s*=\\s*[\"\\'](?=data:)(.*?)[\"\\']', _save_file, content)\n507: \treturn content, file_ids[\"name\"]\n508: \n509: ",
+          "label": "pending",
+          "line": 497,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "ffd4fee273cb8b9c54732edeff01701176af7a93182efa178281a9826a5ddf9f",
+          "context": "158:         if not current_number:\n159:             return None\n160: \n161:         if direction == \"next\":\n162:             filters[\"account_number\"] = [\">\", current_number]\n163:             order = \"account_number asc\"\n164:         else:\n165:             filters[\"account_number\"] = [\"<\", current_number]\n166:             order = \"account_number desc\"\n167:     else:\n168:         order = \"account_number asc\"\n169: \n170:     result = frappe.get_all(\n171:         \"Account\",\n172:         filters=filters,\n173:         fields=[\"name\"],\n174:         order_by=order,\n175:         limit=1,\n176:     )\n177:     return result[0][\"name\"] if result else None\n178: \n179: \n180: @frappe.whitelist()  # nosemgrep: frappe-missing-permission-check\n181: def journal_entry_list(\n182:     account: str,\n183:     start_date: str = \"\",\n184:     end_date: str = \"\",\n185:     party_type: str = \"\",\n186:     party: str = \"\",\n187:     show_letter: str = \"\",\n188: ) -> dict[str, list[dict[str, Any]]]:",
+          "label": "pending",
+          "line": 170,
+          "path": "karam_finance/letter_reconciliation/doctype/letter_reconciliation/letter_reconciliation.py"
+        }
+      ],
+      "claim_id": "D",
+      "title": "Whitelisted permission-bypass boundary"
+    },
+    {
+      "cases": [
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0010918e1e707557e9f43dbc37b361a6187f6391e28f35212147ee771a78e84b",
+          "context": "312: \t\t\t\tentry.name,\n313: \t\t\t\t{\n314: \t\t\t\t\t\"taxable_doctype\": entry.withholding_doctype,\n315: \t\t\t\t\t\"taxable_name\": entry.withholding_name,\n316: \t\t\t\t\t\"taxable_date\": entry.withholding_date,\n317: \t\t\t\t},\n318: \t\t\t)\n319: \n320: \t\t\t# cases where withholding amount is zero\n321: \t\t\tif entry.withholding_amount == 0:\n322: \t\t\t\tcontinue\n323: \n324: \t\t\tnew_entry = frappe.copy_doc(frappe.get_doc(DOCTYPE, **entry))\n325: \t\t\tvalues_to_update = {\n326: \t\t\t\t\"taxable_amount\": abs(entry.taxable_amount),\n327: \t\t\t\t\"withholding_amount\": 0,\n328: \t\t\t\t\"status\": \"Under Withheld\",\n329: \t\t\t\t\"under_withheld_reason\": \"\",\n330: \t\t\t\t\"taxable_doctype\": entry.withholding_doctype,\n331: \t\t\t\t\"taxable_name\": entry.withholding_name,\n332: \t\t\t\t\"taxable_date\": entry.withholding_date,\n333: \t\t\t\t\"withholding_doctype\": \"\",\n334: \t\t\t\t\"withholding_name\": \"\",\n335: \t\t\t\t\"withholding_date\": None,\n336: \t\t\t}",
+          "label": "pending",
+          "line": 324,
+          "path": "erpnext/accounts/doctype/tax_withholding_entry/tax_withholding_entry.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "002da158c916a1ffb82ba50773f90be30f1fb7f241424fe7f64bd110396d1690",
+          "context": "94: \t\tself.make_gl_entries()\n95: \n96: \tdef on_cancel(self):\n97: \t\tself.set_status(cancel=1)\n98: \t\tself.update_sales_invoice()\n99: \t\tself.make_gl_entries()\n100: \n101: \tdef set_status(self, status=None, cancel=0):\n102: \t\tif status:\n103: \t\t\tself.status = status\n104: \t\t\tself.db_set(\"status\", status)\n105: \t\t\tfor d in self.invoices:\n106: \t\t\t\tfrappe.get_doc(\"Sales Invoice\", d.sales_invoice).set_status(\n107: \t\t\t\t\tupdate=True, update_modified=False\n108: \t\t\t\t)\n109: \t\telse:\n110: \t\t\tself.status = \"Draft\"\n111: \t\t\tif self.docstatus == 1:\n112: \t\t\t\tself.status = \"Sanctioned\"\n113: \t\t\telif self.docstatus == 2:\n114: \t\t\t\tself.status = \"Cancelled\"\n115: \n116: \t\tif cancel:\n117: \t\t\tself.db_set(\"status\", self.status, update_modified=True)\n118: ",
+          "label": "pending",
+          "line": 106,
+          "path": "erpnext/accounts/doctype/invoice_discounting/invoice_discounting.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "007c3dd80176e20c9e7bed513a6fc363c9fe2f73539918c9ea8c7575a856ffe6",
+          "context": "222: \t\"\"\"\n223: \n224: \tin_progress_logs = frappe.db.get_all(\n225: \t\t\"BOM Update Log\",\n226: \t\t{\"update_type\": \"Update Cost\", \"status\": \"In Progress\"},\n227: \t\t[\"name\", \"processed_boms\", \"current_level\"],\n228: \t)\n229: \tif not in_progress_logs:\n230: \t\treturn\n231: \n232: \tfor log in in_progress_logs:\n233: \t\t# check if all log batches of current level are processed\n234: \t\tbom_batches = frappe.db.get_all(\n235: \t\t\t\"BOM Update Batch\",\n236: \t\t\t{\"parent\": log.name, \"level\": log.current_level},\n237: \t\t\t[\"name\", \"boms_updated\", \"status\"],\n238: \t\t)\n239: \t\tincomplete_level = any(row.get(\"status\") == \"Pending\" for row in bom_batches)\n240: \t\tif not bom_batches or incomplete_level:\n241: \t\t\tcontinue\n242: \n243: \t\t# Prep parent BOMs & updated processed BOMs for next level\n244: \t\tcurrent_boms, processed_boms = get_processed_current_boms(log, bom_batches)\n245: \t\tparent_boms = get_next_higher_level_boms(child_boms=current_boms, processed_boms=processed_boms)\n246: ",
+          "label": "pending",
+          "line": 234,
+          "path": "erpnext/manufacturing/doctype/bom_update_log/bom_update_log.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0132a3d4ae50c60b5eaf9cfd5bd332fa56591e0f3eac751196ecd8c8278e0019",
+          "context": "746: \n747: \t\tfor movement in movements:\n748: \t\t\tmovement = frappe.get_doc(\"Asset Movement\", movement.get(\"name\"))\n749: \t\t\tmovement.cancel()\n750: \n751: \tdef delete_depreciation_entries(self):\n752: \t\tif self.calculate_depreciation:\n753: \t\t\tfor row in self.get(\"finance_books\"):\n754: \t\t\t\tdepr_schedule = get_depr_schedule(self.name, \"Active\", row.finance_book)\n755: \n756: \t\t\t\tfor d in depr_schedule or []:\n757: \t\t\t\t\tif d.journal_entry:\n758: \t\t\t\t\t\tfrappe.get_doc(\"Journal Entry\", d.journal_entry).cancel()\n759: \t\telse:\n760: \t\t\tdepr_entries = self.get_manual_depreciation_entries()\n761: \n762: \t\t\tfor depr_entry in depr_entries or []:\n763: \t\t\t\tfrappe.get_doc(\"Journal Entry\", depr_entry.name).cancel()\n764: \n765: \t\t\tself.db_set(\n766: \t\t\t\t\"value_after_depreciation\",\n767: \t\t\t\t(flt(self.net_purchase_amount) - flt(self.opening_accumulated_depreciation)),\n768: \t\t\t)\n769: \n770: \tdef set_status(self, status=None):",
+          "label": "pending",
+          "line": 758,
+          "path": "erpnext/assets/doctype/asset/asset.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "014451531230004669e6de04ef8f1526c5b053441710021b95af26e76b9ab338",
+          "context": "544: \t\t\t\t\t\t\tfor fb_row in asset.get(\"finance_books\"):\n545: \t\t\t\t\t\t\t\tif fb_row.finance_book == self.finance_book:\n546: \t\t\t\t\t\t\t\t\tfb_idx = fb_row.idx\n547: \t\t\t\t\t\t\t\t\tbreak\n548: \n549: \t\t\t\t\t\tfb_row = asset.get(\"finance_books\")[fb_idx - 1]\n550: \t\t\t\t\t\tfb_row.value_after_depreciation += d.debit\n551: \t\t\t\t\t\tfb_row.db_update()\n552: \t\t\t\tasset.db_set(\"value_after_depreciation\", asset.value_after_depreciation + d.debit)\n553: \t\t\t\tasset.set_status()\n554: \t\t\t\tasset.set_total_booked_depreciations()\n555: \t\t\telif self.voucher_type == \"Journal Entry\" and d.reference_type == \"Asset\" and d.reference_name:\n556: \t\t\t\tjournal_entry_for_scrap = frappe.db.get_value(\n557: \t\t\t\t\t\"Asset\", d.reference_name, \"journal_entry_for_scrap\"\n558: \t\t\t\t)\n559: \n560: \t\t\t\tif journal_entry_for_scrap == self.name:\n561: \t\t\t\t\tfrappe.throw(\n562: \t\t\t\t\t\t_(\"Journal Entry for Asset scrapping cannot be cancelled. Please restore the Asset.\")\n563: \t\t\t\t\t)\n564: \n565: \tdef unlink_inter_company_jv(self):\n566: \t\tif self.voucher_type == \"Inter Company Journal Entry\" and self.inter_company_journal_entry_reference:\n567: \t\t\tfrappe.db.set_value(\n568: \t\t\t\t\"Journal Entry\",",
+          "label": "pending",
+          "line": 556,
+          "path": "erpnext/accounts/doctype/journal_entry/journal_entry.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "014ff250f81cce69adf555be7080b61a3dca07fbea7ac7ba9cf6313400318d5c",
+          "context": "709: \t\t\t\tand base_net_total = 0\n710: \t\t\t\tand name in %(ref_docs)s\n711: \t\t\"\"\",\n712: \t\t\t{\"ref_docs\": ref_docs},\n713: \t\t)\n714: \n715: \t\tif zero_amount_refdocs:\n716: \t\t\tself.update_billing_status(zero_amount_refdocs, ref_dt, ref_fieldname)\n717: \n718: \tdef update_billing_status(self, zero_amount_refdoc, ref_dt, ref_fieldname):\n719: \t\tfor ref_dn in zero_amount_refdoc:\n720: \t\t\tref_doc_qty = flt(\n721: \t\t\t\tfrappe.db.sql(\n722: \t\t\t\t\t\"\"\"select ifnull(sum(qty), 0) from `tab{} Item`\n723: \t\t\t\twhere parent={}\"\"\".format(ref_dt, \"%s\"),\n724: \t\t\t\t\t(ref_dn),\n725: \t\t\t\t)[0][0]\n726: \t\t\t)\n727: \n728: \t\t\tbilled_qty = flt(\n729: \t\t\t\tfrappe.db.sql(\n730: \t\t\t\t\t\"\"\"select ifnull(sum(qty), 0)\n731: \t\t\t\tfrom `tab{} Item` where {}={} and docstatus=1\"\"\".format(self.doctype, ref_fieldname, \"%s\"),\n732: \t\t\t\t\t(ref_dn),\n733: \t\t\t\t)[0][0]\n734: \t\t\t)\n735: \n736: \t\t\tper_billed = safe_div(min(ref_doc_qty, billed_qty), ref_doc_qty) * 100\n737: ",
+          "label": "pending",
+          "line": 721,
+          "path": "erpnext/controllers/status_updater.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0171098a96d3df90400c57a4ddc9e3cbffcceb42d8459bee4e6b183372bf42ed",
+          "context": "521: \tfields = [\"name as value\", \"employee_name as title\"]\n522: \n523: \tif is_root:\n524: \t\tparent = \"\"\n525: \tif parent and company and parent != company:\n526: \t\tfilters.append([\"reports_to\", \"=\", parent])\n527: \telse:\n528: \t\tfilters.append([\"reports_to\", \"=\", \"\"])\n529: \n530: \temployees = frappe.get_list(doctype, fields=fields, filters=filters, order_by=\"name\")\n531: \n532: \tfor employee in employees:\n533: \t\tis_expandable = frappe.get_all(doctype, filters=[[\"reports_to\", \"=\", employee.get(\"value\")]])\n534: \t\temployee.expandable = 1 if is_expandable else 0\n535: \n536: \treturn employees\n537: \n538: \n539: def on_doctype_update():\n540: \tfrappe.db.add_index(\"Employee\", [\"lft\", \"rgt\"])\n541: \n542: \n543: def has_user_permission_for_employee(user_name, employee_name):\n544: \treturn frappe.db.exists(\n545: \t\t{",
+          "label": "pending",
+          "line": 533,
+          "path": "erpnext/setup/doctype/employee/employee.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "01a0debe1125f79223e87d6ebf264ec36f0ce0ba715395173859963584df398d",
+          "context": "50: \t\t\tdoc.flags.ignore_mandatory = True\n51: \t\t\tdoc.insert(ignore_permissions=True)\n52: \n53: \n54: def set_single_defaults():\n55: \tfor dt in (\n56: \t\t\"Accounts Settings\",\n57: \t\t\"Print Settings\",\n58: \t\t\"Buying Settings\",\n59: \t\t\"Selling Settings\",\n60: \t\t\"Stock Settings\",\n61: \t):\n62: \t\tdefault_values = frappe.db.sql(\n63: \t\t\t\"\"\"select fieldname, `default` from `tabDocField`\n64: \t\t\twhere parent=%s\"\"\",\n65: \t\t\tdt,\n66: \t\t)\n67: \t\tif default_values:\n68: \t\t\ttry:\n69: \t\t\t\tdoc = frappe.get_doc(dt, dt)\n70: \t\t\t\tfor fieldname, value in default_values:\n71: \t\t\t\t\tdoc.set(fieldname, value)\n72: \t\t\t\tdoc.flags.ignore_mandatory = True\n73: \t\t\t\tdoc.save()\n74: \t\t\texcept frappe.ValidationError:\n75: \t\t\t\tpass\n76: \n77: \tsetup_currency_exchange()\n78: ",
+          "label": "pending",
+          "line": 62,
+          "path": "erpnext/setup/install.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "01af54dd606e11c712c33221b25f83920f31bd03e8a47b12d55c6a3354628efd",
+          "context": "794: \n795: \n796: def trigger_notifications(doc, method=None):\n797: \tif frappe.flags.in_import or frappe.flags.in_patch:\n798: \t\t# don't send notifications while syncing or patching\n799: \t\treturn\n800: \n801: \tif method == \"daily\":\n802: \t\tdoc_list = frappe.get_all(\n803: \t\t\t\"Notification\", filters={\"event\": (\"in\", (\"Days Before\", \"Days After\")), \"enabled\": 1}\n804: \t\t)\n805: \t\tfor d in doc_list:\n806: \t\t\talert = frappe.get_doc(\"Notification\", d.name)\n807: \n808: \t\t\tfor doc in alert.get_documents_for_today():\n809: \t\t\t\tevaluate_alert(doc, alert, alert.event)\n810: \t\t\t\t#  this is the end of the transaction in the alert trigger stack\n811: \t\t\t\tfrappe.db.commit()  # nosemgrep\n812: \n813: \telif method == \"offset\":\n814: \t\tdoc_list = frappe.get_all(\n815: \t\t\t\"Notification\", filters={\"event\": (\"in\", (\"Minutes Before\", \"Minutes After\")), \"enabled\": 1}\n816: \t\t)\n817: \t\tfor d in doc_list:\n818: \t\t\talert = frappe.get_doc(\"Notification\", d.name)",
+          "label": "pending",
+          "line": 806,
+          "path": "frappe/email/doctype/notification/notification.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "020c3844dc05dd4e78c6598d65ab35ef0dade00baa5b57657ab57c698f3ae93e",
+          "context": "181: \t\t\t\t\t\tlink = frappe.db.get_value(\n182: \t\t\t\t\t\t\t\"DocType Link\",\n183: \t\t\t\t\t\t\t{\n184: \t\t\t\t\t\t\t\t\"parent\": doc_type,\n185: \t\t\t\t\t\t\t\t\"link_doctype\": d.get(\"link_doctype\"),\n186: \t\t\t\t\t\t\t\t\"link_fieldname\": d.get(\"link_fieldname\"),\n187: \t\t\t\t\t\t\t},\n188: \t\t\t\t\t\t)\n189: \t\t\t\t\t\tif not link:\n190: \t\t\t\t\t\t\td[\"owner\"] = \"Administrator\"\n191: \t\t\t\t\t\t\t_insert(d)\n192: \t\t\t\t\t\telse:\n193: \t\t\t\t\t\t\tdoc_link = frappe.get_doc(\"DocType Link\", link)\n194: \t\t\t\t\t\t\tdoc_link.flags.ignore_validate = True\n195: \t\t\t\t\t\t\tdoc_link.update(d)\n196: \t\t\t\t\t\t\tdoc_link.db_update()\n197: \t\t\t\tcase \"Property Setter\":\n198: \t\t\t\t\t# Property setter implement their own deduplication, we can just sync them as is\n199: \t\t\t\t\tfor d in data[key]:\n200: \t\t\t\t\t\tif d.get(\"doc_type\") == doc_type:\n201: \t\t\t\t\t\t\td[\"doctype\"] = \"Property Setter\"\n202: \t\t\t\t\t\t\tdoc = frappe.get_doc(d)\n203: \t\t\t\t\t\t\tdoc.flags.validate_fields_for_doctype = False\n204: \t\t\t\t\t\t\tdoc.insert()\n205: \t\t\t\tcase \"Custom DocPerm\":",
+          "label": "pending",
+          "line": 193,
+          "path": "frappe/modules/utils.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "02321ce635f8282e24d183f38d9136a31d86b800fc4dabaa9cff64cc011a410c",
+          "context": "139: \t\t\t\tstanding = frappe.db.get_value(\"Supplier Scorecard\", d.supplier, \"status\")\n140: \t\t\t\tfrappe.msgprint(\n141: \t\t\t\t\t_(\n142: \t\t\t\t\t\t\"{0} currently has a {1} Supplier Scorecard standing, and RFQs to this supplier should be issued with caution.\"\n143: \t\t\t\t\t).format(d.supplier, standing),\n144: \t\t\t\t\ttitle=_(\"Caution\"),\n145: \t\t\t\t\tindicator=\"orange\",\n146: \t\t\t\t)\n147: \n148: \tdef update_email_id(self):\n149: \t\tfor rfq_supplier in self.suppliers:\n150: \t\t\tif not rfq_supplier.email_id:\n151: \t\t\t\trfq_supplier.email_id = frappe.db.get_value(\"Contact\", rfq_supplier.contact, \"email_id\")\n152: \n153: \tdef validate_email_id(self, args):\n154: \t\tif not args.email_id:\n155: \t\t\tfrappe.throw(\n156: \t\t\t\t_(\"Row {0}: For Supplier {1}, Email Address is Required to send an email\").format(\n157: \t\t\t\t\targs.idx, frappe.bold(args.supplier)\n158: \t\t\t\t)\n159: \t\t\t)\n160: \n161: \tdef on_submit(self):\n162: \t\tself.db_set(\"status\", \"Submitted\")\n163: \t\tfor supplier in self.suppliers:",
+          "label": "pending",
+          "line": 151,
+          "path": "erpnext/buying/doctype/request_for_quotation/request_for_quotation.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "026642e3f18878829ceefd3a289b7e6bea91540a1cb86888c18bd8472dc9d645",
+          "context": "17: \t\t\t\"name\",\n18: \t\t\t\"project_name\",\n19: \t\t\t\"status\",\n20: \t\t\t\"percent_complete\",\n21: \t\t\t\"expected_start_date\",\n22: \t\t\t\"expected_end_date\",\n23: \t\t\t\"project_type\",\n24: \t\t],\n25: \t\torder_by=\"expected_end_date\",\n26: \t)\n27: \n28: \tfor project in data:\n29: \t\tproject[\"total_tasks\"] = frappe.db.count(\"Task\", filters={\"project\": project.name})\n30: \t\tproject[\"completed_tasks\"] = frappe.db.count(\n31: \t\t\t\"Task\", filters={\"project\": project.name, \"status\": \"Completed\"}\n32: \t\t)\n33: \t\tproject[\"overdue_tasks\"] = frappe.db.count(\n34: \t\t\t\"Task\", filters={\"project\": project.name, \"status\": \"Overdue\"}\n35: \t\t)\n36: \n37: \tchart = get_chart_data(data)\n38: \treport_summary = get_report_summary(data)\n39: \n40: \treturn columns, data, None, chart, report_summary\n41: ",
+          "label": "pending",
+          "line": 29,
+          "path": "erpnext/projects/report/project_summary/project_summary.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "02770a6d1cb42de859be8521a19c084d922737b4865b3afaea14057e955dfe4e",
+          "context": "125: \t\t\t\t\t`tabCommunication`\n126: \t\t\t\tWHERE\n127: \t\t\t\t\trecipients  = %s\n128: \t\t\t\tORDER BY\n129: \t\t\t\t\tcommunication_date\n130: \t\t\t\tLIMIT 1\n131: \t\t\t\"\"\",\n132: \t\t\t(d.contact_email),\n133: \t\t)[0][0]\n134: \n135: \t\tduration = flt(date_diff(invoice[0][0], first_contact))\n136: \n137: \t\tsupport_tickets = len(frappe.db.get_all(\"Issue\", {\"raised_by\": d.contact_email}))\n138: \t\tcommunication_list.append(\n139: \t\t\t{\n140: \t\t\t\t\"customer\": d.customer_name,\n141: \t\t\t\t\"interactions\": communication_count,\n142: \t\t\t\t\"duration\": duration,\n143: \t\t\t\t\"support_tickets\": support_tickets,\n144: \t\t\t}\n145: \t\t)\n146: \treturn communication_list",
+          "label": "pending",
+          "line": 137,
+          "path": "erpnext/crm/report/lead_conversion_time/lead_conversion_time.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "02bc20a0585d5c70caaf11725d2d3df86b0a26dd3326423afcf2b5e1e0f16f76",
+          "context": "224: \t\tfilters={\"public\": 1, \"name\": [\"!=\", \"Welcome Workspace\"]},\n225: \t\tfields=[\"name\", \"icon\", \"app\", \"module\"],\n226: \t)\n227: \n228: \tfor w in workspaces:\n229: \t\ticon = frappe.new_doc(\"Desktop Icon\")\n230: \t\ticon.link_type = \"Workspace Sidebar\"\n231: \t\ticon.label = w.name\n232: \t\ticon.icon_type = \"Link\"\n233: \t\ticon.link_to = w.name\n234: \t\ticon.icon = w.icon\n235: \t\tif w.module:\n236: \t\t\tapp_name = w.app or frappe.db.get_value(\"Module Def\", w.module, \"app_name\")\n237: \t\t\tif app_name in frappe.get_installed_apps():\n238: \t\t\t\ticon.app_name = app_name\n239: \t\t\t\tapp_title = frappe.get_hooks(\"app_title\", app_name=app_name)[0]\n240: \t\t\t\tapp_icon = frappe.db.exists(\"Desktop Icon\", {\"label\": app_title, \"icon_type\": \"App\"})\n241: \t\t\t\tif app_icon:\n242: \t\t\t\t\ticon.parent_icon = app_icon\n243: \n244: \t\t\t\tapp_icon_link = frappe.db.get_value(\"Desktop Icon\", app_icon, \"link\") if app_icon else None\n245: \n246: \t\t\t\t# Portal App With Desk Workspace\n247: \t\t\t\tif app_icon_link and not app_icon_link.startswith(\"/app\"):\n248: \t\t\t\t\ticon.hidden = 1",
+          "label": "pending",
+          "line": 236,
+          "path": "frappe/desk/doctype/desktop_icon/desktop_icon.py"
+        },
+        {
+          "application": "payments",
+          "basis": "pending",
+          "case_id": "0323a3d8882d85c6aa5b4e550edd3265e3104bb16aa4cc799ca77e9d9e312ed2",
+          "context": "537: \t\t\t\t\tresp = make_post_request(\n538: \t\t\t\t\t\t\"https://api.razorpay.com/v1/payments/{}/capture\".format(\n539: \t\t\t\t\t\t\tdata.get(\"razorpay_payment_id\")\n540: \t\t\t\t\t\t),\n541: \t\t\t\t\t\tauth=(settings.api_key, settings.api_secret),\n542: \t\t\t\t\t\tdata={\"amount\": data.get(\"amount\")},\n543: \t\t\t\t\t)\n544: \n545: \t\t\tif resp.get(\"status\") == \"captured\":\n546: \t\t\t\tfrappe.db.set_value(\"Integration Request\", doc.name, \"status\", \"Completed\")\n547: \n548: \t\texcept Exception:\n549: \t\t\tdoc = frappe.get_doc(\"Integration Request\", doc.name)\n550: \t\t\tdoc.status = \"Failed\"\n551: \t\t\tdoc.error = frappe.get_traceback()\n552: \t\t\tdoc.save()\n553: \t\t\tfrappe.log_error(doc.error, f\"{doc.name} Failed\")\n554: \n555: \n556: @frappe.whitelist(allow_guest=True)\n557: def get_api_key():\n558: \tcontroller = frappe.get_doc(\"Razorpay Settings\")\n559: \treturn controller.api_key\n560: \n561: ",
+          "label": "pending",
+          "line": 549,
+          "path": "payments/payment_gateways/doctype/razorpay_settings/razorpay_settings.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "04f10e07071e37bdcfd22480e216f59fb99cd5eecc9f717a1864acb7f306235a",
+          "context": "584: \telif not frappe.has_permission(doctype=\"Wiki Page Patch\", ptype=\"submit\", throw=False):\n585: \t\tout.route = \"contributions\"\n586: \telif hasattr(patch, \"new_wiki_page\"):\n587: \t\tout.route = patch.new_wiki_page.route\n588: \telse:\n589: \t\tout.route = patch.wiki_page_doc.route\n590: \n591: \treturn out\n592: \n593: \n594: def update_file_links(file_ids, patch_name):\n595: \tfor file_id in file_ids:\n596: \t\tfile = frappe.get_doc(\"File\", file_id)\n597: \t\tfile.attached_to_doctype = \"Wiki Page Patch\"\n598: \t\tfile.attached_to_name = patch_name\n599: \t\tfile.save()\n600: \n601: \n602: def get_source_generator(resolved_route, jenv):\n603: \tpath = resolved_route.controller.split(\".\")\n604: \tpath[-1] = \"templates\"\n605: \tpath.append(path[-2] + \".html\")\n606: \tpath = \"/\".join(path)\n607: \treturn jenv.loader.get_source(jenv, path)[0]\n608: ",
+          "label": "pending",
+          "line": 596,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "payments",
+          "basis": "pending",
+          "case_id": "04fe1caac134fe643fdd9911494416998e0eabe4a4c3c1c1b2c2a79621ce5689",
+          "context": "28: \t\t\t\t_(\"Server Error\"),\n29: \t\t\t\t_(\n30: \t\t\t\t\t\"It seems that there is an issue with the server's stripe configuration. In case of failure, the amount will get refunded to your account.\"\n31: \t\t\t\t),\n32: \t\t\t),\n33: \t\t\t\"status\": 401,\n34: \t\t}\n35: \n36: \n37: def create_subscription_on_stripe(stripe_settings):\n38: \titems = []\n39: \tfor payment_plan in stripe_settings.payment_plans:\n40: \t\tplan = frappe.db.get_value(\"Subscription Plan\", payment_plan.plan, \"product_price_id\")\n41: \t\titems.append({\"price\": plan, \"quantity\": payment_plan.qty})\n42: \n43: \ttry:\n44: \t\tcustomer = stripe.Customer.create(\n45: \t\t\tsource=stripe_settings.data.stripe_token_id,\n46: \t\t\tdescription=stripe_settings.data.payer_name,\n47: \t\t\temail=stripe_settings.data.payer_email,\n48: \t\t)\n49: \n50: \t\tsubscription = stripe.Subscription.create(customer=customer, items=items)\n51: \n52: \t\tif subscription.status == \"active\":",
+          "label": "pending",
+          "line": 40,
+          "path": "payments/payment_gateways/stripe_integration.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0608d8d9091205ef8291343d2f99d299fe7d9e3e91c398812571a7a8aa7c3b86",
+          "context": "274: \n275: \t\tje.append(\n276: \t\t\t\"accounts\",\n277: \t\t\t{\n278: \t\t\t\t\"account\": self.bank_account,\n279: \t\t\t\t\"credit_in_account_currency\": flt(self.total_amount),\n280: \t\t\t\t\"cost_center\": erpnext.get_default_cost_center(self.company),\n281: \t\t\t},\n282: \t\t)\n283: \n284: \t\tif getdate(self.loan_end_date) > getdate(nowdate()):\n285: \t\t\tfor d in self.invoices:\n286: \t\t\t\toutstanding_amount = frappe.db.get_value(\n287: \t\t\t\t\t\"Sales Invoice\", d.sales_invoice, \"outstanding_amount\"\n288: \t\t\t\t)\n289: \t\t\t\tif flt(outstanding_amount) > 0:\n290: \t\t\t\t\tje.append(\n291: \t\t\t\t\t\t\"accounts\",\n292: \t\t\t\t\t\t{\n293: \t\t\t\t\t\t\t\"account\": self.accounts_receivable_discounted,\n294: \t\t\t\t\t\t\t\"credit_in_account_currency\": flt(outstanding_amount),\n295: \t\t\t\t\t\t\t\"cost_center\": erpnext.get_default_cost_center(self.company),\n296: \t\t\t\t\t\t\t\"reference_type\": \"Invoice Discounting\",\n297: \t\t\t\t\t\t\t\"reference_name\": self.name,\n298: \t\t\t\t\t\t\t\"party_type\": \"Customer\",",
+          "label": "pending",
+          "line": 286,
+          "path": "erpnext/accounts/doctype/invoice_discounting/invoice_discounting.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "06a5f97081552d7c0372fa281c584f5e1f21a00e0f6e57d9057cf583713016d5",
+          "context": "87: \n88: def delete_contact_and_address(doctype: str, docname: str) -> None:\n89: \tfor parenttype in (\"Contact\", \"Address\"):\n90: \t\tfor name in frappe.get_all(\n91: \t\t\t\"Dynamic Link\",\n92: \t\t\tfilters={\n93: \t\t\t\t\"parenttype\": parenttype,\n94: \t\t\t\t\"link_doctype\": doctype,\n95: \t\t\t\t\"link_name\": docname,\n96: \t\t\t},\n97: \t\t\tpluck=\"parent\",\n98: \t\t):\n99: \t\t\tdoc = frappe.get_doc(parenttype, name)\n100: \t\t\tif len(doc.links) == 1:\n101: \t\t\t\tdoc.delete()\n102: \t\t\telse:\n103: \t\t\t\tfor link in doc.links:\n104: \t\t\t\t\tif link.link_doctype == doctype and link.link_name == docname:\n105: \t\t\t\t\t\tdoc.remove(link)\n106: \t\t\t\t\t\tdoc.save()\n107: \t\t\t\t\t\tbreak\n108: \n109: \n110: @frappe.whitelist()\n111: @frappe.validate_and_sanitize_search_inputs",
+          "label": "pending",
+          "line": 99,
+          "path": "frappe/contacts/address_and_contact.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "08a759d8833cf16436963eda2f49453d65662c78477c3836ccc0f9ef0f9213a2",
+          "context": "4005: \t\t\t\tstock_bin = get_bin(item_code, reserve_warehouse)\n4006: \t\t\t\tstock_bin.update_reserved_qty_for_sub_contracting()\n4007: \n4008: \tdef update_transferred_qty(self):\n4009: \t\tif self.purpose == \"Material Transfer\" and self.outgoing_stock_entry:\n4010: \t\t\tstock_entries = {}\n4011: \t\t\tstock_entries_child_list = []\n4012: \t\t\tfor d in self.items:\n4013: \t\t\t\tif not (d.against_stock_entry and d.ste_detail):\n4014: \t\t\t\t\tcontinue\n4015: \n4016: \t\t\t\tstock_entries_child_list.append(d.ste_detail)\n4017: \t\t\t\ttransferred_qty = frappe.get_all(\n4018: \t\t\t\t\t\"Stock Entry Detail\",\n4019: \t\t\t\t\tfields=[{\"SUM\": \"transfer_qty\", \"as\": \"qty\"}],\n4020: \t\t\t\t\tfilters={\n4021: \t\t\t\t\t\t\"against_stock_entry\": d.against_stock_entry,\n4022: \t\t\t\t\t\t\"ste_detail\": d.ste_detail,\n4023: \t\t\t\t\t\t\"docstatus\": 1,\n4024: \t\t\t\t\t},\n4025: \t\t\t\t)\n4026: \n4027: \t\t\t\tif d.docstatus == 1:\n4028: \t\t\t\t\ttransfer_qty = frappe.get_value(\"Stock Entry Detail\", d.ste_detail, \"transfer_qty\")\n4029: ",
+          "label": "pending",
+          "line": 4017,
+          "path": "erpnext/stock/doctype/stock_entry/stock_entry.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0a4261ad08d99427843c431342dfc63c2fe204e7e4130d1be94243a781ef6ee1",
+          "context": "381: \n382: \tlinks = [\n383: \t\t{\"link_doctype\": d.get(\"link_doctype\"), \"link_name\": d.get(\"link_name\")} for d in json.loads(links)\n384: \t]\n385: \tresult = []\n386: \n387: \tfor link in links:\n388: \t\tif not frappe.has_permission(\n389: \t\t\tdoctype=link.get(\"link_doctype\"), ptype=\"read\", doc=link.get(\"link_name\")\n390: \t\t):\n391: \t\t\tcontinue\n392: \n393: \t\tres = frappe.db.sql(\n394: \t\t\t\"\"\"\n395: \t\t\tSELECT `tabAddress`.name\n396: \t\t\tFROM `tabAddress`, `tabDynamic Link`\n397: \t\t\tWHERE `tabDynamic Link`.parenttype='Address'\n398: \t\t\t\tAND `tabDynamic Link`.parent=`tabAddress`.name\n399: \t\t\t\tAND `tabDynamic Link`.link_doctype = %(link_doctype)s\n400: \t\t\t\tAND `tabDynamic Link`.link_name = %(link_name)s\n401: \t\t\"\"\",\n402: \t\t\t{\n403: \t\t\t\t\"link_doctype\": link.get(\"link_doctype\"),\n404: \t\t\t\t\"link_name\": link.get(\"link_name\"),\n405: \t\t\t},\n406: \t\t\tas_dict=True,\n407: \t\t)\n408: \n409: \t\tresult.extend([l.name for l in res])\n410: \n411: \treturn result\n412: \n413: \n414: def get_contact_with_phone_number(number):\n415: \tif not number:\n416: \t\treturn\n417: \n418: \tcontacts = frappe.get_all(\n419: \t\t\"Contact Phone\", filters=[[\"phone\", \"like\", f\"%{number}\"]], fields=[\"parent\"], limit=1",
+          "label": "pending",
+          "line": 393,
+          "path": "frappe/contacts/doctype/contact/contact.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0b8b3a5540209821335d9a45bdec5bebbed919198cf22983c3ceaf6261cf8d17",
+          "context": "197: \t\t\texisting_fields = (existing_fields and [e[0] for e in existing_fields]) or []\n198: \t\t\tfields_need_to_delete = set(fields) & set(existing_fields)\n199: \t\t\tif not fields_need_to_delete:\n200: \t\t\t\tcontinue\n201: \n202: \t\t\tif frappe.db.db_type == \"mariadb\":\n203: \t\t\t\t# mariadb implicitly commits before DDL, make it explicit\n204: \t\t\t\tfrappe.db.commit()\n205: \n206: \t\t\tquery = \"ALTER TABLE `tab{}` \".format(dt) + \", \".join(\n207: \t\t\t\t\"DROP COLUMN `{}`\".format(f) for f in fields_need_to_delete\n208: \t\t\t)\n209: \t\t\tfrappe.db.sql(query)\n210: \n211: \t\tif frappe.db.db_type == \"postgres\":\n212: \t\t\t# commit the results to db\n213: \t\t\tfrappe.db.commit()\n214: \n215: \n216: def get_permitted_fields(\n217: \tdoctype: str,\n218: \tparenttype: str | None = None,\n219: \tuser: str | None = None,\n220: \tpermission_type: str | None = None,\n221: \t*,",
+          "label": "pending",
+          "line": 209,
+          "path": "frappe/model/__init__.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0c07ac9ef58325b817175602786dc67bbf1e26277fb50a17115d0b0b50154af0",
+          "context": "296: \t\t\tself.start()\n297: \n298: \tdef run(self):\n299: \t\tif self._running.is_set():\n300: \t\t\treturn\n301: \t\tself._running.set()\n302: \n303: \t\tfrappe.init(self.site)\n304: \t\tfrappe.connect()\n305: \n306: \t\twhile self._running.is_set():\n307: \t\t\ttime.sleep(self.POLL_DURATION)\n308: \t\t\tqueries = frappe.db.sql(\n309: \t\t\t\t\"SELECT * FROM information_schema.PROCESSLIST WHERE ID = %s\",\n310: \t\t\t\tself.conn_id,\n311: \t\t\t\tas_dict=True,\n312: \t\t\t)\n313: \n314: \t\t\tif not queries:\n315: \t\t\t\tcontinue\n316: \n317: \t\t\tquery = frappe._dict(queries[0])\n318: \t\t\ttime_taken = query.TIME\n319: \t\t\tif not time_taken or time_taken < 5:\n320: \t\t\t\tcontinue\n321: \n322: \t\t\tmsg = []\n323: \t\t\tcommand = query.COMMAND or \"\"\n324: \t\t\tmsg.append(f\"Command: {command}\")",
+          "label": "pending",
+          "line": 308,
+          "path": "frappe/migrate.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0c62faec25c0af8865e8c8ee364d01c752fb51cf6d37e09443a41dc45de9e630",
+          "context": "708: \t\t\t\t\tand flt(d.credit) > 0\n709: \t\t\t\t\tand not self.system_generated_gain_loss()\n710: \t\t\t\t):\n711: \t\t\t\t\tfrappe.throw(\n712: \t\t\t\t\t\t_(\n713: \t\t\t\t\t\t\t\"Row #{0}: For {1}, you can select reference document only if account gets debited\"\n714: \t\t\t\t\t\t).format(d.idx, d.account)\n715: \t\t\t\t\t)\n716: \n717: \t\t\t\tif d.reference_name == self.name:\n718: \t\t\t\t\tfrappe.throw(_(\"You can not enter current voucher in 'Against Journal Entry' column\"))\n719: \n720: \t\t\t\tagainst_entries = frappe.db.sql(\n721: \t\t\t\t\t\"\"\"select * from `tabJournal Entry Account`\n722: \t\t\t\t\twhere account = %s and docstatus = 1 and parent = %s\n723: \t\t\t\t\tand (reference_type is null or reference_type in ('', 'Sales Order', 'Purchase Order'))\n724: \t\t\t\t\t\"\"\",\n725: \t\t\t\t\t(d.account, d.reference_name),\n726: \t\t\t\t\tas_dict=True,\n727: \t\t\t\t)\n728: \n729: \t\t\t\tif not against_entries:\n730: \t\t\t\t\tif self.voucher_type != \"Exchange Gain Or Loss\":\n731: \t\t\t\t\t\tfrappe.throw(\n732: \t\t\t\t\t\t\t_(\n733: \t\t\t\t\t\t\t\t\"Journal Entry {0} does not have account {1} or already matched against other voucher\"\n734: \t\t\t\t\t\t\t).format(d.reference_name, d.account)\n735: \t\t\t\t\t\t)\n736: \t\t\t\telse:\n737: \t\t\t\t\tdr_or_cr = \"debit\" if flt(d.credit) > 0 else \"credit\"\n738: \t\t\t\t\tvalid = False\n739: \t\t\t\t\tfor jvd in against_entries:",
+          "label": "pending",
+          "line": 720,
+          "path": "erpnext/accounts/doctype/journal_entry/journal_entry.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0d4f92435c8baf34742e5c708c7c19dee9773680dff654d3797ed5db5d247d13",
+          "context": "478: \t\tfieldnames = tuple(set(fieldnames))\n479: \n480: \t\tif bypass_hooks:\n481: \t\t\tfrappe.db.delete(\n482: \t\t\t\t\"Custom Field\",\n483: \t\t\t\t{\n484: \t\t\t\t\t\"fieldname\": (\"in\", fieldnames),\n485: \t\t\t\t\t\"dt\": doctype,\n486: \t\t\t\t},\n487: \t\t\t)\n488: \t\t\tfrappe.clear_cache(doctype=doctype)\n489: \t\telse:\n490: \t\t\tcustom_field_names = frappe.get_all(\n491: \t\t\t\t\"Custom Field\",\n492: \t\t\t\tfilters={\"fieldname\": (\"in\", fieldnames), \"dt\": doctype},\n493: \t\t\t\tpluck=\"name\",\n494: \t\t\t)\n495: \n496: \t\t\tfor custom_field_name in custom_field_names:\n497: \t\t\t\tfrappe.get_doc(\"Custom Field\", custom_field_name).delete(ignore_permissions=True, force=True)",
+          "label": "pending",
+          "line": 490,
+          "path": "frappe/custom/doctype/custom_field/custom_field.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0db21031ea14027415318ff2c545fc07806d9272d1d3f73a93dbd0bc7dd13dd0",
+          "context": "863: \t\t\tfor extra_item in [\n864: \t\t\t\titem\n865: \t\t\t\tfor item in items\n866: \t\t\t\tif not frappe.get_cached_value(\"Item\", item.item_code, \"is_customer_provided_item\")\n867: \t\t\t\tand (item.item_code, item.s_warehouse)\n868: \t\t\t\tnot in [(d.rm_item_code, d.warehouse) for d in data if not d.is_customer_provided_item]\n869: \t\t\t]:\n870: \t\t\t\tdoc = frappe.new_doc(\n871: \t\t\t\t\t\"Subcontracting Inward Order Received Item\",\n872: \t\t\t\t\tparent=self.subcontracting_inward_order,\n873: \t\t\t\t\tparenttype=\"Subcontracting Inward Order\",\n874: \t\t\t\t\tparentfield=\"received_items\",\n875: \t\t\t\t\tidx=frappe.db.count(\n876: \t\t\t\t\t\t\"Subcontracting Inward Order Received Item\",\n877: \t\t\t\t\t\t{\"parent\": self.subcontracting_inward_order},\n878: \t\t\t\t\t)\n879: \t\t\t\t\t+ 1,\n880: \t\t\t\t\tmain_item_code=main_item_code,\n881: \t\t\t\t\trm_item_code=extra_item.item_code,\n882: \t\t\t\t\tstock_uom=extra_item.stock_uom,\n883: \t\t\t\t\treference_name=frappe.get_cached_value(\n884: \t\t\t\t\t\t\"Work Order\", self.work_order, \"subcontracting_inward_order_item\"\n885: \t\t\t\t\t),\n886: \t\t\t\t\trequired_qty=0,\n887: \t\t\t\t\tconsumed_qty=extra_item.transfer_qty,",
+          "label": "pending",
+          "line": 875,
+          "path": "erpnext/controllers/subcontracting_inward_controller.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "0e35f3ed44ff212b6923457f4b578b8fe3efe9db9ee1e901da20f7ef71bd40c0",
+          "context": "2698: \t\t\t\"name\": kwargs.get(\"sabb_voucher_no\"),\n2699: \t\t\t\"docstatus\": (\"<\", 2),\n2700: \t\t},\n2701: \t\t\"Work Order\": {\n2702: \t\t\t\"name\": kwargs.get(\"sabb_voucher_no\"),\n2703: \t\t\t\"docstatus\": (\"<\", 2),\n2704: \t\t},\n2705: \t}.get(kwargs.get(\"sabb_voucher_type\"))\n2706: \n2707: \treserved_voucher_details = []\n2708: \tfor row in field_mapper:\n2709: \t\treserved_voucher_details.extend(\n2710: \t\t\tfrappe.get_all(\n2711: \t\t\t\trow[0],\n2712: \t\t\t\tpluck=row[1],\n2713: \t\t\t\tfilters=voucher_based_filters,\n2714: \t\t\t)\n2715: \t\t)\n2716: \n2717: \treturn reserved_voucher_details\n2718: \n2719: \n2720: def get_reserved_serial_nos_for_pos(kwargs):\n2721: \tfrom erpnext.controllers.sales_and_purchase_return import get_returned_serial_nos\n2722: ",
+          "label": "pending",
+          "line": 2710,
+          "path": "erpnext/stock/doctype/serial_and_batch_bundle/serial_and_batch_bundle.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0f7c47e83df2c3b05ccc260fcde6acb77f19194d82def9621bd20357377d5f61",
+          "context": "794: \ttags = json.loads(stats)\n795: \tfilters = json.loads(filters or [])\n796: \tstats = {}\n797: \n798: \tcolumns = frappe.db.get_table_columns(doctype)\n799: \tfor tag in tags:\n800: \t\tif tag[\"name\"] not in columns:\n801: \t\t\tcontinue\n802: \t\ttagcount = []\n803: \t\tif tag[\"type\"] not in [\"Date\", \"Datetime\"]:\n804: \t\t\tfrom frappe.query_builder import Field, functions\n805: \n806: \t\t\ttagcount = frappe.get_list(\n807: \t\t\t\tdoctype,\n808: \t\t\t\tfields=[tag[\"name\"], {\"COUNT\": \"*\"}],\n809: \t\t\t\tfilters=[*filters, functions.IfNull(Field(tag[\"name\"]), \"\") != \"\"],\n810: \t\t\t\tgroup_by=tag[\"name\"],\n811: \t\t\t\tas_list=True,\n812: \t\t\t)\n813: \n814: \t\tif tag[\"type\"] not in [\n815: \t\t\t\"Check\",\n816: \t\t\t\"Select\",\n817: \t\t\t\"Date\",\n818: \t\t\t\"Datetime\",",
+          "label": "pending",
+          "line": 806,
+          "path": "frappe/desk/reportview.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "0fa7382d9e66270904301931c21bbca76c540155f44f83a4869933998aecbf0b",
+          "context": "230: \t)\n231: \n232: \treturn new\n233: \n234: \n235: def update_assignments(old: str, new: str, doctype: str) -> None:\n236: \told_assignments = frappe.parse_json(frappe.db.get_value(doctype, old, \"_assign\")) or []\n237: \tnew_assignments = frappe.parse_json(frappe.db.get_value(doctype, new, \"_assign\")) or []\n238: \tcommon_assignments = list(set(old_assignments).intersection(new_assignments))\n239: \n240: \tfor user in common_assignments:\n241: \t\t# delete todos linked to old doc\n242: \t\ttodos = frappe.get_all(\n243: \t\t\t\"ToDo\",\n244: \t\t\t{\n245: \t\t\t\t\"owner\": user,\n246: \t\t\t\t\"reference_type\": doctype,\n247: \t\t\t\t\"reference_name\": old,\n248: \t\t\t},\n249: \t\t\t[\"name\", \"description\"],\n250: \t\t)\n251: \n252: \t\tfor todo in todos:\n253: \t\t\tfrappe.delete_doc(\"ToDo\", todo.name, force=True)\n254: ",
+          "label": "pending",
+          "line": 242,
+          "path": "frappe/model/rename_doc.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "15bc46e7ac959e449f2912b28a2c55cc5bae1e6b91ee0a9197851bd37747ac21",
+          "context": "1402: \t\tTABLES_TO_DROP = []\n1403: \t\tSTANDARD_TABLES = get_standard_tables()\n1404: \t\tinformation_schema = frappe.qb.Schema(\"information_schema\")\n1405: \t\ttable_name = frappe.qb.Field(\"table_name\").as_(\"name\")\n1406: \n1407: \t\tdatabase_tables: list[str] = (\n1408: \t\t\tfrappe.qb.from_(information_schema.tables)\n1409: \t\t\t.select(table_name)\n1410: \t\t\t.where(information_schema.tables.table_schema == frappe.conf.db_name)\n1411: \t\t\t.where(information_schema.tables.table_type == \"BASE TABLE\")\n1412: \t\t\t.run(pluck=True)\n1413: \t\t)\n1414: \t\tdoctype_tables = frappe.get_all(\"DocType\", pluck=\"name\")\n1415: \n1416: \t\tfor table_name in database_tables:\n1417: \t\t\tif not table_name.startswith(\"tab\"):\n1418: \t\t\t\tcontinue\n1419: \t\t\tif table_name.replace(\"tab\", \"\", 1) not in doctype_tables and table_name not in STANDARD_TABLES:\n1420: \t\t\t\tTABLES_TO_DROP.append(table_name)\n1421: \n1422: \t\tif not TABLES_TO_DROP:\n1423: \t\t\tif format == \"text\":\n1424: \t\t\t\tclick.secho(f\"{site}: No ghost tables\", fg=\"green\")\n1425: \t\telse:\n1426: \t\t\tif format == \"text\":",
+          "label": "pending",
+          "line": 1414,
+          "path": "frappe/commands/site.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "1a1cc664c80c6c7ba1135fc7c394edcfde597b57aaebc8e502753ec46bbab6dc",
+          "context": "326: \t\t\t\t\t\t)\n327: \t\t\t\t\t)\n328: \n329: \t\t\tif items_to_validate:\n330: \t\t\t\tpp_sub_assembly_items = [\n331: \t\t\t\t\titem.production_plan_sub_assembly_item\n332: \t\t\t\t\tfor item in items_to_validate\n333: \t\t\t\t\tif item.production_plan_sub_assembly_item\n334: \t\t\t\t]\n335: \n336: \t\t\t\tpp_subcontract_items = []\n337: \t\t\t\tif pp_sub_assembly_items:\n338: \t\t\t\t\tpp_subcontract_items = frappe.db.get_all(\n339: \t\t\t\t\t\t\"Production Plan Sub Assembly Item\",\n340: \t\t\t\t\t\tfilters={\n341: \t\t\t\t\t\t\t\"name\": (\"in\", pp_sub_assembly_items),\n342: \t\t\t\t\t\t\t\"type_of_manufacturing\": \"Subcontract\",\n343: \t\t\t\t\t\t},\n344: \t\t\t\t\t\tpluck=\"name\",\n345: \t\t\t\t\t)\n346: \n347: \t\t\t\tregular_items = []\n348: \t\t\t\tpp_items = []\n349: \n350: \t\t\t\tfor item in items_to_validate:",
+          "label": "pending",
+          "line": 338,
+          "path": "erpnext/controllers/status_updater.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "2367978d7336901de1d50e59d8a912168c8eadb6697ede590510e2308a07754b",
+          "context": "299: \t\t\t\t\t\tbreak\n300: \n301: \tdef set_default_translatable(self):\n302: \t\t\"\"\"Ensure that non-translatable never will be translatable\"\"\"\n303: \t\tfor d in self.fields:\n304: \t\t\tif d.translatable and not supports_translation(d.fieldtype):\n305: \t\t\t\td.translatable = 0\n306: \n307: \tdef check_indexing_for_dashboard_links(self):\n308: \t\t\"\"\"Enable indexing for outgoing links used in dashboard\"\"\"\n309: \t\tfor d in self.fields:\n310: \t\t\tif d.fieldtype == \"Link\" and not d.unique and not d.search_index:\n311: \t\t\t\treferred_as_link = frappe.db.exists(\n312: \t\t\t\t\t\"DocType Link\",\n313: \t\t\t\t\t{\"parent\": d.options, \"link_doctype\": self.name, \"link_fieldname\": d.fieldname},\n314: \t\t\t\t)\n315: \t\t\t\tif not referred_as_link:\n316: \t\t\t\t\tcontinue\n317: \n318: \t\t\t\tfrappe.msgprint(\n319: \t\t\t\t\t_(\"{0} should be indexed because it's referred in dashboard connections\").format(\n320: \t\t\t\t\t\t_(d.label, context=d.parent)\n321: \t\t\t\t\t),\n322: \t\t\t\t\talert=True,\n323: \t\t\t\t\tindicator=\"orange\",",
+          "label": "pending",
+          "line": 311,
+          "path": "frappe/core/doctype/doctype/doctype.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "28d686ade361a1c431243831ba260dc5a90940a3baa76fedae12f85278807e16",
+          "context": "133: \t\tfrappe._dict(\n134: \t\t\tdoctype=\"Employee\",\n135: \t\t\ttitle=_(\"Create Employee Records\"),\n136: \t\t\tdescription=_(\"Create Employee records.\"),\n137: \t\t\taction=_(\"Create Employee\"),\n138: \t\t\troute=\"List/Employee\",\n139: \t\t\ttarget=3,\n140: \t\t),\n141: \t]\n142: \n143: \tfor m in message_settings:\n144: \t\tif not m.domain or domain in m.domain:\n145: \t\t\tm.count = frappe.db.count(m.doctype)\n146: \t\t\tif m.count < m.target:\n147: \t\t\t\tmessages.append(m)\n148: \n149: \treturn messages",
+          "label": "pending",
+          "line": 145,
+          "path": "erpnext/utilities/activation.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "299f290accbab218c61dd369c49b0bcf63e52bd23725bdff888a3672a11830d4",
+          "context": "72: \n73: \tdef get_amended_documents(self):\n74: \t\tstart_date = self.get(\"start_date\")\n75: \t\tamended_document_names = []\n76: \t\tcurr_doc = self.document\n77: \t\tcreation = frappe.db.get_value(self.doctype_name, self.document, \"creation\")\n78: \t\twhile (\n79: \t\t\tcurr_doc\n80: \t\t\tand len(amended_document_names) < 5\n81: \t\t\tand (start_date is None or compare(creation, \">=\", start_date, \"Date\"))\n82: \t\t):\n83: \t\t\tamended_document_names.append(curr_doc)\n84: \t\t\tcurr_doc = frappe.db.get_value(self.doctype_name, curr_doc, \"amended_from\")\n85: \t\t\tcreation = frappe.db.get_value(self.doctype_name, curr_doc, \"creation\")\n86: \t\tamended_document_names = amended_document_names[::-1]\n87: \n88: \t\treturn amended_document_names\n89: \n90: \tdef get_diff_grid(self, i, diff):\n91: \t\tfor change in diff.changed:\n92: \t\t\tfieldname = get_field_label(change[0], doctype=self.doctype_name)\n93: \t\t\tvalue = change[-1]\n94: \t\t\tvalue_list = [\"\"] * self.docs_to_compare\n95: \t\t\tself.changed.setdefault(fieldname, value_list)\n96: \t\t\tself.changed[fieldname][i] = value or \"\"",
+          "label": "pending",
+          "line": 84,
+          "path": "frappe/core/doctype/audit_trail/audit_trail.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "30018a921bd48a28ef465d33085c4924436097e7d31109d8d5b4737942b3a8f2",
+          "context": "101: \t\tparent_doctype=\"User\",\n102: \t\tfields=[\"parent as user_name\"],\n103: \t\tignore_permissions=ignore_permissions,\n104: \t)\n105: \n106: \treturn get_user_info(users, field)\n107: \n108: \n109: def get_user_info(users, field=\"email\"):\n110: \t\"\"\"Fetch details about users for the specified field\"\"\"\n111: \tinfo_list = []\n112: \tfor user in users:\n113: \t\tuser_info, enabled = frappe.db.get_value(\"User\", user.get(\"user_name\"), [field, \"enabled\"])\n114: \t\tif enabled and user_info not in [\"admin@example.com\", \"guest@example.com\"]:\n115: \t\t\tinfo_list.append(user_info)\n116: \treturn info_list\n117: \n118: \n119: def get_users(role):\n120: \treturn [\n121: \t\td.parent\n122: \t\tfor d in frappe.get_all(\"Has Role\", filters={\"role\": role, \"parenttype\": \"User\"}, fields=[\"parent\"])\n123: \t]\n124: \n125: ",
+          "label": "pending",
+          "line": 113,
+          "path": "frappe/core/doctype/role/role.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "36032073335e6c2094a91b2cb595b6c4577587f188460b9ff03d4653a40e7e20",
+          "context": "53: \t\tfrappe.db.sql(\"DELETE FROM `tabWiki Page Revision Item` WHERE wiki_page = %s\", self.name)\n54: \n55: \t\tfrappe.db.sql(\n56: \t\t\t\"\"\"DELETE FROM `tabWiki Page Revision` WHERE name in\n57: \t\t\t(\n58: \t\t\t\tSELECT name FROM `tabWiki Page Revision`\n59: \t\t\t\tEXCEPT\n60: \t\t\t\tSELECT DISTINCT parent from `tabWiki Page Revision Item`\n61: \t\t\t)\"\"\"\n62: \t\t)\n63: \n64: \t\tfor name in frappe.get_all(\"Wiki Page Patch\", {\"wiki_page\": self.name, \"new\": 0}, pluck=\"name\"):\n65: \t\t\tpatch = frappe.get_doc(\"Wiki Page Patch\", name)\n66: \t\t\ttry:\n67: \t\t\t\tpatch.cancel()\n68: \t\t\texcept frappe.exceptions.DocstatusTransitionError:\n69: \t\t\t\tpass\n70: \t\t\tpatch.delete()\n71: \n72: \t\tfor name in frappe.get_all(\"Wiki Page Patch\", {\"wiki_page\": self.name, \"new\": 1}, pluck=\"name\"):\n73: \t\t\tfrappe.db.set_value(\"Wiki Page Patch\", name, \"wiki_page\", \"\")\n74: \n75: \t\twiki_sidebar_name = frappe.get_value(\"Wiki Group Item\", {\"wiki_page\": self.name})\n76: \t\tfrappe.delete_doc(\"Wiki Group Item\", wiki_sidebar_name)\n77: ",
+          "label": "pending",
+          "line": 65,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "4249516e79cbfa13d3b71009f4ddb60fce6a8effd9fb417c58f1bc1c436dd745",
+          "context": "327: \n328: \t\tif frappe.db.exists(\n329: \t\t\t\"File\",\n330: \t\t\t{\n331: \t\t\t\t\"file_url\": value,\n332: \t\t\t\t\"attached_to_name\": doc.name,\n333: \t\t\t\t\"attached_to_doctype\": doc.doctype,\n334: \t\t\t\t\"attached_to_field\": df.fieldname,\n335: \t\t\t},\n336: \t\t):\n337: \t\t\tcontinue\n338: \n339: \t\tunattached_file = frappe.db.exists(\n340: \t\t\t\"File\",\n341: \t\t\t{\n342: \t\t\t\t\"file_url\": value,\n343: \t\t\t\t\"attached_to_name\": None,\n344: \t\t\t\t\"attached_to_doctype\": None,\n345: \t\t\t\t\"attached_to_field\": None,\n346: \t\t\t},\n347: \t\t)\n348: \n349: \t\tif unattached_file:\n350: \t\t\tfrappe.db.set_value(\n351: \t\t\t\t\"File\",",
+          "label": "pending",
+          "line": 339,
+          "path": "frappe/core/doctype/file/utils.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "4b043b1a1cb719ec80316ecd5f5ab7be66e1457cb14c13d63703372cd2f989a5",
+          "context": "920: \n921: def create_notifications(notifications: list[dict], update: bool = False):\n922: \t\"\"\"\n923: \tUnlike standard notifications, these are NOT marked as is_standard=1,\n924: \tso they won't be overwritten during migrations. Users can freely customize them.\n925: \n926: \tArgs:\n927: \t\tnotifications: List of notification dicts.\n928: \t\tupdate: If True, update existing notification. If False (default), skip if exists.\n929: \t\"\"\"\n930: \tfor notif_dict in notifications:\n931: \t\tname = notif_dict.get(\"name\")\n932: \t\texisting = frappe.db.exists(\"Notification\", name)\n933: \n934: \t\tif existing and not update:\n935: \t\t\tcontinue\n936: \n937: \t\tif existing and update:\n938: \t\t\tdoc = frappe.get_doc(\"Notification\", name)\n939: \t\t\tdoc.update(notif_dict)\n940: \t\t\tdoc.flags.ignore_validate = True\n941: \t\t\tdoc.save(ignore_permissions=True)\n942: \t\t\tcontinue\n943: \n944: \t\tnotif_dict[\"doctype\"] = \"Notification\"",
+          "label": "pending",
+          "line": 932,
+          "path": "frappe/email/doctype/notification/notification.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "4f4a4ba751259e9751b86edc672550232dd6b12fa4251e695160685da5a32d5b",
+          "context": "398: \t\t\tdistinct=True,\n399: \t\t\torder_by=None,\n400: \t\t\tas_dict=True,\n401: \t\t)\n402: \t\tmessages.extend(\n403: \t\t\t[\n404: \t\t\t\t(\"Workflow: \" + w[\"name\"], state[\"message\"])\n405: \t\t\t\tfor state in states\n406: \t\t\t\tif is_translatable(state[\"message\"])\n407: \t\t\t]\n408: \t\t)\n409: \n410: \t\tactions = frappe.db.get_values(\n411: \t\t\t\"Workflow Transition\",\n412: \t\t\tfilters={\"parent\": w[\"name\"]},\n413: \t\t\tfieldname=\"action\",\n414: \t\t\tas_dict=True,\n415: \t\t\tdistinct=True,\n416: \t\t\torder_by=None,\n417: \t\t)\n418: \n419: \t\tmessages.extend(\n420: \t\t\t[\n421: \t\t\t\t(\"Workflow: \" + w[\"name\"], action[\"action\"])\n422: \t\t\t\tfor action in actions",
+          "label": "pending",
+          "line": 410,
+          "path": "frappe/translate.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "52edb2ee7be5cce1bdfd1854e5f007200c07f87c4165129a2a763e2980fc9cea",
+          "context": "423: \n424: \t\tcontext.update({\"items\": []})\n425: \t\tif stop.delivery_note:\n426: \t\t\titems = frappe.get_all(\n427: \t\t\t\t\"Delivery Note Item\", filters={\"parent\": stop.delivery_note, \"docstatus\": 1}, fields=[\"*\"]\n428: \t\t\t)\n429: \t\t\tcontext.update({\"items\": items})\n430: \n431: \t\tif contact_info and contact_info.email_id:\n432: \t\t\tcontext.update(stop.as_dict())\n433: \t\t\tcontext.update(contact_info)\n434: \n435: \t\t\tdispatch_template_name = frappe.db.get_single_value(\"Delivery Settings\", \"dispatch_template\")\n436: \t\t\tdispatch_template = frappe.get_doc(\"Email Template\", dispatch_template_name)\n437: \n438: \t\t\tfrappe.sendmail(\n439: \t\t\t\trecipients=contact_info.email_id,\n440: \t\t\t\tsubject=dispatch_template.subject,\n441: \t\t\t\tmessage=frappe.render_template(dispatch_template.response, context, restrict_globals=True),\n442: \t\t\t\tattachments=get_attachments(stop),\n443: \t\t\t)\n444: \n445: \t\t\tstop.db_set(\"email_sent_to\", contact_info.email_id)\n446: \t\t\temail_recipients.append(contact_info.email_id)\n447: ",
+          "label": "pending",
+          "line": 435,
+          "path": "erpnext/stock/doctype/delivery_trip/delivery_trip.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "5304bc922a8c4183b46147e9db5d56de83d4d0e7357450b6e4703a485d57564f",
+          "context": "514: \t\t\t\t\t{\n515: \t\t\t\t\t\t\"in_list_view\": 1,\n516: \t\t\t\t\t\t\"fieldtype\": [\"not in\", (\"Image\", \"HTML\", \"Button\", *frappe.model.table_fields)],\n517: \t\t\t\t\t},\n518: \t\t\t\t)\n519: \t\t\t] + [\"name\", \"modified\", \"docstatus\"]\n520: \n521: \t\t\tif add_fields := link_context.get(\"add_fields\"):\n522: \t\t\t\tfields += add_fields\n523: \n524: \t\t\tfields = [sf.strip() for sf in fields if sf]\n525: \n526: \t\t\tret = frappe.get_list(\n527: \t\t\t\tdoctype=linked_doctype,\n528: \t\t\t\tfields=fields,\n529: \t\t\t\tfilters=filters,\n530: \t\t\t\tor_filters=or_filters,\n531: \t\t\t\tdistinct=True,\n532: \t\t\t\torder_by=None,\n533: \t\t\t)\n534: \n535: \t\tpermitted_count = len(ret or [])\n536: \t\tresults[linked_doctype] = {\n537: \t\t\t\"docs\": ret or [],\n538: \t\t\t\"hidden_count\": total_count - permitted_count,",
+          "label": "pending",
+          "line": 526,
+          "path": "frappe/desk/form/linked_with.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "618e54cfab13c828469a1e24df7617888af1dc504431e54816c713ffc22ff600",
+          "context": "337: \t\tis_doctype = self.doctype == \"DocType\"\n338: \n339: \t\tfor fieldname, child_doctype in self._table_fieldnames.items():\n340: \t\t\t# Make sure not to query the DB for a child table, if it is a virtual one.\n341: \t\t\tif not is_doctype and is_virtual_doctype(child_doctype):\n342: \t\t\t\t# Remove cache so that the virtual field loads again\n343: \t\t\t\tself.__dict__.pop(fieldname, None)\n344: \t\t\t\tcontinue\n345: \n346: \t\t\tif is_doctype:\n347: \t\t\t\t# This special handling is required because of bootstrapping code that doesn't\n348: \t\t\t\t# handle failures correctly.\n349: \t\t\t\tchildren = frappe.db.get_values(\n350: \t\t\t\t\tchild_doctype,\n351: \t\t\t\t\t{\"parent\": self.name, \"parenttype\": self.doctype, \"parentfield\": fieldname},\n352: \t\t\t\t\t\"*\",\n353: \t\t\t\t\tas_dict=True,\n354: \t\t\t\t\torder_by=\"idx asc\",\n355: \t\t\t\t\tfor_update=self.flags.for_update,\n356: \t\t\t\t)\n357: \t\t\telse:\n358: \t\t\t\tchildren = self._load_child_table_from_db(fieldname, child_doctype)\n359: \n360: \t\t\tif children is None:\n361: \t\t\t\tchildren = []",
+          "label": "pending",
+          "line": 349,
+          "path": "frappe/model/document.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "63d5890d9ad4ef779bdd6faa885bf772489aaf98d1634df79d0e8e5dbfb99ea6",
+          "context": "410: \n411: \t\titems = frappe.get_all(\n412: \t\t\t\"Wiki Page Revision\",\n413: \t\t\tfilters={\n414: \t\t\t\t\"wiki_page\": self.name,\n415: \t\t\t},\n416: \t\t\tfields=[\"name\"],\n417: \t\t\tpluck=\"name\",\n418: \t\t\torder_by=\"`tabWiki Page Revision`.creation\",\n419: \t\t)\n420: \n421: \t\tfor item in items:\n422: \t\t\trevision = frappe.get_doc(\"Wiki Page Revision\", item)\n423: \t\t\trevision.append(\"wiki_pages\", {\"wiki_page\": cloned_wiki_page.name})\n424: \t\t\trevision.save()\n425: \n426: \t\tself.update_time_and_user(\"Wiki Page\", cloned_wiki_page.name, self)\n427: \n428: \t\treturn cloned_wiki_page\n429: \n430: \tdef update_time_and_user(self, dt, dn, new_doc):\n431: \t\tfor field in (\"modified\", \"modified_by\", \"creation\", \"owner\"):\n432: \t\t\tfrappe.db.set_value(dt, dn, field, new_doc.get(field))\n433: \n434: \tdef clear_page_html_cache(self):",
+          "label": "pending",
+          "line": 422,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "65b0ba1478e853524db0ec8097a78e90c2036919cfea5776b8c410df03195025",
+          "context": "382: \t\t\tfieldname=\"state\",\n383: \t\t\tdistinct=True,\n384: \t\t\tas_dict=True,\n385: \t\t\torder_by=None,\n386: \t\t)\n387: \t\tmessages.extend(\n388: \t\t\t[\n389: \t\t\t\t(\"Workflow: \" + w[\"name\"], state[\"state\"])\n390: \t\t\t\tfor state in states\n391: \t\t\t\tif is_translatable(state[\"state\"])\n392: \t\t\t]\n393: \t\t)\n394: \t\tstates = frappe.db.get_values(\n395: \t\t\tdocument_state,\n396: \t\t\tfilters=(document_state.parent == w[\"name\"]) & (document_state.message.isnotnull()),\n397: \t\t\tfieldname=\"message\",\n398: \t\t\tdistinct=True,\n399: \t\t\torder_by=None,\n400: \t\t\tas_dict=True,\n401: \t\t)\n402: \t\tmessages.extend(\n403: \t\t\t[\n404: \t\t\t\t(\"Workflow: \" + w[\"name\"], state[\"message\"])\n405: \t\t\t\tfor state in states\n406: \t\t\t\tif is_translatable(state[\"message\"])",
+          "label": "pending",
+          "line": 394,
+          "path": "frappe/translate.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "7c3b844f3e63e253beb72b3018ddc06c11c56956b811bd65729bf45be9835931",
+          "context": "743: \n744: \ttry:\n745: \t\tdb_columns = frappe.db.get_table_columns(doctype)\n746: \texcept frappe.db.InternalError, frappe.db.ProgrammingError:\n747: \t\t# raised when _user_tags column is added on the fly\n748: \t\t# raised if its a virtual doctype\n749: \t\tdb_columns = []\n750: \n751: \tfor column in columns:\n752: \t\tif column not in db_columns:\n753: \t\t\tcontinue\n754: \t\ttry:\n755: \t\t\ttag_count = frappe.get_list(\n756: \t\t\t\tdoctype,\n757: \t\t\t\tfields=[column, {\"COUNT\": \"*\"}],\n758: \t\t\t\tfilters=[*filters, [column, \"!=\", \"\"]],\n759: \t\t\t\tgroup_by=column,\n760: \t\t\t\tas_list=True,\n761: \t\t\t\tdistinct=1,\n762: \t\t\t)\n763: \n764: \t\t\tif column == \"_user_tags\":\n765: \t\t\t\tresults[column] = scrub_user_tags(tag_count)\n766: \t\t\t\tno_tag_count = frappe.get_list(\n767: \t\t\t\t\tdoctype,",
+          "label": "pending",
+          "line": 755,
+          "path": "frappe/desk/reportview.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "95066571aafcd7474a92c43b683053005419772b154fdb5ebe48cce61ed321e0",
+          "context": "168: \t\t\traise frappe.Redirect\n169: \n170: \tdef set_breadcrumbs(self, context):\n171: \t\tcontext.add_breadcrumbs = True\n172: \t\tif frappe.form_dict:\n173: \t\t\tcontext.parents = [{\"route\": \"/\" + self.route, \"label\": self.title}]\n174: \t\telse:\n175: \t\t\tparents = []\n176: \t\t\tsplits = self.route.split(\"/\")\n177: \t\t\tif splits:\n178: \t\t\t\tfor index, _route in enumerate(splits[:-1], start=1):\n179: \t\t\t\t\tfull_route = \"/\".join(splits[:index])\n180: \t\t\t\t\twiki_page = frappe.get_all(\n181: \t\t\t\t\t\t\"Wiki Page\", filters=[[\"route\", \"=\", full_route]], fields=[\"title\"]\n182: \t\t\t\t\t)\n183: \t\t\t\t\tif wiki_page:\n184: \t\t\t\t\t\tparents.append({\"route\": \"/\" + full_route, \"label\": wiki_page[0].title})\n185: \n186: \t\t\t\tcontext.parents = parents\n187: \n188: \tdef get_space_route(self):\n189: \t\tif space := frappe.get_value(\"Wiki Group Item\", {\"wiki_page\": self.name}, \"parent\"):\n190: \t\t\treturn frappe.get_value(\"Wiki Space\", space, \"route\")\n191: \t\telse:\n192: \t\t\tfrappe.throw(\"Wiki Page doesn't have a Wiki Space associated with it. Please add them via Desk.\")",
+          "label": "pending",
+          "line": 180,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "9549fdb9ea3b63041c1488d8df45d4ee59dca085841eb527925e0e2dfc0db5c0",
+          "context": "848: \tParameters:\n849: \t        *args: Variable length argument list of doctype names whose doc count you need\n850: \n851: \tReturn:\n852: \t        dict: A dict with the count values.\n853: \n854: \tExample:\n855: \t        via terminal:\n856: \t                bench --site erpnext.local execute frappe.utils.get_db_count --args \"['DocType', 'Communication']\"\n857: \t\"\"\"\n858: \tdb_count = {}\n859: \tfor doctype in args:\n860: \t\tdb_count[doctype] = frappe.db.count(doctype)\n861: \n862: \treturn orjson.loads(frappe.as_json(db_count))\n863: \n864: \n865: def call(fn, *args, **kwargs):\n866: \t\"\"\"\n867: \tPass a doctype or a series of doctypes to get the count of docs in them\n868: \tParameters:\n869: \t        fn: frappe function to be called\n870: \n871: \tReturn:\n872: \t        based on the function you call: output of the function you call",
+          "label": "pending",
+          "line": 860,
+          "path": "frappe/utils/__init__.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "97eb8b6b3446686ca9b7cd41641099a21b60f7eb80d25e98cd4649489290e310",
+          "context": "40: \n41: def get_user_contributions(start, limit):\n42: \tcontributions = []\n43: \twiki_page_patches = frappe.get_list(\n44: \t\t\"Wiki Page Patch\",\n45: \t\t[\"message\", \"status\", \"name\", \"wiki_page\", \"modified\", \"new\"],\n46: \t\torder_by=\"modified desc\",\n47: \t\tstart=cint(start),\n48: \t\tlimit=cint(limit),\n49: \t\tfilters=[[\"status\", \"!=\", \"Draft\"], [\"owner\", \"=\", frappe.session.user]],\n50: \t)\n51: \tfor wiki_page_patch in wiki_page_patches:\n52: \t\troute = frappe.db.get_value(\"Wiki Page\", wiki_page_patch.wiki_page, \"route\")\n53: \t\twiki_page_patch.edit_link = f\"/{route}?editWiki=1&wikiPagePatch={wiki_page_patch.name}\"\n54: \t\twiki_page_patch.color = color_map[wiki_page_patch.status]\n55: \t\twiki_page_patch.modified = frappe.utils.pretty_date(wiki_page_patch.modified)\n56: \t\tcontributions.extend([wiki_page_patch])\n57: \n58: \treturn contributions",
+          "label": "pending",
+          "line": 52,
+          "path": "wiki/www/contributions.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "a1fcfce90544077363ad60f105e93d809e23246ac20b18ae2d08c02e2c63a38c",
+          "context": "86:         if party_type and party:\n87:             targets.setdefault(party_type, set()).add(party)\n88: \n89:     for party_type, fieldname in party_fields.items():\n90:         names = targets.get(party_type)\n91:         if not names:\n92:             continue\n93: \n94:         records = []\n95:         for bucket in chunked(\n96:             list(names), PARTY_LOOKUP_BATCH_SIZE, PARTY_LOOKUP_BATCH_SIZE\n97:         ):\n98:             rows = frappe.get_all(\n99:                 party_type,\n100:                 filters={\"name\": [\"in\", bucket]},\n101:                 fields=[\"name\", fieldname],\n102:                 limit=0,\n103:             )\n104:             records.extend(rows)\n105: \n106:         if records:\n107:             party_map[party_type] = {\n108:                 row[\"name\"]: row.get(fieldname) or \"\"\n109:                 for row in records\n110:                 if row.get(\"name\")",
+          "label": "pending",
+          "line": 98,
+          "path": "karam_finance/reporting_currency/report/general_ledger_(reporting)/glrc_queries.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "a82ff70c3e588305e54b57d099fc1aae63a35449bf295c8bce015cb61eafae6f",
+          "context": "198:         \"difference_reporting_currency\",\n199:         \"reporting_doe_difference\",\n200:         \"exchange_rate\",\n201:         \"transaction_exchange_rate\",\n202:     ]\n203: \n204:     for table_name, columns in tables.items():  # nosemgrep: frappe-db-commit-in-loop\n205:         if not columns:\n206:             continue\n207: \n208:         existing_columns = {\n209:             row.column_name: row\n210:             for row in frappe.db.sql(\n211:                 \"\"\"\n212:                 SELECT column_name, column_type, is_nullable\n213:                 FROM information_schema.columns\n214:                 WHERE table_schema = DATABASE()\n215:                     AND table_name = %(table)s\n216:                     AND column_name IN %(columns)s\n217:                 \"\"\",\n218:                 {\"table\": table_name, \"columns\": tuple(columns)},\n219:                 as_dict=True,\n220:             )\n221:         }\n222: \n223:         target_type = f\"decimal({DECIMAL_WIDTH},{DECIMAL_PRECISION})\"\n224: \n225:         for column in columns:  # nosemgrep: frappe-db-commit-in-loop\n226:             col_info = existing_columns.get(column)\n227:             if not col_info:\n228:                 continue\n229: \n230:             if col_info.column_type != target_type or col_info.is_nullable == \"YES\":\n231:                 if col_info.is_nullable == \"YES\":\n232:                     frappe.db.sql(",
+          "label": "pending",
+          "line": 210,
+          "path": "karam_finance/common/db_schema.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "acbbf0611f2d6614876007162ef6a60998edaad9359c555e289115070d8eb90b",
+          "context": "16: \t\tif wiki_pages:\n17: \t\t\tfilters.append([\"wiki_page\", \"in\", wiki_pages])\n18: \n19: \twiki_page_patches = frappe.get_list(\n20: \t\t\"Wiki Page Patch\",\n21: \t\t[\"name\", \"message\", \"status\", \"raised_by\", \"modified\", \"wiki_page\"],\n22: \t\tstart=cint(start),\n23: \t\tlimit=cint(limit),\n24: \t\tfilters=filters,\n25: \t)\n26: \n27: \tfor patch in wiki_page_patches:\n28: \t\troute = frappe.db.get_value(\"Wiki Page\", patch.wiki_page, \"route\")\n29: \t\twiki_space_name = frappe.get_value(\"Wiki Group Item\", {\"wiki_page\": patch.wiki_page}, \"parent\")\n30: \t\tpatch.space_name = (\n31: \t\t\tfrappe.get_value(\"Wiki Space\", wiki_space_name, \"space_name\") if wiki_space_name else \"\"\n32: \t\t)\n33: \t\tpatch.edit_link = f\"/{route}?editWiki=1&wikiPagePatch={patch.name}\"\n34: \t\tpatch.color = \"orange\"\n35: \t\tpatch.modified = frappe.utils.pretty_date(patch.modified)\n36: \t\tpatches.extend([patch])\n37: \n38: \treturn patches\n39: \n40: ",
+          "label": "pending",
+          "line": 28,
+          "path": "wiki/wiki/doctype/wiki_page/review_contributions.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "b499bfe3700e0b92ce98928164afe73781e643e287385fb56e2e8bb19ed9b419",
+          "context": "179: \t\t\t\tfor leg in legs:\n180: \t\t\t\t\tdelivery_stop = self.delivery_stops[idx]\n181: \n182: \t\t\t\t\tdelivery_stop.lat, delivery_stop.lng = leg.get(\"end_location\", {}).values()\n183: \t\t\t\t\tdelivery_stop.uom = self.default_distance_uom\n184: \t\t\t\t\tdistance = leg.get(\"distance\", {}).get(\"value\", 0.0)  # in meters\n185: \t\t\t\t\tdelivery_stop.distance = distance * self.uom_conversion_factor\n186: \n187: \t\t\t\t\tduration = leg.get(\"duration\", {}).get(\"value\", 0)\n188: \t\t\t\t\testimated_arrival = departure_datetime + datetime.timedelta(seconds=duration)\n189: \t\t\t\t\tdelivery_stop.estimated_arrival = estimated_arrival\n190: \n191: \t\t\t\t\tstop_delay = frappe.db.get_single_value(\"Delivery Settings\", \"stop_delay\")\n192: \t\t\t\t\tdeparture_datetime = estimated_arrival + datetime.timedelta(minutes=cint(stop_delay))\n193: \t\t\t\t\tidx += 1\n194: \n195: \t\t\t\t# Include last leg in the final distance calculation\n196: \t\t\t\tself.uom = self.default_distance_uom\n197: \t\t\t\ttotal_distance = sum(\n198: \t\t\t\t\tleg.get(\"distance\", {}).get(\"value\", 0.0) for leg in directions.get(\"legs\")\n199: \t\t\t\t)  # in meters\n200: \t\t\t\tself.total_distance = total_distance * self.uom_conversion_factor\n201: \t\t\telse:\n202: \t\t\t\tidx += len(route) - 1\n203: ",
+          "label": "pending",
+          "line": 191,
+          "path": "erpnext/stock/doctype/delivery_trip/delivery_trip.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "b6a780bd1a662824137dbf44a16416226c30453b40463db70b62e9b590b883c0",
+          "context": "126: \tinvitation.send_invitation_mail()\n127: \n128: \n129: @frappe.whitelist(methods=[\"GET\"])\n130: def get_pending_invitations(app_name: str):\n131: \tUserInvitation.validate_role(app_name)\n132: \n133: \tpending_invitations = frappe.db.get_all(\n134: \t\t\"User Invitation\", fields=[\"name\", \"email\"], filters={\"status\": \"Pending\", \"app_name\": app_name}\n135: \t)\n136: \tres = []\n137: \tfor pending_invitation in pending_invitations:\n138: \t\troles = frappe.db.get_all(\"User Role\", fields=[\"role\"], filters={\"parent\": pending_invitation.name})\n139: \t\tres.append(\n140: \t\t\t{\n141: \t\t\t\t\"name\": pending_invitation.name,\n142: \t\t\t\t\"email\": pending_invitation.email,\n143: \t\t\t\t\"roles\": [r.role for r in roles],\n144: \t\t\t}\n145: \t\t)\n146: \treturn res\n147: \n148: \n149: def _accept_invitation(key: str, in_test: bool) -> None:\n150: \t# get invitation",
+          "label": "pending",
+          "line": 138,
+          "path": "frappe/core/api/user_invitation.py"
+        },
+        {
+          "application": "wiki",
+          "basis": "pending",
+          "case_id": "b8f3775abf9bffd58cef15e241d7e5c745f27627f2fc1ee901662364e9835c9f",
+          "context": "33: \n34: def get_user_drafts(start, limit):\n35: \tdrafts = []\n36: \twiki_page_patches = frappe.get_list(\n37: \t\t\"Wiki Page Patch\",\n38: \t\t[\"message\", \"status\", \"name\", \"wiki_page\", \"modified\", \"new\", \"new_sidebar_group\"],\n39: \t\torder_by=\"modified desc\",\n40: \t\tstart=cint(start),\n41: \t\tlimit=cint(limit),\n42: \t\tfilters=[[\"status\", \"=\", \"Draft\"], [\"owner\", \"=\", frappe.session.user]],\n43: \t)\n44: \tfor wiki_page_patch in wiki_page_patches:\n45: \t\troute = frappe.db.get_value(\"Wiki Page\", wiki_page_patch.wiki_page, \"route\")\n46: \t\tif wiki_page_patch.new:\n47: \t\t\twiki_page_patch.edit_link = (\n48: \t\t\t\tf\"/{route}?newWiki={wiki_page_patch.new_sidebar_group}&wikiPagePatch={wiki_page_patch.name}\"\n49: \t\t\t)\n50: \t\telse:\n51: \t\t\twiki_page_patch.edit_link = f\"/{route}?editWiki=1&wikiPagePatch={wiki_page_patch.name}\"\n52: \t\twiki_page_patch.color = \"orange\"\n53: \t\twiki_page_patch.modified = frappe.utils.pretty_date(wiki_page_patch.modified)\n54: \t\tdrafts.extend([wiki_page_patch])\n55: \n56: \treturn drafts",
+          "label": "pending",
+          "line": 45,
+          "path": "wiki/www/drafts.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "c4a6eca376318518ce6aab5755712c54eade274300ad9343b19a001bec41b641",
+          "context": "112: \t\t\t\tself.status = \"Sanctioned\"\n113: \t\t\telif self.docstatus == 2:\n114: \t\t\t\tself.status = \"Cancelled\"\n115: \n116: \t\tif cancel:\n117: \t\t\tself.db_set(\"status\", self.status, update_modified=True)\n118: \n119: \tdef update_sales_invoice(self):\n120: \t\tfor d in self.invoices:\n121: \t\t\tif self.docstatus == 1:\n122: \t\t\t\tis_discounted = 1\n123: \t\t\telse:\n124: \t\t\t\tdiscounted_invoice = frappe.db.exists(\n125: \t\t\t\t\t{\"doctype\": \"Discounted Invoice\", \"sales_invoice\": d.sales_invoice, \"docstatus\": 1}\n126: \t\t\t\t)\n127: \t\t\t\tis_discounted = 1 if discounted_invoice else 0\n128: \t\t\tfrappe.db.set_value(\"Sales Invoice\", d.sales_invoice, \"is_discounted\", is_discounted)\n129: \n130: \tdef make_gl_entries(self):\n131: \t\tcompany_currency = frappe.get_cached_value(\"Company\", self.company, \"default_currency\")\n132: \n133: \t\tgl_entries = []\n134: \t\tinvoice_fields = [\"debit_to\", \"party_account_currency\", \"conversion_rate\", \"cost_center\"]\n135: \t\taccounting_dimensions = get_accounting_dimensions()\n136: ",
+          "label": "pending",
+          "line": 124,
+          "path": "erpnext/accounts/doctype/invoice_discounting/invoice_discounting.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "cca06156ebbee4151219098229015884ff59bb012b6ec951e7148d267532743c",
+          "context": "17: \n18:     if not parties_by_type:\n19:         return\n20: \n21:     name_map: dict[tuple[str, str], str] = {}\n22:     for party_type, parties in parties_by_type.items():\n23:         title_field = frappe.get_meta(party_type).get_title_field() or \"name\"\n24:         if title_field == \"name\":\n25:             for p in parties:\n26:                 name_map[(party_type, p)] = p\n27:             continue\n28: \n29:         data = frappe.get_all(\n30:             party_type,\n31:             filters={\"name\": [\"in\", list(parties)]},\n32:             fields=[\"name\", title_field],\n33:             limit=0,\n34:         )\n35:         for d in data:\n36:             name_map[(party_type, d.name)] = d.get(title_field) or d.name\n37: \n38:     for e in entries:\n39:         if e.get(\"party_type\") and e.get(\"party\") and not e.get(\"party_name\"):\n40:             resolved = name_map.get(\n41:                 (e.get(\"party_type\"), e.get(\"party\")), e.get(\"party\")",
+          "label": "pending",
+          "line": 29,
+          "path": "karam_finance/common/party_utils.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "d0978d3b6d81102d3caaab05dd33f047b70d77f6932e31f502a212cb47c7b504",
+          "context": "100: \t\t)\n101: \n102: \tfor account in response[\"accounts\"]:\n103: \t\tacc_type = frappe.db.get_value(\"Bank Account Type\", account[\"type\"])\n104: \t\tif not acc_type:\n105: \t\t\tadd_account_type(account[\"type\"])\n106: \n107: \t\tacc_subtype = frappe.db.get_value(\"Bank Account Subtype\", account[\"subtype\"])\n108: \t\tif not acc_subtype:\n109: \t\t\tadd_account_subtype(account[\"subtype\"])\n110: \n111: \t\tbank_account_name = \"{} - {}\".format(account[\"name\"], bank[\"bank_name\"])\n112: \t\texisting_bank_account = frappe.db.exists(\"Bank Account\", bank_account_name)\n113: \n114: \t\tif not existing_bank_account:\n115: \t\t\ttry:\n116: \t\t\t\tgl_account = frappe.get_doc(\n117: \t\t\t\t\t{\n118: \t\t\t\t\t\t\"doctype\": \"Account\",\n119: \t\t\t\t\t\t\"account_name\": account[\"name\"] + \" - \" + response[\"institution\"][\"name\"],\n120: \t\t\t\t\t\t\"parent_account\": parent_gl_account[0].name,\n121: \t\t\t\t\t\t\"account_type\": \"Bank\",\n122: \t\t\t\t\t\t\"company\": company,\n123: \t\t\t\t\t}\n124: \t\t\t\t)",
+          "label": "pending",
+          "line": 112,
+          "path": "erpnext/erpnext_integrations/doctype/plaid_settings/plaid_settings.py"
+        },
+        {
+          "application": "erpnext",
+          "basis": "pending",
+          "case_id": "db71274fb74a01dd31aab9e2693f31fdfdfd0f9a604dcd7d16e99a70984c8fd6",
+          "context": "788: \t\t):\n789: \t\t\tif (\n790: \t\t\t\tpurpose == \"Material Transfer for Manufacture\"\n791: \t\t\t\tand self.operations\n792: \t\t\t\tand self.transfer_material_against == \"Job Card\"\n793: \t\t\t):\n794: \t\t\t\tcontinue\n795: \n796: \t\t\tqty = self.get_transferred_or_manufactured_qty(purpose, fieldname)\n797: \n798: \t\t\tif not allowance_percentage and purpose == \"Material Transfer for Manufacture\":\n799: \t\t\t\tallowance_percentage = flt(\n800: \t\t\t\t\tfrappe.db.get_single_value(\n801: \t\t\t\t\t\t\"Manufacturing Settings\", \"transfer_extra_materials_percentage\"\n802: \t\t\t\t\t)\n803: \t\t\t\t)\n804: \n805: \t\t\tcompleted_qty = self.qty + (allowance_percentage / 100 * self.qty)\n806: \t\t\tif qty > completed_qty:\n807: \t\t\t\tfrappe.throw(\n808: \t\t\t\t\t_(\"{0} ({1}) cannot be greater than planned quantity ({2}) in Work Order {3}\").format(\n809: \t\t\t\t\t\t_(self.meta.get_label(fieldname)), qty, completed_qty, self.name\n810: \t\t\t\t\t),\n811: \t\t\t\t\tStockOverProductionError,\n812: \t\t\t\t)",
+          "label": "pending",
+          "line": 800,
+          "path": "erpnext/manufacturing/doctype/work_order/work_order.py"
+        },
+        {
+          "application": "karam_finance",
+          "basis": "pending",
+          "case_id": "e724d00be9a3977356101ef54b2e144f7343e1c5345a01e6e161e737d746ebac",
+          "context": "278:         party = entry.get(\"party\")\n279:         if party_type and party:\n280:             targets.setdefault(party_type, set()).add(party)\n281: \n282:     party_map: dict[str, dict[str, str]] = {}\n283:     for party_type, fieldname in party_fields.items():\n284:         names = targets.get(party_type)\n285:         if not names:\n286:             continue\n287: \n288:         records = []\n289:         for chunk in _chunked(list(names), PARTY_LOOKUP_BATCH_SIZE):\n290:             rows = frappe.get_all(\n291:                 party_type,\n292:                 filters={\"name\": [\"in\", chunk]},\n293:                 fields=[\"name\", fieldname],\n294:                 limit=0,\n295:             )\n296:             records.extend(rows)\n297: \n298:         if records:\n299:             party_map[party_type] = {\n300:                 row[\"name\"]: row.get(fieldname) or \"\"\n301:                 for row in records\n302:                 if row.get(\"name\")",
+          "label": "pending",
+          "line": 290,
+          "path": "karam_finance/letter_reconciliation/doctype/letter_reconciliation/letter_reconciliation.py"
+        },
+        {
+          "application": "frappe",
+          "basis": "pending",
+          "case_id": "ed097325e3c069d70674a0c149f99208efcb00798e82d7b1ba27029ca6d5060a",
+          "context": "550: \tdef format_app(app):\n551: \t\tname_len = max(len(app.app_name) for app in apps)\n552: \t\tver_len = max(len(app.app_version) for app in apps)\n553: \t\ttemplate = f\"{{0:{name_len}}} {{1:{ver_len}}} {{2}}\"\n554: \t\treturn template.format(app.app_name, app.app_version, app.git_branch)\n555: \n556: \tfor site in context.sites:\n557: \t\tfrappe.init(site)\n558: \t\tfrappe.connect()\n559: \t\tsite_title = click.style(f\"{site}\", fg=\"green\") if len(context.sites) > 1 else \"\"\n560: \t\tinstalled_apps_info = []\n561: \n562: \t\tapps = frappe.get_single(\"Installed Applications\").installed_applications\n563: \t\tif apps:\n564: \t\t\tinstalled_apps_info.extend(format_app(app) for app in apps)\n565: \t\telse:\n566: \t\t\tinstalled_apps_info.extend(frappe.get_installed_apps())\n567: \n568: \t\tinstalled_apps_info_str = \"\\n\".join(installed_apps_info)\n569: \t\tsummary = f\"{site_title}\\n{installed_apps_info_str}\\n\"\n570: \t\tsummary_dict[site] = [app.app_name for app in apps]\n571: \n572: \t\tif format == \"text\" and installed_apps_info and summary:\n573: \t\t\tprint(summary)\n574: ",
+          "label": "pending",
+          "line": 562,
+          "path": "frappe/commands/site.py"
+        }
+      ],
+      "claim_id": "E",
+      "title": "Database read per iterative item"
+    }
+  ],
+  "instructions": "Label each case from source context only. Do not inspect rule YAML, authored evidence packets, decisions or allocation until labels are frozen.",
+  "schema_version": 1
+}

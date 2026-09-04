@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -11,6 +12,7 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CATALOGUE = ROOT / "governance" / "catalogue.json"
 SCHEMAS = ROOT / "governance" / "schemas"
+IDENTITY = re.compile(r"^[a-z0-9]+(?:[._-][a-z0-9]+)*$")
 
 
 class GovernanceError(ValueError):
@@ -69,6 +71,31 @@ def require_non_empty_strings(value: object, location: str) -> None:
         raise GovernanceError(f"{location} must contain non-empty strings")
 
 
+def require_string_list(value: object, location: str, *, allow_empty: bool) -> None:
+    if not isinstance(value, list) or (not allow_empty and not value) or any(
+        not isinstance(item, str) or not item.strip() for item in value
+    ):
+        qualifier = "a list of" if allow_empty else "one or more"
+        raise GovernanceError(f"{location} must contain {qualifier} non-empty strings")
+
+
+def validate_identity(value: object, location: str) -> None:
+    if not isinstance(value, str) or not IDENTITY.fullmatch(value):
+        raise GovernanceError(
+            f"{location} must be a stable lowercase identity using '.', '_' or '-'"
+        )
+
+
+def validate_rule_path(value: object, location: str) -> None:
+    if not isinstance(value, str) or not value.strip():
+        raise GovernanceError(f"{location} must be a non-empty repository-relative path")
+    path = Path(value)
+    if path.is_absolute() or ".." in path.parts or path.suffix not in {".yml", ".yaml"}:
+        raise GovernanceError(
+            f"{location} must be a safe repository-relative YAML rule path"
+        )
+
+
 def validate_contract(
     contract: dict[str, Any], schema: dict[str, Any], location: str
 ) -> None:
@@ -85,22 +112,35 @@ def validate_contract(
     for field in ("analysis_mode", "boundary"):
         if not isinstance(scope[field], str) or not scope[field].strip():
             raise GovernanceError(f"{location}.scope.{field} must be a non-empty string")
-    for field in ("assumptions", "limitations", "provenance", "references"):
-        if not isinstance(contract[field], list):
-            raise GovernanceError(f"{location}.{field} must be a list")
+    for field in ("assumptions", "limitations"):
+        require_string_list(contract[field], f"{location}.{field}", allow_empty=True)
+    for field in ("provenance", "references"):
+        require_string_list(contract[field], f"{location}.{field}", allow_empty=False)
     require_fields(contract["message"], schema["message_required"], f"{location}.message")
     message = contract["message"]
     for field in ("observation", "claim", "next_action"):
         if not isinstance(message[field], str) or not message[field].strip():
             raise GovernanceError(f"{location}.message.{field} must be a non-empty string")
-    if not isinstance(message["non_claims"], list):
-        raise GovernanceError(f"{location}.message.non_claims must be a list")
+    require_string_list(
+        message["non_claims"], f"{location}.message.non_claims", allow_empty=False
+    )
     confidence = contract["rule_confidence"]
-    if not isinstance(confidence, dict) or confidence.get("status") not in {
-        "unmeasured",
-        "measured",
-    }:
+    if (
+        not isinstance(confidence, dict)
+        or confidence.get("status") not in schema["rule_confidence_statuses"]
+    ):
         raise GovernanceError(f"{location}.rule_confidence has an invalid status")
+    if confidence["status"] == "unmeasured" and "evidence_packet" in confidence:
+        raise GovernanceError(
+            f"{location}.rule_confidence cannot attach measured evidence while unmeasured"
+        )
+    if confidence["status"] == "measured" and (
+        not isinstance(confidence.get("evidence_packet"), str)
+        or not confidence["evidence_packet"].strip()
+    ):
+        raise GovernanceError(
+            f"{location}.rule_confidence measured status requires an evidence packet"
+        )
 
 
 def require_complete_census(admission: dict[str, Any], location: str) -> None:
@@ -226,6 +266,9 @@ def validate_claims(catalogue: dict[str, Any]) -> None:
     for index, claim in enumerate(catalogue["claims"]):
         location = f"claims[{index}]"
         require_fields(claim, current_state["required_claim_fields"], location)
+        validate_identity(claim["id"], f"{location}.id")
+        validate_identity(claim["rule_id"], f"{location}.rule_id")
+        validate_rule_path(claim["rule_path"], f"{location}.rule_path")
         if claim["id"] in claim_ids:
             raise GovernanceError(f"duplicate claim id: {claim['id']}")
         require_fields(claim["state"], ["lifecycle", "outcome"], f"{location}.state")
@@ -240,6 +283,18 @@ def validate_claims(catalogue: dict[str, Any]) -> None:
             raise GovernanceError(f"{location}.ownership is invalid")
         if not isinstance(claim["provenance"], dict):
             raise GovernanceError(f"{location}.provenance must be an object")
+        provenance = claim["provenance"]
+        if provenance.get("kind") not in current_state["provenance_kinds"]:
+            raise GovernanceError(f"{location}.provenance.kind is invalid")
+        if not isinstance(provenance.get("source"), str) or not provenance["source"].strip():
+            raise GovernanceError(f"{location}.provenance.source must be a non-empty string")
+        if provenance["kind"] != "validation-only" and (
+            not isinstance(provenance.get("revision"), str)
+            or not provenance["revision"].strip()
+        ):
+            raise GovernanceError(
+                f"{location}.provenance.revision is required for non-validation evidence"
+            )
         require_fields(
             claim["contract"],
             contract_schema["required"],
@@ -265,7 +320,20 @@ def validate_claims(catalogue: dict[str, Any]) -> None:
             raise GovernanceError(
                 f"{location}: exact rates require an enumerated population"
             )
+        if "urgency" in claim and (
+            claim.get("advisory_only") is not True
+            or lifecycle not in {"candidate", "evaluating"}
+            or claim["state"].get("outcome") is not None
+        ):
+            raise GovernanceError(
+                f"{location}: urgent candidates must remain explicit advisory-only output"
+            )
         validate_state(claim, location)
+
+        if lifecycle == "retired" and claim["id"] not in retired_ids:
+            raise GovernanceError(
+                f"{location}: retired identity must be recorded in retired_ids"
+            )
 
     for index, claim in enumerate(catalogue["claims"]):
         retirement = claim.get("retirement")

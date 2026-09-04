@@ -145,18 +145,20 @@ class GovernanceValidatorTest(unittest.TestCase):
         self.assertIn("contract.message is required", result.stderr)
 
     def test_each_truthful_outcome_has_a_valid_non_compensating_path(self) -> None:
-        cases = (
-            admitted_claim("blocking", "deterministic-defect", "blocking"),
-            admitted_claim("monitor", "explicit-policy-violation", "monitor"),
-            admitted_claim("audit", "review-hotspot", "audit"),
-        )
+        cases = {
+            "blocking": admitted_claim("blocking", "deterministic-defect", "blocking"),
+            "monitor": admitted_claim("monitor", "explicit-policy-violation", "monitor"),
+            "audit": admitted_claim("audit", "review-hotspot", "audit"),
+        }
         outside = candidate_claim()
         outside["id"] = "outside.example"
         outside["state"] = {"lifecycle": "candidate", "outcome": "outside-portfolio"}
+        cases["outside-portfolio"] = outside
 
-        result = self.run_validator([*cases, outside])
-
-        self.assertEqual(result.returncode, 0, result.stderr)
+        for outcome, claim in cases.items():
+            with self.subTest(outcome=outcome):
+                result = self.run_validator([claim])
+                self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_strong_evidence_cannot_compensate_for_incomplete_blocking_census(self) -> None:
         claim = admitted_claim("blocking", "deterministic-defect", "blocking")
@@ -251,7 +253,45 @@ class GovernanceValidatorTest(unittest.TestCase):
         result = self.run_validator([claim])
 
         self.assertEqual(result.returncode, 1)
-        self.assertIn("every universal Admission Gate must pass", result.stderr)
+        self.assertIn("advisory-only", result.stderr)
+
+    def test_urgent_candidate_requires_explicit_advisory_only_state(self) -> None:
+        claim = candidate_claim()
+        claim["urgency"] = "critical"
+        claim["advisory_only"] = True
+
+        result = self.run_validator([claim])
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_identities_paths_provenance_and_references_are_stable(self) -> None:
+        invalid_claims = {
+            "claim identity": ("id", "Invalid Identity"),
+            "rule identity": ("rule_id", "Invalid Rule"),
+            "rule path": ("rule_path", "../outside.yml"),
+        }
+        for label, (field, value) in invalid_claims.items():
+            with self.subTest(field=label):
+                claim = candidate_claim()
+                claim[field] = value
+                result = self.run_validator([claim])
+                self.assertEqual(result.returncode, 1)
+                self.assertIn(field, result.stderr)
+
+        missing_reference = candidate_claim()
+        missing_reference["contract"]["references"] = []  # type: ignore[index]
+        result = self.run_validator([missing_reference])
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("references", result.stderr)
+
+    def test_retired_state_requires_canonical_retired_identity_record(self) -> None:
+        claim = candidate_claim()
+        claim["state"] = {"lifecycle": "retired", "outcome": "outside-portfolio"}
+
+        result = self.run_validator([claim])
+
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("recorded in retired_ids", result.stderr)
 
     def test_sampled_measurement_cannot_claim_exact_precision(self) -> None:
         claim = candidate_claim()

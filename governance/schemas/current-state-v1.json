@@ -13,5 +13,11 @@
     "predecessors",
     "replacements"
   ],
-  "ownership": ["upstream", "backport", "noospheric"]
+  "ownership": ["upstream", "backport", "noospheric"],
+  "provenance_kinds": [
+    "validation-only",
+    "source-backed",
+    "upstream-mirror",
+    "backport"
+  ]
 }

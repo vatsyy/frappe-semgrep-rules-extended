@@ -1,6 +1,24 @@
 import frappe
 
 
+def comprehension_reads(names):
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    statuses = [frappe.db.get_value("ToDo", name, "status") for name in names]
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    docs = [frappe.get_doc("ToDo", name) for name in names]
+    return statuses, docs
+
+
+def comprehension_without_database_reads(names):
+    # ok: frappe-n-plus-one-read-in-comprehension
+    return [name.upper() for name in names]
+
+
+def comprehension_constructing_documents(rows):
+    # ok: frappe-n-plus-one-read-in-comprehension
+    return [frappe.get_doc({"doctype": "ToDo", "description": row.description}) for row in rows]
+
+
 def direct_reads(names):
     for name in names:
         # ruleid: frappe-n-plus-one-read-in-loop
@@ -16,9 +34,21 @@ def direct_reads_in_while(names):
         names.pop()
 
 
+def sql_reads_and_writes(names):
+    for name in names:
+        # ruleid: frappe-n-plus-one-read-in-loop
+        frappe.db.sql("SELECT status FROM `tabToDo` WHERE name=%s", name)
+        # ok: frappe-n-plus-one-read-in-loop
+        frappe.db.sql("UPDATE `tabToDo` SET status='Closed' WHERE name=%s", name)
+
+
 def query_producing_the_iterable_is_ok():
     # ok: frappe-n-plus-one-read-in-loop
     for row in frappe.get_all("ToDo", fields=["name"]):
+        print(row.name)
+
+    # ok: frappe-n-plus-one-read-in-loop
+    for row in frappe.db.sql("SELECT name FROM `tabToDo`", as_dict=True):
         print(row.name)
 
 

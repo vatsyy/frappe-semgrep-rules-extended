@@ -1,0 +1,13 @@
+{
+  "schema_name": "canonical-scan-health",
+  "schema_version": 1,
+  "required": [
+    "scan_id",
+    "status",
+    "execution_complete",
+    "engine_exit_code",
+    "engine_error",
+    "errors",
+    "finding_count"
+  ]
+}

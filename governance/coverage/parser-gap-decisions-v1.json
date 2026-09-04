@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "engine": "semgrep-ce-1.174.0",
+  "gaps": [
+    {
+      "id": "erpnext-payment-entry-generated-types",
+      "application": "erpnext",
+      "path": "banking/src/types/Accounts/PaymentEntry.ts",
+      "classification": "generated-or-vendor",
+      "treatment": "exclude-generated-type-declarations-from-native-blocking-scope",
+      "evidence": "Generated DocType declaration containing valid optional TypeScript properties."
+    },
+    {
+      "id": "erpnext-rfq-jinja-javascript",
+      "application": "erpnext",
+      "path": "erpnext/templates/includes/rfq.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "frappe-report-boilerplate-template",
+      "application": "frappe",
+      "path": "frappe/core/doctype/report/boilerplate/controller.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-test-generated-output",
+      "evidence": "Boilerplate uses doubled braces and placeholders to generate JavaScript."
+    },
+    {
+      "id": "frappe-python-314-timespan",
+      "application": "frappe",
+      "path": "frappe/utils/data.py",
+      "classification": "native-valid-engine-gap",
+      "treatment": "retain-visible-and-qualify-a-compatible-semgrep-engine",
+      "evidence": "The active Python 3.14 ast parser accepts the complete source file."
+    },
+    {
+      "id": "frappe-python-314-except-list",
+      "application": "frappe",
+      "path": "frappe/database/query.py",
+      "classification": "native-valid-engine-gap",
+      "treatment": "retain-visible-and-qualify-a-compatible-semgrep-engine",
+      "evidence": "Python 3.14 accepts the unparenthesised multi-exception syntax."
+    },
+    {
+      "id": "frappe-fingerprintjs-vendor-bundle",
+      "application": "frappe",
+      "path": "frappe/public/js/lib/fingerprintjs.js",
+      "classification": "generated-or-vendor",
+      "treatment": "exclude-reviewed-vendor-bundle-by-exact-path",
+      "evidence": "Vendored FingerprintJS 3.4.2 is minified despite lacking a .min.js suffix."
+    },
+    {
+      "id": "frappe-list-jinja-javascript",
+      "application": "frappe",
+      "path": "frappe/templates/includes/list/list.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "frappe-login-jinja-javascript",
+      "application": "frappe",
+      "path": "frappe/templates/includes/login/login.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "frappe-website-script-jinja-javascript",
+      "application": "frappe",
+      "path": "frappe/www/website_script.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "The file is a Jinja wrapper around user-configured website JavaScript."
+    },
+    {
+      "id": "frappe-ui-anchor-regex-typescript",
+      "application": "frappe-ui",
+      "path": "docs/scripts/anchor-links.ts",
+      "classification": "native-valid-engine-gap",
+      "treatment": "retain-visible-and-qualify-a-compatible-semgrep-engine",
+      "evidence": "Repository TypeScript contains a valid regex for Markdown fence removal."
+    },
+    {
+      "id": "payments-braintree-jinja-javascript",
+      "application": "payments",
+      "path": "payments/templates/includes/braintree_checkout.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "payments-gocardless-jinja-javascript",
+      "application": "payments",
+      "path": "payments/templates/includes/gocardless_checkout.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "payments-razorpay-jinja-javascript",
+      "application": "payments",
+      "path": "payments/templates/includes/razorpay_checkout.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    },
+    {
+      "id": "payments-stripe-jinja-javascript",
+      "application": "payments",
+      "path": "payments/templates/includes/stripe_checkout.js",
+      "classification": "mixed-template",
+      "treatment": "exclude-from-native-js-scope-and-require-template-aware-analysis",
+      "evidence": "Tracked JavaScript template contains Jinja expressions before rendering."
+    }
+  ]
+}

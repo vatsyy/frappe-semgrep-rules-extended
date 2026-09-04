@@ -1,0 +1,59 @@
+{
+  "admitted_rules": [],
+  "approval": {
+    "owner": "Vatsal",
+    "state": "pending"
+  },
+  "authored_decisions": {
+    "path": "governance/review-batches/batch-02/decisions-v1.json",
+    "sha256": "46ceaafa47d48480f9c851f065ede470ca7fa00ae2e5510675899dbbe82224db"
+  },
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "candidate_rules": [
+    "frappe-interpolated-execute-in-shell",
+    "frappe-whitelisted-direct-file-path"
+  ],
+  "comparison": {
+    "path": "governance/review-batches/batch-02/independent-comparison-v1.json",
+    "sha256": "dd4972e117729f2c95f6a4c80b42f495d73ab1a5d2a602dcb33cc9502619f05f"
+  },
+  "decisions": [
+    {
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Keep the immutable upstream open-call inventory outside blocking enforcement. Retain frappe-whitelisted-direct-file-path as a candidate narrow audit claim; the blind reviewer found its decisive caller-control boundary unresolved.",
+      "outcome": "split",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Keep the immutable backport as a process-sink inventory. Retain frappe-interpolated-execute-in-shell as a candidate audit split; three interpolated calls were independently confirmed and one remained unresolved, while generic shell wrappers require caller-provenance review.",
+      "outcome": "split",
+      "rule_id": "frappe-subprocess-exec"
+    }
+  ],
+  "execution": {
+    "executable_rule_tree_changed_after_independent_review": false,
+    "post_review_scan": "not-required",
+    "reason": "The independent review changes no executable pattern; retain the authored seven-app comparison pending Vatsal's adjudication.",
+    "retained_scan": "scan-results/batch-02-authored-20260826"
+  },
+  "independent_review": {
+    "path": ".scratch/trustworthy-semgrep-foundation/batches/batch-02-blind-review-result-v1.json",
+    "reviewer": "/root/batch02_blind_review",
+    "sha256": "20151b3c98005bae0d493780c221d0d0f226484de1f006df40f86055cc63020f"
+  },
+  "review_interpretation": {
+    "agreed_cases": 22,
+    "disagreed_cases": 34,
+    "independent_unresolved_cases": 18,
+    "meaning": "Most disagreement is safe-near-miss versus intentional-policy or packet-only unresolved provenance. It supports conservative audit ceilings and does not justify silently converting uncertainty into defects.",
+    "reviewer_minutes": 1.08
+  },
+  "schema_version": 1,
+  "state": "superseded-by-focused-rule-audit",
+  "superseded_by": "governance/review-batches/batch-02/focused-rule-audit-v1.json",
+  "seven_app_comparison": {
+    "path": "governance/review-batches/batch-02/comparison-v1.json",
+    "sha256": "6e0dc07cfe4c5940a0d56165a9e7ff4277c8f53eb79dc978d3eb142800283968"
+  }
+}

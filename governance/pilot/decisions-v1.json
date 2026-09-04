@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "review_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "decision_author": "Noema",
+  "independent_reviewer": "pending-vatsal-authorisation",
+  "approval_owner": "Vatsal",
+  "review_state": "authored",
+  "decisions": [
+    {"rule_id":"frappe-async-array-callback-misuse","outcome":"retain","evidence_packet":"governance/pilot/evidence/async-array-callback-v1.json","rationale":"The complete census contains two confirmed completion races and one intentional fire-and-forget boundary; the JavaScript semantic claim is correct, but context still governs enforcement.","enforcement_ceiling":"non-blocking-monitor"},
+    {"rule_id":"override-doctype-class","outcome":"audit-only","evidence_packet":"governance/pilot/evidence/override-doctype-class-v1.json","rationale":"The sole real match is deliberate controller registration. The immutable upstream rule identifies compatibility debt rather than a proven defect.","enforcement_ceiling":"audit-only"},
+    {"rule_id":"frappe-sql-format-injection","outcome":"audit-only","evidence_packet":"governance/pilot/evidence/sql-format-injection-v1.json","rationale":"One sampled case is injection-prone, while most matches and the 28 independently found percent-format cases are safe structural assembly. Attacker control is not established structurally.","enforcement_ceiling":"audit-only"},
+    {"rule_id":"frappe-whitelisted-permission-bypass","outcome":"split","evidence_packet":"governance/pilot/evidence/whitelisted-permission-bypass-v1.json","rationale":"Explicit bypass APIs and raw SQL are distinct permission-bypassing operation classes. Retain the former at medium-confidence audit and add a separately named raw-SQL audit rule.","enforcement_ceiling":"non-blocking-audit"},
+    {"rule_id":"frappe-n-plus-one-read-in-loop","outcome":"split","evidence_packet":"governance/pilot/evidence/n-plus-one-read-in-loop-v1.json","rationale":"The statement-loop claim remains useful but runtime impact varies. Six independently found comprehension reads satisfy the same performance concern and receive a separate claim so syntax and evidence remain precise.","enforcement_ceiling":"non-blocking-audit"}
+  ],
+  "new_rules": ["frappe-n-plus-one-read-in-comprehension", "frappe-whitelisted-raw-sql"]
+}

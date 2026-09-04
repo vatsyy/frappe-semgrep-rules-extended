@@ -23,6 +23,7 @@
     "performance-hypothesis"
   ],
   "enforcement_tiers": ["blocking", "monitor", "audit"],
+  "rule_confidence_statuses": ["unmeasured", "measured"],
   "scope_required": [
     "languages",
     "framework_versions",

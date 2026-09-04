@@ -1,0 +1,41 @@
+{
+  "batch_id": "portfolio-review-batch-01-20260825",
+  "claims": [
+    {
+      "claim_id": "A",
+      "population": 53,
+      "rule_id": "frappe-codeinjection-eval",
+      "selected_cases": 18
+    },
+    {
+      "claim_id": "B",
+      "population": 75,
+      "rule_id": "frappe-ssti",
+      "selected_cases": 28
+    },
+    {
+      "claim_id": "C",
+      "population": 1,
+      "rule_id": "frappe-subprocess-shell-true",
+      "selected_cases": 1
+    },
+    {
+      "claim_id": "D",
+      "population": 4,
+      "rule_id": "frappe-set-value-semantics",
+      "selected_cases": 4
+    },
+    {
+      "claim_id": "E",
+      "population": 3,
+      "rule_id": "unchecked-frappe-permission-call",
+      "selected_cases": 3
+    }
+  ],
+  "sampling": {
+    "complete_population_limit": 20,
+    "method": "complete at or below limit; otherwise first SHA-256 identities per application-and-structure cluster",
+    "per_cluster": 3
+  },
+  "schema_version": 1
+}

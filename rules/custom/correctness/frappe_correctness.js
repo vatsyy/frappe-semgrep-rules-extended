@@ -1,5 +1,5 @@
 async function processRows(rows) {
-  // ruleid: frappe-async-array-callback-misuse
+  // ruleid: frappe-async-foreach-callback
   rows.forEach(async (row) => {
     await frappe.call("app.api.process", { name: row.name });
   });
@@ -26,10 +26,18 @@ async function processRows(rows) {
 
 async function validAsyncIteration(rows) {
   // ok: frappe-async-array-callback-misuse
+  // ok: frappe-async-foreach-callback
   await Promise.all(rows.map(async (row) => frappe.call("app.api.process", { name: row.name })));
 
   // ok: frappe-async-array-callback-misuse
   for (const row of rows) {
     await frappe.call("app.api.process", { name: row.name });
   }
+}
+
+function independentDomUpdates(keys) {
+  // ruleid: frappe-async-foreach-callback
+  keys.forEach(async (key) => {
+    document.querySelector(`[data-key="${key}"]`).textContent = await getTitle(key);
+  });
 }

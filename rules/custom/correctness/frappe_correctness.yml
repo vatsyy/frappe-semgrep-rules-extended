@@ -3,10 +3,9 @@ rules:
     languages: [javascript]
     severity: ERROR
     message: >-
-      This array method does not await its async callback. forEach discards the
-      returned Promise; filter, find, some, every and sort consume the Promise
-      as a synchronous callback result. Use for...of, Promise.all with map, or
-      an explicitly synchronous callback as appropriate.
+      This array method consumes an async callback's Promise as a synchronous
+      predicate or comparator result. Resolve the values before calling the
+      array method, or use an explicitly synchronous callback.
     metadata:
       origin: custom
       category: correctness
@@ -16,15 +15,58 @@ rules:
         - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
     patterns:
       - pattern-either:
-          - pattern: $ARRAY.forEach(...)
           - pattern: $ARRAY.filter(...)
           - pattern: $ARRAY.find(...)
           - pattern: $ARRAY.some(...)
           - pattern: $ARRAY.every(...)
           - pattern: $ARRAY.sort(...)
       - pattern-regex: >-
-          \.(?:forEach|filter|find|some|every|sort)\s*\(\s*async\b
+          \.(?:filter|find|some|every|sort)\s*\(\s*async\b
     paths:
       exclude:
         - "**/*.test.js"
+        - "**/tests/**"
+
+  - id: frappe-async-foreach-callback
+    languages: [javascript]
+    severity: WARNING
+    message: >-
+      forEach discards the Promise returned by its async callback. Review
+      whether subsequent work depends on callback completion; use for...of or
+      Promise.all with map when completion or failure must be observed.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: MEDIUM
+      technology: [frappe]
+      references:
+        - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    patterns:
+      - pattern: $ARRAY.forEach(...)
+      - pattern-regex: >-
+          \.forEach\s*\(\s*async\b
+    paths:
+      exclude:
+        - "**/*.test.js"
+        - "**/tests/**"
+
+  - id: frappe-malformed-sql-placeholder-list
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Multiplying the placeholder string before joining produces adjacent
+      placeholders such as %s%s, not a comma-separated list. Multiply the
+      one-element placeholder list instead: ", ".join(["%s"] * len(values)).
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: HIGH
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - pattern: '$SEP.join(["%s" * len($VALUES)])'
+          - pattern: "$SEP.join(['%s' * len($VALUES)])"
+    paths:
+      exclude:
+        - "**/test_*.py"
         - "**/tests/**"

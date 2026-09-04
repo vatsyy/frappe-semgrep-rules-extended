@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "batch_id": "portfolio-review-batch-01-20260825",
+  "parent_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "baseline_scan": "scan-results/pilot-adjudicated-20260825",
+  "state": "selected",
+  "selection_method": [
+    "correctness or security consequence before style",
+    "real findings across the frozen seven-app corpus",
+    "complete census when population is small",
+    "deterministic clustered sample when population exceeds twenty"
+  ],
+  "rules": [
+    {
+      "rule_id": "frappe-codeinjection-eval",
+      "finding_count": 53,
+      "suppression_count": 0,
+      "review_scope": "deterministic clustered sample",
+      "selection_reason": "An ERROR rule combines eval, exec, safe evaluators, attribute resolution and frappe.call under one remote-code-execution claim."
+    },
+    {
+      "rule_id": "frappe-ssti",
+      "finding_count": 75,
+      "suppression_count": 0,
+      "review_scope": "deterministic clustered sample",
+      "selection_reason": "Template execution is security-sensitive, but exploitability depends on template provenance and sandbox restrictions."
+    },
+    {
+      "rule_id": "frappe-subprocess-shell-true",
+      "finding_count": 1,
+      "suppression_count": 0,
+      "review_scope": "complete census",
+      "selection_reason": "Shell execution is a high-consequence sink with a bounded current population."
+    },
+    {
+      "rule_id": "frappe-set-value-semantics",
+      "finding_count": 4,
+      "suppression_count": 0,
+      "review_scope": "complete census",
+      "selection_reason": "An empty record selector can silently update every row, making this a state-corruption boundary rather than style guidance."
+    },
+    {
+      "rule_id": "unchecked-frappe-permission-call",
+      "finding_count": 3,
+      "suppression_count": 0,
+      "review_scope": "complete census",
+      "selection_reason": "Ignoring a permission result can expose data, while boolean-expression usage must not be misclassified as ignored."
+    }
+  ]
+}

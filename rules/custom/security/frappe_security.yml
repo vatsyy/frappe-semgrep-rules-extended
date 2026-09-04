@@ -1,4 +1,151 @@
 rules:
+  - id: frappe-direct-python-eval-exec
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Direct Python eval or exec executes code in the current process. Verify
+      that the input is fixed or restricted to an explicit administrative
+      boundary; prefer a parser such as ast.literal_eval for data.
+    metadata:
+      origin: custom
+      category: security
+      confidence: MEDIUM
+      technology: [frappe]
+      cwe:
+        - "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code"
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: exec(...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
+  - id: frappe-dynamic-template-with-default-globals
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A dynamic template is rendered with Frappe's default globals. Verify who
+      can edit the template and whether that trust boundary is intended; use a
+      fixed template path or restrict_globals=True where compatible.
+    metadata:
+      origin: custom
+      category: security
+      confidence: MEDIUM
+      technology: [frappe]
+      cwe:
+        - "CWE-1336: Improper Neutralization of Special Elements Used in a Template Engine"
+    patterns:
+      - pattern-either:
+          - pattern: render_template($TEMPLATE, ...)
+          - pattern: frappe.render_template($TEMPLATE, ...)
+      - pattern-not: render_template($TEMPLATE, ..., restrict_globals=True, ...)
+      - pattern-not: frappe.render_template($TEMPLATE, ..., restrict_globals=True, ...)
+      - pattern-not: render_template($TEMPLATE, ..., restrict_globals=1, ...)
+      - pattern-not: frappe.render_template($TEMPLATE, ..., restrict_globals=1, ...)
+      - pattern-not: render_template($TEMPLATE, ..., is_path=True, ...)
+      - pattern-not: frappe.render_template($TEMPLATE, ..., is_path=True, ...)
+      - metavariable-regex:
+          metavariable: $TEMPLATE
+          regex: >-
+            (?s)^(?![rubfRUBF]*(?:"|')).+
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
+  - id: frappe-ignored-permission-result
+    languages: [python]
+    severity: ERROR
+    message: >-
+      The result of frappe.has_permission is ignored. Test or return the
+      boolean, or pass throw=True when denial must raise an exception.
+    metadata:
+      origin: custom
+      category: security
+      confidence: HIGH
+      technology: [frappe]
+      cwe:
+        - "CWE-862: Missing Authorization"
+    patterns:
+      - pattern: frappe.has_permission(...)
+      - pattern-not: frappe.has_permission(..., throw=True, ...)
+      - pattern-not: frappe.has_permission(..., throw=$THROW, ...)
+      - pattern-not-inside: $VALUE = <... frappe.has_permission(...) ...>
+      - pattern-not-inside: "return <... frappe.has_permission(...) ...>"
+      - pattern-not-inside: "if <... frappe.has_permission(...) ...>: ..."
+      - pattern-not-inside: "assert <... frappe.has_permission(...) ...>"
+      - pattern-not-inside: "$TRUE if frappe.has_permission(...) else $FALSE"
+      - pattern-not-inside: "[$VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>]"
+      - pattern-not-inside: "{$VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>}"
+      - pattern-not-inside: "($VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>)"
+      - pattern-not-inside: "{$KEY: $VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>}"
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
+  - id: frappe-whitelisted-direct-file-path
+    languages: [python]
+    severity: ERROR
+    message: >-
+      Whitelisted method $FUNC writes or reads the caller-supplied path $PATH
+      directly. Resolve the operation through Frappe's File API or constrain
+      the path to an allowed server directory before opening it.
+    metadata:
+      origin: custom
+      category: security
+      confidence: HIGH
+      technology: [frappe]
+      cwe:
+        - "CWE-22: Improper Limitation of a Pathname to a Restricted Directory"
+    patterns:
+      - pattern-inside: |
+          @frappe.whitelist(...)
+          def $FUNC(..., $PATH, ...):
+            ...
+      - pattern: open($PATH, ...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
+  - id: frappe-interpolated-execute-in-shell
+    languages: [python]
+    severity: WARNING
+    message: >-
+      An interpolated string is passed to Frappe's explicit shell helper.
+      Prefer an argv-based subprocess call; otherwise quote every interpolated
+      value and verify its trust boundary. This match does not prove attacker
+      control.
+    metadata:
+      origin: custom
+      category: security
+      confidence: HIGH
+      technology: [frappe]
+      cwe:
+        - "CWE-78: Improper Neutralization of Special Elements used in an OS Command"
+    mode: taint
+    pattern-sources:
+      - pattern: f"..."
+      - pattern: $TEMPLATE.format(...)
+      - patterns:
+          - pattern: $SEPARATOR.join(...)
+          - pattern-not: shlex.join(...)
+    pattern-sanitizers:
+      - pattern: shlex.quote(...)
+      - pattern: shlex.join(...)
+    pattern-sinks:
+      - patterns:
+          - pattern-either:
+              - pattern: frappe.utils.execute_in_shell($COMMAND, ...)
+              - pattern: execute_in_shell($COMMAND, ...)
+          - focus-metavariable: $COMMAND
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
   - id: frappe-whitelisted-permission-bypass
     languages: [python]
     severity: WARNING
@@ -9,7 +156,7 @@ rules:
     metadata:
       origin: custom
       category: security
-      confidence: HIGH
+      confidence: MEDIUM
       technology: [frappe]
       cwe:
         - "CWE-862: Missing Authorization"
@@ -35,6 +182,37 @@ rules:
           - pattern: $DOC.delete(..., ignore_permissions=True, ...)
           - pattern: frappe.delete_doc(..., ignore_permissions=True, ...)
           - pattern: $DOC.flags.ignore_permissions = True
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+
+  - id: frappe-whitelisted-raw-sql
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Whitelisted method $FUNC executes raw SQL, which bypasses DocType and
+      record permissions. Verify endpoint authorisation and ensure the query
+      applies the intended match conditions; parameterisation prevents
+      injection but does not enforce access control.
+    metadata:
+      origin: custom
+      category: security
+      confidence: MEDIUM
+      technology: [frappe]
+      cwe:
+        - "CWE-862: Missing Authorization"
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              def $FUNC(...):
+                ...
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              async def $FUNC(...):
+                ...
+      - pattern: frappe.db.sql(...)
     paths:
       exclude:
         - "**/test_*.py"

@@ -15,10 +15,12 @@
       "expected": {
         "findings": [
           {
-            "rule_id": "frappe-async-array-callback-misuse"
+            "rule_id": "frappe-async-foreach-callback"
           }
         ],
-        "absent": []
+        "absent": [
+          "frappe-async-array-callback-misuse"
+        ]
       },
       "fixture_role": "authored-compatibility-fixture",
       "admission_eligible": false,
@@ -36,7 +38,8 @@
       "expected": {
         "findings": [],
         "absent": [
-          "frappe-async-array-callback-misuse"
+          "frappe-async-array-callback-misuse",
+          "frappe-async-foreach-callback"
         ]
       },
       "fixture_role": "authored-compatibility-fixture",
@@ -59,7 +62,8 @@
           }
         ],
         "absent": [
-          "frappe-async-array-callback-misuse"
+          "frappe-async-array-callback-misuse",
+          "frappe-async-foreach-callback"
         ]
       },
       "fixture_role": "authored-compatibility-fixture",
@@ -287,6 +291,9 @@
         "findings": [
           {
             "rule_id": "frappe-ssti"
+          },
+          {
+            "rule_id": "frappe-dynamic-template-with-default-globals"
           }
         ],
         "absent": []

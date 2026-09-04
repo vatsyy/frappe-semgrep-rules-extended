@@ -1,0 +1,38 @@
+{
+  "after_scan": "scan-results/batch-02-authored-20260826",
+  "application_worktree_status_unchanged_for_all_seven_apps": true,
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "before_scan": "scan-results/batch-02-baseline-20260826",
+  "coverage": {
+    "after_findings": 4978,
+    "before_findings": 4973,
+    "parser_error_count_after": 14,
+    "parser_error_count_before": 14,
+    "parser_error_count_unchanged": true,
+    "unanalysed_target_rules": 0
+  },
+  "rule_comparisons": [
+    {
+      "after": 1,
+      "interpretation": "one direct caller-supplied path-to-open boundary is separated from 176 generic open-call findings",
+      "refined_rule": "frappe-whitelisted-direct-file-path",
+      "reviewed_rule": "frappe-security-file-traversal"
+    },
+    {
+      "after": 4,
+      "interpretation": "four interpolated shell-helper calls are separated from sixteen generic process-call findings",
+      "refined_rule": "frappe-interpolated-execute-in-shell",
+      "reviewed_rule": "frappe-subprocess-exec"
+    }
+  ],
+  "rules_after": {
+    "content_sha256": "072915e0c0dce7f0d5fa820752c4981e9920f95a9d181e522b10093aac9ea275",
+    "file_count": 41
+  },
+  "rules_before": {
+    "content_sha256": "e1494ce2723372e8078623a1aee52d63651b45f193c1869d43e5c6c7fe092d48",
+    "file_count": 41
+  },
+  "schema_version": 1,
+  "source_identity_unchanged_for_all_seven_apps": true
+}

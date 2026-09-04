@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "batch_id": "portfolio-review-batch-01-20260825",
+  "authored_decisions": {
+    "path": "governance/review-batches/batch-01/decisions-v1.json",
+    "sha256": "cf1b2b1fe312def171ad8774282cb3c6e206020f66ae4e97ead326fecb68cecc"
+  },
+  "independent_review": {
+    "path": ".scratch/trustworthy-semgrep-foundation/batches/batch-01-blind-review-result-v1.json",
+    "sha256": "446a050a238ea248f9b5f81b2f0a6b100cf1bd7769f1f908a1e193bc85922320",
+    "reviewer": "independent-blind-reviewer-01"
+  },
+  "comparison": {
+    "path": "governance/review-batches/batch-01/independent-review-comparison-v1.json",
+    "sha256": "d277a07208ac4e75c6d3f4a762cad7960c9358bd1aeec137302fd6bf3c91a913"
+  },
+  "approval": {
+    "owner": "Vatsal",
+    "approved_on": "2026-08-26",
+    "statement": "You have my approval. Let's start with the final Batch 01.",
+    "state": "approved"
+  },
+  "decisions": [
+    {
+      "rule_id": "frappe-codeinjection-eval",
+      "outcome": "split",
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Keep the immutable upstream match outside blocking enforcement. frappe-direct-python-eval-exec remains a candidate audit claim that separates direct execution from safe evaluators and framework dispatch."
+    },
+    {
+      "rule_id": "frappe-ssti",
+      "outcome": "split",
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Keep literal paths and explicitly restricted rendering outside the dynamic-default-globals claim. frappe-dynamic-template-with-default-globals remains a candidate audit claim; configured template provenance stays unresolved and is not silently treated as a defect."
+    },
+    {
+      "rule_id": "frappe-subprocess-shell-true",
+      "outcome": "narrow",
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Leave the immutable backport unchanged but outside the accepted portfolio. Do not create a successor until real-source evidence establishes dynamic command construction or untrusted input."
+    },
+    {
+      "rule_id": "frappe-set-value-semantics",
+      "outcome": "retire",
+      "enforcement_ceiling": "outside-portfolio",
+      "implementation": "Retire the claim from the active portfolio because all reviewed findings are deliberate framework tests. Preserve the immutable upstream file without admitting or enforcing it."
+    },
+    {
+      "rule_id": "unchecked-frappe-permission-call",
+      "outcome": "audit-only",
+      "enforcement_ceiling": "audit-only",
+      "implementation": "Keep the broad upstream claim non-blocking. frappe-ignored-permission-result remains a candidate audit replacement and cannot be admitted until independent real-source positive evidence exists."
+    }
+  ],
+  "candidate_rules": [
+    "frappe-direct-python-eval-exec",
+    "frappe-dynamic-template-with-default-globals",
+    "frappe-ignored-permission-result"
+  ],
+  "admitted_rules": [],
+  "execution": {
+    "executable_rule_tree_changed": false,
+    "rules_content_sha256": "e1494ce2723372e8078623a1aee52d63651b45f193c1869d43e5c6c7fe092d48",
+    "rules_file_count": 41,
+    "post_adjudication_scan": "not-required",
+    "retained_scan": "scan-results/batch-01-authored-v2-20260825",
+    "reason": "Adjudication changes portfolio decisions only; rule files and application sources are unchanged."
+  }
+}

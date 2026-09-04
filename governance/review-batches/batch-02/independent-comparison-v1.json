@@ -1,0 +1,280 @@
+{
+  "agreement": {
+    "agreed_case_count": 22,
+    "case_count": 56,
+    "disagreed_case_count": 34,
+    "label_pairs": [
+      {
+        "authored": "confirmed-issue",
+        "count": 3,
+        "independent": "confirmed-issue"
+      },
+      {
+        "authored": "confirmed-issue",
+        "count": 2,
+        "independent": "unresolved"
+      },
+      {
+        "authored": "intentional-policy",
+        "count": 3,
+        "independent": "confirmed-issue"
+      },
+      {
+        "authored": "intentional-policy",
+        "count": 2,
+        "independent": "intentional-policy"
+      },
+      {
+        "authored": "intentional-policy",
+        "count": 3,
+        "independent": "safe-near-miss"
+      },
+      {
+        "authored": "intentional-policy",
+        "count": 5,
+        "independent": "unresolved"
+      },
+      {
+        "authored": "safe-near-miss",
+        "count": 10,
+        "independent": "intentional-policy"
+      },
+      {
+        "authored": "safe-near-miss",
+        "count": 17,
+        "independent": "safe-near-miss"
+      },
+      {
+        "authored": "safe-near-miss",
+        "count": 11,
+        "independent": "unresolved"
+      }
+    ]
+  },
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "claim_recommendations": [
+    {
+      "claim_id": "A",
+      "enforcement_ceiling": "audit-only",
+      "outcome": "narrow",
+      "rationale": "The packet contains many fixed, generated, enumerated, and explicit export paths alongside generic path parameters. Retain only a narrow dynamic-path triage rule; static context does not establish caller control or containment.",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "claim_id": "B",
+      "enforcement_ceiling": "audit-only",
+      "outcome": "split",
+      "rationale": "Separate shell-string execution from argument-vector process launches. The former has confirmed unquoted interpolation and generic shell executors; the latter includes many fixed or intentional commands. Packet-only evidence cannot justify exploitability or blocking enforcement.",
+      "rule_id": "frappe-subprocess-exec"
+    }
+  ],
+  "disagreements": [
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "030e27866169aca0dcfa7f73aae4e7eed580044f7b30ce194a87c34345a2fcea",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "056094db4d375844a0b4125e288377763ccce75fabe9351eabbd6df9c419751a",
+      "independent_label": "safe-near-miss",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "07f5fb278949376e9de4987b08a565d2b62830c169664116d23eb5d6a11d562b",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "096d251dac9e16334c255f8ddb4a2df4e79f1fbb29c801b182bed40e5db58c7d",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "09c14c389875206653ba11fd17722a93fe1777c2024c17795c2d97076a67772b",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "0c01e591840e9f110ac3dc1ff4b5e1a88e508db0f8cf3993f0632dc36c9621b0",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "170de9176cdb92e416a3fd5330c947c3c5b17d7a1309ef320a3c671c5c0557af",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "1a6704a7acb1211c038596e6b8e2a177f1a5fc0e074e31d7a900357e4b166ff3",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "1c45eca604f65bb458dc59d2f07c384329e67bccd6ba785c0eb6f33ee2cba514",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "2eec2b1cc021e5d7ff97f7228fd6371613ad3ee388f7c807f49ba0d0d652c954",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "3b6460301ce607851db4e7ddc17ed72f2cdeeac3ff1311537a9685e8f7a8c932",
+      "independent_label": "confirmed-issue",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "3ece3efd54dae46bdef0bf0873aaea6b952b9fd26ea38c796e31ccb04b53abe0",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "410d5f8e81cbfaf8e82f9eec30c5e4cb339b5500745e350d13d63039d622823b",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "464a3d57a779d63b39e8a441b4f243160712f392b135f500357f0f62ac65524f",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "4adaca8992cafa6ddb9c6c2525995a84b2828103aa16f8932d096715c69918fb",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "552bb1878ee683473a38d0953cef27635c890a02665f523ff86f16943f3d79a0",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "confirmed-issue",
+      "case_id": "6567d9c242bb3ca00c9efb0b1ab57a2b08b7da4f92dc8fd1d73820e6aa0f5e72",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "769e5c55c49f4ef206b7c71d554541b3cd471ce2e2a3c15fdeaa0113c7517c9f",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "8df83b71213abe4d85987dbc2fe1e069e7ed7ed01176b5fac795ce9da4ce72c6",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "92d527b7b5e74c57a1c7c1fcd7d4cb7f7181369146833d62deefff2d9f5416a1",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "9a4227b97783bbad824643414ffe27bed60a992b91deb62e0d63c276d3c783ce",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "9c5979ee9307358413375a35292ca9074b3368c34b3e11806b9506b837bb3379",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "confirmed-issue",
+      "case_id": "baec525f28776b2b8aadb4c6b21655d6339e1a84b2dcd81389add8c776d466f2",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "c5502d9bcdd552ab786a6d25ee3314d8237af5d9681b7ecd9b8d9a6a04c0811a",
+      "independent_label": "safe-near-miss",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "ce01806fc7ccabf8dc74b3b94fa74254e2a4334ca4a01ff8c664c74418c0a1a3",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "cea13af9a72c44251d4995f070d90cf3eaf67fee5acd5b77ab3da0af144544ef",
+      "independent_label": "confirmed-issue",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "d110a2eee0293469c5d5613ca4d25a606624b3ab55293a45e5637cc16c6296c8",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "dc1bffd93c781f7cdea49dc64afffbd8a37ab453e9714d6927f0db3284deeda5",
+      "independent_label": "intentional-policy",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "dcd33477cadf6a423bb5d18a2ccec6adedb9dd3223180c1f1dfe397e674309bd",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "e2aea279fcf30bec465ef7d51b39faa4253b666e33c10c91a3b7fc4e32c83fc1",
+      "independent_label": "confirmed-issue",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "e2e6292e7a7a47fc60d442289722dd2da43e7badbe33687fb59b14058ade0cf7",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "safe-near-miss",
+      "case_id": "ea59e71021e1debc4caf0884dc167de8f28f311de6307f20f8f724189ba2bd2a",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "eea6a58063e09a3bcb363f94069900aace4bd04fdedbc1c8a928208e76a9a109",
+      "independent_label": "safe-near-miss",
+      "rule_id": "frappe-security-file-traversal"
+    },
+    {
+      "authored_label": "intentional-policy",
+      "case_id": "f3313341a0e54bf5eb15009b01e966ca5e3860dd60c26f8ac7d61c97670d4f78",
+      "independent_label": "unresolved",
+      "rule_id": "frappe-subprocess-exec"
+    }
+  ],
+  "independent_reviewer": "/root/batch02_blind_review",
+  "reviewer_minutes": 1.08,
+  "schema_version": 1
+}

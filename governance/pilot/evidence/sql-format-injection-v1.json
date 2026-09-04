@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "rule_id": "frappe-sql-format-injection",
+  "review_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "claim": "f-string or format interpolation into SQL requires source tracing because interpolated values may become executable SQL structure or data",
+  "non_claims": ["every formatted query is exploitable", "parameter placeholders, closed identifier choices and generated placeholder counts are unsafe"],
+  "engine_match_census": {"population": 222, "reviewed": 13, "suppressions": 0, "complete": false},
+  "review_sample": [
+    {"id": "1a4cafbcb684f68a41ecf24568ccee28532c9ecaca7787e0ae61fdd9ce8ce022", "decision": "confirmed-injection-prone-value-interpolation", "basis": "a configured currency value is inserted directly inside a quoted UPDATE literal"},
+    {"id": "2b0feae321271dc67b63c0ffd31ca8016bcfd7a2ff4bd2545c50b9f3fedbbf2f", "decision": "safe-closed-structure", "basis": "fields and ordering are closed local choices, numeric length is coerced and condition values remain parameterised"},
+    {"summary": "eleven further deterministic samples", "decision": "nine safe structural/placeholder constructions and two provenance-sensitive identifier hotspots"}
+  ],
+  "safe_near_misses": ["generated %s lists with values passed separately", "fixed setting-derived numeric literals", "closed order-by and field allowlists"],
+  "missed_positive_search": {"method": "independent patterns for percent formatting and concatenation", "candidates": 28, "review_result": "predominantly placeholder generation or closed structural fragments; no sufficiently precise blocking rule established"},
+  "source_evidence": ["erpnext/patches/v13_0/update_timesheet_changes.py", "erpnext/accounts/doctype/pricing_rule/utils.py", "frappe/core/doctype/log_settings/log_settings.py", "frappe/model/base_document.py"],
+  "limitations": ["Semgrep CE structural matching does not prove attacker control", "the incomplete population census caps this packet at non-blocking"],
+  "review_state": "authored"
+}

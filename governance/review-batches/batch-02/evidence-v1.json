@@ -1,0 +1,36 @@
+{
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "limitations": [
+    "The file-call population is deterministically sampled and cannot support blocking enforcement.",
+    "Static source establishes structural boundaries, not runtime exploitability, reachability or business impact.",
+    "The process-call population is complete for current findings, but independent search is bounded to direct Python call structures."
+  ],
+  "review_author": "Noema",
+  "review_queue": ".scratch/trustworthy-semgrep-foundation/batches/batch-02-review-queue-v1.json",
+  "review_state": "authored-frozen",
+  "rules": [
+    {
+      "finding": "The upstream open-call inventory does not establish traversal. One independent search found a whitelisted direct path-to-write boundary that supports a separate narrow claim.",
+      "labels": {
+        "confirmed-issue": 1,
+        "intentional-policy": 10,
+        "safe-near-miss": 25
+      },
+      "population": 176,
+      "rule_id": "frappe-security-file-traversal",
+      "sample": 36
+    },
+    {
+      "finding": "The backport process-call inventory mixes safe argument vectors, intentional execution wrappers and shell helpers. Four independent searches support a separate interpolated-shell-helper claim.",
+      "labels": {
+        "confirmed-issue": 4,
+        "intentional-policy": 3,
+        "safe-near-miss": 13
+      },
+      "population": 16,
+      "rule_id": "frappe-subprocess-exec",
+      "sample": 20
+    }
+  ],
+  "schema_version": 1
+}

@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "rule_id": "override-doctype-class",
+  "review_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "claim": "a hooks.py controller override replaces the original DocType class and creates upgrade and multi-app compatibility risk",
+  "non_claims": ["every controller override is defective", "document events or extension mixins can always preserve the required behaviour"],
+  "engine_match_census": {"population": 1, "reviewed": 1, "suppressions": 0, "complete": true},
+  "review_sample": [{"id": "eaefafe75c26d73d31840aa62261e7d1925636ca9cdc58a4d8577a768c0ae090", "decision": "intentional-policy-finding", "basis": "Karam deliberately replaces Bank Clearance behaviour; the match identifies a compatibility obligation, not a demonstrated defect"}],
+  "safe_near_misses": ["extend_doctype_class and doc_events registrations do not match the assignment rule"],
+  "missed_positive_search": {"method": "exact hooks.py assignment census", "candidates": 1, "unmatched_candidates": 0},
+  "source_evidence": ["private-evidence-id:eaefafe75c26d73d31840aa62261e7d1925636ca9cdc58a4d8577a768c0ae090"],
+  "limitations": ["static evidence cannot decide whether an override is necessary or compatible with the next framework release"],
+  "review_state": "authored"
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "batch_id": "portfolio-review-batch-02-host-boundaries",
+  "parent_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "baseline_scan": "scan-results/batch-02-baseline-20260826",
+  "state": "selected",
+  "selection_method": [
+    "security consequence before style or maintainability",
+    "complete census for populations at or below twenty",
+    "deterministic application-and-structure clustered sample for larger populations",
+    "target forty to sixty blind cases based on Batch 01 reviewer load"
+  ],
+  "rules": [
+    {
+      "rule_id": "frappe-security-file-traversal",
+      "finding_count": 176,
+      "suppression_count": 1,
+      "review_scope": "two deterministic identities per application, access-mode and path-form cluster plus suppression census",
+      "selection_reason": "The upstream rule matches every open call but describes file-traversal risk, so path provenance and trust boundaries determine whether the claim is useful."
+    },
+    {
+      "rule_id": "frappe-subprocess-exec",
+      "finding_count": 16,
+      "suppression_count": 0,
+      "review_scope": "complete current census",
+      "selection_reason": "External process execution is a high-consequence review sink, but static argument lists and attacker-influenced command construction are materially different claims."
+    }
+  ]
+}

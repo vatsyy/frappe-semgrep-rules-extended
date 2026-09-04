@@ -1,0 +1,66 @@
+{
+  "after_scan": "scan-results/pilot-adjudicated-20260825",
+  "before_scan": "scan-results/pilot-review-cut-20260825",
+  "coverage": {
+    "after_fully_analysed": 8479,
+    "after_partially_analysed": 14,
+    "after_unanalysed": 0,
+    "before_fully_analysed": 8479,
+    "before_partially_analysed": 14,
+    "before_unanalysed": 0
+  },
+  "introduced_rules": {
+    "frappe-async-foreach-callback": 3,
+    "frappe-malformed-sql-placeholder-list": 1,
+    "frappe-n-plus-one-read-in-comprehension": 7,
+    "frappe-whitelisted-raw-sql": 66
+  },
+  "rules": {
+    "frappe-async-array-callback-misuse": {
+      "after": 0,
+      "before": 3,
+      "delta": -3,
+      "moved": 0,
+      "new": 0,
+      "persisting": 0,
+      "resolved": 3
+    },
+    "frappe-n-plus-one-read-in-loop": {
+      "after": 647,
+      "before": 647,
+      "delta": 0,
+      "moved": 0,
+      "new": 0,
+      "persisting": 647,
+      "resolved": 0
+    },
+    "frappe-sql-format-injection": {
+      "after": 222,
+      "before": 222,
+      "delta": 0,
+      "moved": 0,
+      "new": 0,
+      "persisting": 222,
+      "resolved": 0
+    },
+    "frappe-whitelisted-permission-bypass": {
+      "after": 206,
+      "before": 206,
+      "delta": 0,
+      "moved": 0,
+      "new": 0,
+      "persisting": 206,
+      "resolved": 0
+    },
+    "override-doctype-class": {
+      "after": 1,
+      "before": 1,
+      "delta": 0,
+      "moved": 0,
+      "new": 0,
+      "persisting": 1,
+      "resolved": 0
+    }
+  },
+  "schema_version": 1
+}

@@ -1,0 +1,5 @@
+{
+  "schema_name": "canonical-scan-findings",
+  "schema_version": 1,
+  "required": ["scan_id", "finding_count", "findings"]
+}

@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "rule_id": "frappe-whitelisted-permission-bypass",
+  "review_cut_id": "portfolio-review-cut-a7e727dc92a640cb",
+  "claim": "a remotely callable method performing an explicitly permission-bypassing operation requires an endpoint, record or business-authorisation boundary",
+  "non_claims": ["whitelisting alone is a vulnerability", "ignore_permissions is wrong after a separately verified trust boundary", "get_all necessarily exposes sensitive data"],
+  "engine_match_census": {"population": 206, "reviewed": 22, "suppressions": 0, "complete": false},
+  "review_sample": [
+    {"id": "0d86de9bf7c76780816ed807a580cbc2d2a61731f82975bcc33b1b864bd9fd69", "decision": "safe-explicit-boundary", "basis": "the Data Import document read permission is checked before querying its logs"},
+    {"id": "090f2fa5393c107975bc8fae2239c4301650a86613fd5d8b8e1d7da1da27fcf2", "decision": "confirmed-authorization-risk", "basis": "the analogous Bank Statement Import endpoint reads logs without checking access to the named import"},
+    {"id": "035459bf482dc0d1f741ff3faf327378b0b79b15245f8ebdb0ce0bd65e8ae51d", "decision": "confirmed-authorization-risk", "basis": "the endpoint returns Address identifiers through get_all without checking access to the linked record"},
+    {"id": "21dc6f874e3ace1cfbcbed04758934a893f554c436af15dd91e846f96464000f", "decision": "confirmed-authorization-risk", "basis": "UI-controlled invocation is not an Account permission boundary"},
+    {"id": "ffd4fee273cb8b9c54732edeff01701176af7a93182efa178281a9826a5ddf9f", "decision": "confirmed-authorization-risk", "basis": "the endpoint returns Account identifiers without an explicit authorisation check"},
+    {"summary": "seventeen further deterministic samples", "decision": "mixed explicit framework boundaries, public metadata, signed callbacks and unresolved business-authorisation hotspots"}
+  ],
+  "safe_near_misses": ["explicit doc.check_permission before get_all", "validated Web Form request-key boundary", "public language metadata", "signed payment callbacks"],
+  "missed_positive_search": {"method": "independent whitelisted raw-SQL search", "candidates": 66, "review_result": "raw SQL is a real permission-bypassing capability absent from this rule and merits a separate audit claim"},
+  "source_evidence": ["frappe/core/doctype/data_import/data_import.py", "erpnext/accounts/doctype/bank_statement_import/bank_statement_import.py", "frappe/contacts/doctype/address/address.py", "private-evidence-id:21dc6f874e3ace1cfbcbed04758934a893f554c436af15dd91e846f96464000f", "private-evidence-id:ffd4fee273cb8b9c54732edeff01701176af7a93182efa178281a9826a5ddf9f"],
+  "limitations": ["business intent and caller reachability need domain review", "the incomplete population census caps this packet at non-blocking"],
+  "review_state": "authored"
+}

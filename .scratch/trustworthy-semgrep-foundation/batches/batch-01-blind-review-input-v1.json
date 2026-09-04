@@ -1,0 +1,435 @@
+{
+  "batch_id": "portfolio-review-batch-01-20260825",
+  "claims": [
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "case_id": "07f267dceeb7e98ffdb7fd9bd706d0f2761c35b7111e27f69a2a523824951263",
+          "context": "301: \t\tprint(frappe.get_traceback())\n302: \t\traise\n303: \n304: \telse:\n305: \t\tfrappe.db.commit(chain=True)\n306: \t\treturn retval\n307: \n308: \tfinally:\n309: \t\tif not hasattr(frappe.local, \"site\"):\n310: \t\t\tfrappe.init(site, force=True, is_job=True)\n311: \t\t\tfrappe.connect()\n312: \t\tfor after_job_task in frappe.get_hooks(\"after_job\"):\n313: \t\t\tfrappe.call(after_job_task, method=method_name, kwargs=kwargs, result=retval)\n314: \t\tfrappe.local.job.after_job.run()\n315: \n316: \t\tif is_async:\n317: \t\t\tfrappe.destroy()\n318: \n319: \n320: def start_worker(\n321: \tqueue: str | None = None,\n322: \tquiet: bool = False,\n323: \trq_username: str | None = None,\n324: \trq_password: str | None = None,\n325: \tburst: bool = False,",
+          "line": 313,
+          "path": "frappe/utils/background_jobs.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "0d0eba9a8c577379971d2c9f8c01ecddefec5bcea49dc78749cc683d6f97aef9",
+          "context": "228: \t\t}\n229: \t\tsafe_exec(self.script, None, locals, script_filename=self.name)\n230: \t\tif locals[\"conditions\"]:\n231: \t\t\treturn locals[\"conditions\"]\n232: \n233: \tdef execute_workflow_task(self, doc: Document):\n234: \t\t\"\"\"\n235: \t\tSpecific to Workflow Tasks via Workflow Action Master\n236: \t\t\"\"\"\n237: \t\tif self.script_type != \"Workflow Task\":\n238: \t\t\traise frappe.DoesNotExistError\n239: \n240: \t\tsafe_exec(\n241: \t\t\tself.script,\n242: \t\t\t_locals={\"doc\": doc},\n243: \t\t\tscript_filename=self.name,\n244: \t\t)\n245: \n246: \n247: @frappe.whitelist()\n248: @http_cache(max_age=10 * 60, stale_while_revalidate=6 * 60 * 60)\n249: def get_autocompletion_items():\n250: \t\"\"\"Generate a list of autocompletion strings from the context dict\n251: \tthat is used while executing a Server Script.\n252: \n253: \te.g., [\"frappe.utils.cint\", \"frappe.get_all\", ...]\n254: \t\"\"\"\n255: \n256: \treturn frappe.cache.get_value(",
+          "line": 240,
+          "path": "frappe/core/doctype/server_script/server_script.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "0fe9b4d1ff50a8f9180563bdc4213b859ab3399f01b5662428f01a240e712816",
+          "context": "10: \n11: URLS_COMMENT_PATTERN = re.compile(\n12: \tr\"http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+\", re.IGNORECASE\n13: )\n14: EMAIL_PATTERN = re.compile(r\"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$)\", re.IGNORECASE)\n15: \n16: \n17: def get_limit():\n18: \tmethod = frappe.get_hooks(\"comment_rate_limit\")\n19: \tif not method:\n20: \t\treturn 5\n21: \telse:\n22: \t\tlimit = frappe.call(method[0])\n23: \t\treturn limit\n24: \n25: \n26: @frappe.whitelist(allow_guest=True)\n27: @rate_limit(limit=get_limit, seconds=60 * 60)\n28: def add_comment(\n29: \tcomment: str,\n30: \tcomment_email: str,\n31: \tcomment_by: str,\n32: \treference_doctype: str,\n33: \treference_name: str,\n34: \troute: str,",
+          "line": 22,
+          "path": "frappe/templates/includes/comments/comments.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "145c5d1e43ab4c108124f0ce7a2fa7a63083a5b345bcc1b52db9affc778db50d",
+          "context": "481: def has_controller_permissions(doc, ptype, user=None, debug=False) -> bool:\n482: \t\"\"\"Return controller permissions if denied, True if not defined.\n483: \n484: \tControllers can only deny permission, they can not explicitly grant any permission that wasn't\n485: \talready present.\"\"\"\n486: \tif not user:\n487: \t\tuser = frappe.session.user\n488: \n489: \thooks = frappe.get_hooks(\"has_permission\")\n490: \tmethods = hooks.get(doc.doctype, []) + hooks.get(\"*\", [])\n491: \n492: \tfor method in reversed(methods):\n493: \t\tcontroller_permission = frappe.call(method, doc=doc, ptype=ptype, user=user, debug=debug)\n494: \t\tdebug and _debug_log(f\"Controller permission check from {method}: {controller_permission}\")\n495: \t\tif not controller_permission:\n496: \t\t\treturn bool(controller_permission)\n497: \n498: \treturn True\n499: \n500: \n501: def get_doctypes_with_read(user: str | None = None):\n502: \treturn list({cstr(p.parent) for p in get_valid_perms(user=user) if p.parent and p.read})\n503: \n504: \n505: def get_valid_perms(doctype=None, user=None):",
+          "line": 493,
+          "path": "frappe/permissions.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "19d2a72894d187fbe781737cfee6248b9722cd7a9b10dc4d9e5f31106b788df6",
+          "context": "566: \t\t\t_(\"This action is only allowed for {}\").format(\n567: \t\t\t\t\", \".join(bold(_(role)) for role in roles),\n568: \t\t\t),\n569: \t\t\tPermissionError,\n570: \t\t\t_(\"Not Permitted\"),\n571: \t\t)\n572: \n573: \n574: def get_domain_data(module):\n575: \ttry:\n576: \t\tdomain_data = get_hooks(\"domains\")\n577: \t\tif module in domain_data:\n578: \t\t\treturn _dict(get_attr(get_hooks(\"domains\")[module][0] + \".data\"))\n579: \t\telse:\n580: \t\t\treturn _dict()\n581: \texcept ImportError:\n582: \t\tif in_test:\n583: \t\t\treturn _dict()\n584: \t\telse:\n585: \t\t\traise\n586: \n587: \n588: def only_has_select_perm(doctype, user=None, ignore_permissions=False):\n589: \tif ignore_permissions:\n590: \t\treturn False",
+          "line": 578,
+          "path": "frappe/__init__.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "294cf0b6844054c40b1d4b5d1de25964397c54fb3e0afec0db75cd537839bc43",
+          "context": "70: \t\tself.validate_dates()\n71: \t\tself.set_route()\n72: \t\tif not self.dynamic_route:\n73: \t\t\tself.route = quoted(self.route)\n74: \n75: \tdef get_context(self, context):\n76: \t\tcontext.main_section = get_html_content_based_on_type(self, \"main_section\", self.content_type)\n77: \t\tcontext.source_content_type = self.content_type\n78: \t\tcontext.title = self.title\n79: \n80: \t\tif self.context_script:\n81: \t\t\t_locals = dict(context=frappe._dict())\n82: \t\t\tsafe_exec(self.context_script, None, _locals, script_filename=f\"web page {self.name}\")\n83: \t\t\tcontext.update(_locals[\"context\"])\n84: \n85: \t\tself.render_dynamic(context)\n86: \n87: \t\t# if static page, get static content\n88: \t\tif context.slideshow:\n89: \t\t\tcontext.update(get_slideshow(self))\n90: \n91: \t\tif self.enable_comments:\n92: \t\t\tcontext.comment_list = get_comment_list(self.doctype, self.name)\n93: \t\t\tcontext.guest_allowed = True\n94: ",
+          "line": 82,
+          "path": "frappe/website/doctype/web_page/web_page.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "31c213dc620bb8ac868a16431016969ce90042ce545fe39a5d901bf8c2c6da56",
+          "context": "478: \tfor batch in create_batch(docs_to_rename, 100):\n479: \t\tfor doc in batch:\n480: \t\t\toldname = doc.name\n481: \t\t\tset_name_from_naming_options(autoname, doc)\n482: \t\t\tnewname = doc.name\n483: \t\t\tfrappe.db.sql(\n484: \t\t\t\tf\"UPDATE `tab{doctype}` SET name = %s, to_rename = 0, modified = %s where name = %s\",\n485: \t\t\t\t(newname, now(), oldname),\n486: \t\t\t)\n487: \n488: \t\t\tfor hook_type in (\"on_gle_rename\", \"on_sle_rename\"):\n489: \t\t\t\tfor hook in frappe.get_hooks(hook_type):\n490: \t\t\t\t\tfrappe.call(hook, newname=newname, oldname=oldname)\n491: \n492: \t\tif not frappe.in_test:\n493: \t\t\tfrappe.db.commit()",
+          "line": 490,
+          "path": "erpnext/accounts/doctype/gl_entry/gl_entry.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "34f4db2b4efac90563182d930f3ac56b2355d2a9ff2699c401ed96a13a6080c1",
+          "context": "221: \n222: \t\tmodule = self.module or frappe.db.get_value(\"DocType\", self.ref_doctype, \"module\")\n223: \t\tmethod_path = get_report_module_dotted_path(module, self.name) + \".\" + method\n224: \t\treturn frappe.get_attr(method_path)\n225: \n226: \tdef execute_module(self, filters):\n227: \t\t# report in python module\n228: \t\treturn self.get_module_method(\"execute\")(frappe._dict(filters))\n229: \n230: \tdef execute_script(self, filters):\n231: \t\t# server script\n232: \t\tloc = {\"filters\": frappe._dict(filters), \"data\": None, \"result\": None}\n233: \t\tsafe_exec(self.report_script, None, loc, script_filename=f\"Report {self.name}\")\n234: \t\tif loc[\"data\"]:\n235: \t\t\treturn loc[\"data\"]\n236: \t\telse:\n237: \t\t\treturn self.get_columns(), loc[\"result\"]\n238: \n239: \tdef execute_snapshot_report(self, filters):\n240: \t\ttry:\n241: \t\t\texecute_snapshot_report = self.get_module_method(\"execute_snapshot_report\")\n242: \t\texcept AttributeError:\n243: \t\t\treturn [], []\n244: \t\treturn execute_snapshot_report(frappe._dict(filters))\n245: ",
+          "line": 233,
+          "path": "frappe/core/doctype/report/report.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "466a16b886101228a208c62d6896cfeb96a9629231d8f59de54acfce689b6d17",
+          "context": "274: \t\t\tfrappe.init(site)\n275: \t\t\tfrappe.connect()\n276: \n277: \t\t\tif args:\n278: \t\t\t\ttry:\n279: \t\t\t\t\tfn_args = eval(args)\n280: \t\t\t\texcept NameError:\n281: \t\t\t\t\tfn_args = [args]\n282: \t\t\telse:\n283: \t\t\t\tfn_args = ()\n284: \n285: \t\t\tif kwargs:\n286: \t\t\t\tfn_kwargs = eval(kwargs)\n287: \t\t\telse:\n288: \t\t\t\tfn_kwargs = {}\n289: \n290: \t\t\tif profile:\n291: \t\t\t\timport cProfile\n292: \n293: \t\t\t\tpr = cProfile.Profile()\n294: \t\t\t\tpr.enable()\n295: \n296: \t\t\ttry:\n297: \t\t\t\tret = frappe.get_attr(method)(*fn_args, **fn_kwargs)\n298: \t\t\texcept Exception:",
+          "line": 286,
+          "path": "frappe/commands/utils.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "619a8fe6b20e4e9821beee2e735c41e4cbb7d9d8dbc78cb71fb0eaf20d86d054",
+          "context": "63: \n64: \n65: def execute_cmd(cmd, from_async=False):\n66: \t\"\"\"execute a request as python module\"\"\"\n67: \tcmd = frappe.override_whitelisted_method(cmd)\n68: \n69: \t# via server script\n70: \tserver_script = get_server_script_map().get(\"_api\", {}).get(cmd)\n71: \tif server_script:\n72: \t\treturn run_server_script(server_script)\n73: \n74: \ttry:\n75: \t\tmethod = get_attr(cmd)\n76: \texcept Exception as e:\n77: \t\tfrappe.throw(_(\"Failed to get method for command {0} with {1}\").format(cmd, str(e)))\n78: \n79: \tif from_async:\n80: \t\tmethod = method.queue\n81: \n82: \tif method != run_doc_method:\n83: \t\tis_whitelisted(method)\n84: \t\tis_valid_http_method(method)\n85: \n86: \treturn frappe.call(method, **frappe.form_dict)\n87: ",
+          "line": 75,
+          "path": "frappe/handler.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "70d86e58e7545885de9babd091ea48adbe93b2fdc500eb177a9e366e4a56fd8c",
+          "context": "1088: \t\tif d.account == account:\n1089: \t\t\taccount_exists = True\n1090: \n1091: \tif not account_exists:\n1092: \t\taccounts = {\"company\": company, \"account\": account}\n1093: \n1094: \t\tdoc.append(\"accounts\", accounts)\n1095: \n1096: \t\tdoc.save()\n1097: \n1098: \n1099: def render_address(address, check_permissions=True):\n1100: \treturn frappe.call(_render_address, address, check_permissions=check_permissions)\n1101: \n1102: \n1103: def validate_party_currency_before_merging(party_type, old_party, new_party):\n1104: \tfor company in frappe.get_all(\"Company\"):\n1105: \t\told_party_currency = get_party_gle_currency(party_type, old_party, company.name)\n1106: \t\tnew_party_currency = get_party_gle_currency(party_type, new_party, company.name)\n1107: \n1108: \t\tif old_party_currency and new_party_currency and old_party_currency != new_party_currency:\n1109: \t\t\tfrappe.throw(\n1110: \t\t\t\t_(\n1111: \t\t\t\t\t\"Cannot merge {0} '{1}' into '{2}' as both have existing accounting entries in different currencies for company '{3}'.\"\n1112: \t\t\t\t).format(",
+          "line": 1100,
+          "path": "erpnext/accounts/party.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "745a0134533520bd6bb89d2e7e2fd29f6d228b73ea3f8cda585b84e64a3d5f43",
+          "context": "178: \tstart_time = time.monotonic()\n179: \tfrappe.db.commit()\n180: \tfrappe.db.auto_commit_on_many_writes = 0\n181: \ttry:\n182: \t\tif patchmodule:\n183: \t\t\tif patchmodule.startswith(\"finally:\"):\n184: \t\t\t\t# run run patch at the end\n185: \t\t\t\tfrappe.flags.final_patches.append(patchmodule)\n186: \t\t\telse:\n187: \t\t\t\tif has_patch_file:\n188: \t\t\t\t\t_patch()\n189: \t\t\t\telse:\n190: \t\t\t\t\texec(patch, globals())\n191: \t\t\t\tupdate_patch_log(patchmodule)\n192: \n193: \t\telif method:\n194: \t\t\tmethod(**methodargs)\n195: \n196: \texcept Exception:\n197: \t\tfrappe.db.rollback()\n198: \t\traise\n199: \n200: \telse:\n201: \t\tfrappe.db.commit()\n202: \t\tend_time = time.monotonic()",
+          "line": 190,
+          "path": "frappe/modules/patch_handler.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "7dd5abd4af1723f8afbbaff4e2e9dc6bc68af874a65773d8dd1a6138450d4474",
+          "context": "114: \tif restrict_commit_rollback:\n115: \t\t# prevent user from using these in docevents\n116: \t\texec_globals.frappe.db.pop(\"commit\", None)\n117: \t\texec_globals.frappe.db.pop(\"rollback\", None)\n118: \t\texec_globals.frappe.db.pop(\"add_index\", None)\n119: \n120: \tfilename = SERVER_SCRIPT_FILE_PREFIX\n121: \tif script_filename:\n122: \t\tfilename += f\": {frappe.scrub(script_filename)}\"\n123: \n124: \twith safe_exec_flags():\n125: \t\t# execute script compiled by RestrictedPython\n126: \t\texec(_compile_code(script, filename=filename), exec_globals, _locals)\n127: \n128: \treturn exec_globals, _locals\n129: \n130: \n131: @site_cache(maxsize=32)\n132: def _compile_code(script: str, filename: str, mode: str = \"exec\"):\n133: \treturn compile_restricted(script, filename=filename, policy=FrappeTransformer, mode=mode)\n134: \n135: \n136: def safe_eval(code, eval_globals=None, eval_locals=None):\n137: \timport unicodedata\n138: ",
+          "line": 126,
+          "path": "frappe/utils/safe_exec.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "81d36536cf985111340d2032304d58e684b541f0ea22696755896ea68a718b17",
+          "context": "1138: \t\t\t_func = self._functions.popleft()\n1139: \t\t\t_func()\n1140: \n1141: \tdef reset(self):\n1142: \t\tself._functions.clear()\n1143: \n1144: \n1145: def safe_eval(code, eval_globals=None, eval_locals=None):\n1146: \t\"\"\"A safer `eval`\"\"\"\n1147: \n1148: \tfrom frappe.utils.safe_exec import safe_eval\n1149: \n1150: \treturn safe_eval(code, eval_globals, eval_locals)\n1151: \n1152: \n1153: def create_folder(path, with_init=False):\n1154: \t\"\"\"Create a folder in the given path and add an `__init__.py` file (optional).\n1155: \n1156: \t:param path: Folder path.\n1157: \t:param with_init: Create `__init__.py` in the new folder.\"\"\"\n1158: \tfrom frappe.utils import touch_file\n1159: \n1160: \tif not os.path.exists(path):\n1161: \t\tos.makedirs(path)\n1162: ",
+          "line": 1150,
+          "path": "frappe/utils/__init__.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "87cbedeb9aca44b4fd9d46a2841bee356bf0aaa0f9845d410279d0d0228e99c5",
+          "context": "1158: \t\tdetails = account_details.get(ref_code, {})\n1159: \n1160: \t\tif ref_code:\n1161: \t\t\tself.row_values[ref_code] = values\n1162: \n1163: \t\treturn RowData(row=row, values=values, account_details=details)\n1164: \n1165: \tdef _process_api_row(self, row) -> RowData:\n1166: \t\tapi_path = row.calculation_formula\n1167: \t\t# TODO\n1168: \n1169: \t\ttry:\n1170: \t\t\tvalues = frappe.call(api_path, filters=self.context.filters, periods=self.period_list, row=row)\n1171: \n1172: \t\t\tif row.reverse_sign:\n1173: \t\t\t\tvalues = [-1 * v for v in values]\n1174: \n1175: \t\t\t# TODO: add support for server script\n1176: \t\t\t# use form_dict to pass input in server script\n1177: \t\texcept Exception as e:\n1178: \t\t\tfrappe.log_error(f\"Custom API Error: {api_path} - {e!s}\")\n1179: \t\t\tvalues = [0.0] * len(self.period_list)\n1180: \n1181: \t\tif row.reference_code:\n1182: \t\t\tself.row_values[row.reference_code] = values",
+          "line": 1170,
+          "path": "erpnext/accounts/doctype/financial_report_template/financial_report_engine.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "a18f4f2a1911124a78712c2b1c7ee7d550cd2d12e3720f50679b26309ee752f0",
+          "context": "1131: \tapp_name = method_string.split(\".\", 1)[0]\n1132: \tif not local.flags.in_uninstall and not local.flags.in_install and app_name not in get_installed_apps():\n1133: \t\tthrow(_(\"App {0} is not installed\").format(app_name), AppNotInstalledError)\n1134: \n1135: \tmodulename = \".\".join(method_string.split(\".\")[:-1])\n1136: \tmethodname = method_string.split(\".\")[-1]\n1137: \treturn getattr(get_module(modulename), methodname)\n1138: \n1139: \n1140: def call(fn: str | Callable, *args, **kwargs):\n1141: \t\"\"\"Call a function and match arguments.\"\"\"\n1142: \tif isinstance(fn, str):\n1143: \t\tfn = get_attr(fn)\n1144: \n1145: \tnewargs = get_newargs(fn, kwargs)\n1146: \n1147: \treturn fn(*args, **newargs)\n1148: \n1149: \n1150: @functools.lru_cache\n1151: def _get_cached_signature_params(fn: Callable) -> tuple[dict[str, Any], bool]:\n1152: \t\"\"\"\n1153: \tGet cached parameters for a function.\n1154: \tReturns a dictionary of parameters and a boolean indicating if the function has **kwargs.\n1155: \t\"\"\"",
+          "line": 1143,
+          "path": "frappe/__init__.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "ae72f072d6760e55ca64087135d448ca30303bae67ee25c6c9fcf7b04f7c0583",
+          "context": "267: @click.option(\"--profile\", is_flag=True, default=False)\n268: @pass_context\n269: def execute(context: CliCtxObj, method, args=None, kwargs=None, profile=False):\n270: \t\"Execute a function\"\n271: \tfor site in context.sites:\n272: \t\tret = \"\"\n273: \t\ttry:\n274: \t\t\tfrappe.init(site)\n275: \t\t\tfrappe.connect()\n276: \n277: \t\t\tif args:\n278: \t\t\t\ttry:\n279: \t\t\t\t\tfn_args = eval(args)\n280: \t\t\t\texcept NameError:\n281: \t\t\t\t\tfn_args = [args]\n282: \t\t\telse:\n283: \t\t\t\tfn_args = ()\n284: \n285: \t\t\tif kwargs:\n286: \t\t\t\tfn_kwargs = eval(kwargs)\n287: \t\t\telse:\n288: \t\t\t\tfn_kwargs = {}\n289: \n290: \t\t\tif profile:\n291: \t\t\t\timport cProfile",
+          "line": 279,
+          "path": "frappe/commands/utils.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "b7ff9307b6ae9f1540cc4e4185c8aa50a3270da3a38748b1febf80e2f1774c6a",
+          "context": "137: \timport unicodedata\n138: \n139: \tcode = unicodedata.normalize(\"NFKC\", code)\n140: \n141: \t_validate_safe_eval_syntax(code)\n142: \n143: \tif not eval_globals:\n144: \t\teval_globals = {}\n145: \n146: \teval_globals[\"__builtins__\"] = {}\n147: \teval_globals.update(WHITELISTED_SAFE_EVAL_GLOBALS)\n148: \n149: \treturn eval(_compile_code(code, filename=\"<safe_eval>\", mode=\"eval\"), eval_globals, eval_locals)\n150: \n151: \n152: def _validate_safe_eval_syntax(code):\n153: \tBLOCKED_NODES = (ast.NamedExpr, ast.Lambda)\n154: \n155: \ttree = ast.parse(code, mode=\"eval\")\n156: \tfor node in ast.walk(tree):\n157: \t\tif isinstance(node, BLOCKED_NODES):\n158: \t\t\traise SyntaxError(f\"Operation not allowed: line {node.lineno} column {node.col_offset}\")\n159: \n160: \n161: @contextmanager",
+          "line": 149,
+          "path": "frappe/utils/safe_exec.py"
+        }
+      ],
+      "claim_id": "A",
+      "title": "Dynamic Python execution and dispatch calls"
+    },
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "case_id": "0389a434813f3411ee469590d6480a346d64d348592b3f323a2fef1f9589d8cd",
+          "context": "67: \t\tdoc.doctype = doctype\n68: \t\tnew_context = frappe._dict(doc=doc, meta=meta, list_view_fields=list_view_fields)\n69: \n70: \t\tif not list_context.get_list and not isinstance(new_context.doc, Document):\n71: \t\t\tnew_context.doc = frappe.get_doc(doc.doctype, doc.name)\n72: \t\t\tnew_context.update(new_context.doc.as_dict())\n73: \n74: \t\tif not frappe.in_test:\n75: \t\t\tpathname = pathname or frappe.local.request.path\n76: \t\t\tnew_context[\"pathname\"] = pathname.strip(\"/ \")\n77: \t\tnew_context.update(list_context)\n78: \t\tset_route(new_context)\n79: \t\trendered_row = frappe.render_template(row_template, new_context, is_path=True)\n80: \t\tresult.append(rendered_row)\n81: \n82: \tfrom frappe.utils.response import json_handler\n83: \n84: \treturn {\n85: \t\t\"raw_result\": json.dumps(raw_result, default=json_handler),\n86: \t\t\"result\": result,\n87: \t\t\"show_more\": show_more,\n88: \t\t\"next_start\": limit_start + limit,\n89: \t}",
+          "line": 79,
+          "path": "frappe/www/portal.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "07add36c4783d55a22aa09fa0f9cc4341db59965b27fb1ce46fd893c60416e30",
+          "context": "205: \tdef process_margin_texts(self, layout):\n206: \t\tmargin_texts = [\n207: \t\t\t\"top_left\",\n208: \t\t\t\"top_center\",\n209: \t\t\t\"top_right\",\n210: \t\t\t\"bottom_left\",\n211: \t\t\t\"bottom_center\",\n212: \t\t\t\"bottom_right\",\n213: \t\t]\n214: \t\tfor key in margin_texts:\n215: \t\t\ttext = layout.get(\"text_\" + key)\n216: \t\t\tif text and \"{{\" in text:\n217: \t\t\t\tlayout[\"text_\" + key] = frappe.render_template(text, self.context)\n218: \n219: \t\treturn layout\n220: \n221: \t@staticmethod\n222: \tdef get_element(boxes, element):\n223: \t\t\"\"\"\n224: \t\tGiven a set of boxes representing the elements of a PDF page in a DOM-like way, find the\n225: \t\tbox which is named `element`.\n226: \n227: \t\tLook at the notes of the class for more details on Weasyprint insides.\n228: \t\t\"\"\"\n229: \t\tfor box in boxes:",
+          "line": 217,
+          "path": "frappe/utils/weasyprint.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "0c47db53af64bcefdc35aba4835cc55cd4a90cd998dce950ebed40d91c1874a5",
+          "context": "406: \n407: \tdef get_auto_repeat_days(self):\n408: \t\treturn [d.day for d in self.get(\"repeat_on_days\", [])]\n409: \n410: \tdef send_notification(self, new_doc):\n411: \t\t\"\"\"Notify concerned people about recurring document generation\"\"\"\n412: \t\tsubject = self.subject or \"\"\n413: \t\tmessage = self.message or \"\"\n414: \n415: \t\tif not self.subject:\n416: \t\t\tsubject = _(\"New {0}: {1}\").format(new_doc.doctype, new_doc.name)\n417: \t\telif \"{\" in self.subject:\n418: \t\t\tsubject = frappe.render_template(self.subject, {\"doc\": new_doc})\n419: \n420: \t\tprint_format = self.print_format or \"Standard\"\n421: \t\terror_string = None\n422: \n423: \t\ttry:\n424: \t\t\tattachments = [\n425: \t\t\t\tfrappe.attach_print(\n426: \t\t\t\t\tnew_doc.doctype, new_doc.name, file_name=new_doc.name, print_format=print_format\n427: \t\t\t\t)\n428: \t\t\t]\n429: \n430: \t\texcept frappe.PermissionError:",
+          "line": 418,
+          "path": "frappe/automation/doctype/auto_repeat/auto_repeat.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "0c95421460e1009e30b4a598525ce02ac52670230959b7cf73ce9d5879400c39",
+          "context": "23: \t\tuse_html: DF.Check\n24: \t# end: auto-generated types\n25: \n26: \t@property\n27: \tdef response_(self):\n28: \t\treturn self.response_html if self.use_html else self.response\n29: \n30: \tdef validate(self):\n31: \t\tvalidate_template(self.subject)\n32: \t\tvalidate_template(self.response_)\n33: \n34: \tdef get_formatted_subject(self, doc):\n35: \t\treturn frappe.render_template(self.subject, doc)\n36: \n37: \tdef get_formatted_response(self, doc):\n38: \t\treturn frappe.render_template(self.response_, doc)\n39: \n40: \tdef get_formatted_email(self, doc, sender=None):\n41: \t\tif isinstance(doc, str):\n42: \t\t\tdoc = json.loads(doc)\n43: \n44: \t\tif self.use_html:\n45: \t\t\tdoc = self.inject_email_account(doc, sender)\n46: \n47: \t\treturn {",
+          "line": 35,
+          "path": "frappe/email/doctype/email_template/email_template.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "15613622ae8586fac20dd26434886bed26ee0c9b4da01a77cded58edf86f91e0",
+          "context": "606: \treturn \"success\"  # backward compatbility\n607: \n608: \n609: @frappe.whitelist(methods=[\"POST\"])\n610: def generate_message_preview(name: str):\n611: \tfrappe.has_permission(\"Auto Repeat\", \"write\", throw=True)\n612: \tauto_repeat = frappe.get_doc(\"Auto Repeat\", str(name))\n613: \tdoc = frappe.get_doc(auto_repeat.reference_doctype, auto_repeat.reference_document)\n614: \tdoc.check_permission()\n615: \tsubject_preview = _(\"Please add a subject to your email\")\n616: \tmsg_preview = frappe.render_template(auto_repeat.message, {\"doc\": doc})\n617: \tif auto_repeat.subject:\n618: \t\tsubject_preview = frappe.render_template(auto_repeat.subject, {\"doc\": doc})\n619: \n620: \treturn {\"message\": msg_preview, \"subject\": subject_preview}",
+          "line": 618,
+          "path": "frappe/automation/doctype/auto_repeat/auto_repeat.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "18892c9b39bd1734afb750f9c896e68fe507c5bb11d249f3962ab2213c5281a5",
+          "context": "518: \t\tfrappe.local.response.type = \"download\"\n519: \n520: \n521: @frappe.whitelist()\n522: def send_emails(document_name, from_scheduler=False, posting_date=None):\n523: \tdoc = frappe.get_doc(\"Process Statement Of Accounts\", document_name)\n524: \tdoc.check_permission()\n525: \treport = get_report_pdf(doc, consolidated=False)\n526: \n527: \tif report:\n528: \t\tfor customer, report_pdf in report.items():\n529: \t\t\tcontext = get_context(customer, doc)\n530: \t\t\tfilename = frappe.render_template(doc.pdf_name, context, restrict_globals=True)\n531: \t\t\tattachments = [{\"fname\": filename + \".pdf\", \"fcontent\": report_pdf}]\n532: \n533: \t\t\trecipients, cc = get_recipients_and_cc(customer, doc)\n534: \t\t\tif not recipients:\n535: \t\t\t\tcontinue\n536: \n537: \t\t\tsubject = frappe.render_template(doc.subject, context, restrict_globals=True)\n538: \t\t\tmessage = frappe.render_template(doc.body, context, restrict_globals=True)\n539: \n540: \t\t\tif doc.sender:\n541: \t\t\t\tsender_email = frappe.db.get_value(\"Email Account\", doc.sender, \"email_id\")\n542: \t\t\telse:",
+          "line": 530,
+          "path": "erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "2068eddb792fd2d33b6bb7803d95b62bed8a3d6356be0f8aef169e81ac1bda6e",
+          "context": "188: \t\t\t\telse _(\"Dunning Letter for Dunning Type {0} not found.\").format(\n189: \t\t\t\t\tfrappe.bold(self.dunning_type)\n190: \t\t\t\t)\n191: \t\t\t)\n192: \t\t\tfrappe.msgprint(msg, alert=True, indicator=\"yellow\")\n193: \n194: \t\tself.body_text = (\n195: \t\t\tfrappe.render_template(letter_text.body_text, self.as_dict(), restrict_globals=True)\n196: \t\t\tif letter_text\n197: \t\t\telse None\n198: \t\t)\n199: \t\tself.closing_text = (\n200: \t\t\tfrappe.render_template(letter_text.closing_text, self.as_dict(), restrict_globals=True)\n201: \t\t\tif letter_text\n202: \t\t\telse None\n203: \t\t)\n204: \t\tself.language = letter_text.language if letter_text else self.language\n205: \n206: \n207: def update_linked_dunnings(doc, previous_outstanding_amount):\n208: \tif (\n209: \t\tdoc.doctype != \"Sales Invoice\"\n210: \t\tor doc.is_return\n211: \t\tor previous_outstanding_amount == doc.outstanding_amount\n212: \t):",
+          "line": 200,
+          "path": "erpnext/accounts/doctype/dunning/dunning.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "220c26fdfd54c0b2829b4d4767a605ace6bdb9dada951a1d9af4921000a8e0a4",
+          "context": "28: \t\t\tmessage={\"reply\": sanitize_html(frappe.utils.md_to_html(self.reply)), \"reply_name\": self.name},\n29: \t\t\tafter_commit=True,\n30: \t\t)\n31: \n32: \tdef after_insert(self):\n33: \t\treplies = frappe.db.count(\"Discussion Reply\", {\"topic\": self.topic})\n34: \t\ttopic_info = frappe.get_all(\n35: \t\t\t\"Discussion Topic\",\n36: \t\t\t{\"name\": self.topic},\n37: \t\t\t[\"reference_doctype\", \"reference_docname\", \"name\", \"title\", \"owner\", \"creation\"],\n38: \t\t)\n39: \n40: \t\ttemplate = frappe.render_template(\n41: \t\t\t\"frappe/templates/discussions/reply_card.html\",\n42: \t\t\t{\n43: \t\t\t\t\"reply\": self,\n44: \t\t\t\t\"topic\": {\"name\": self.topic},\n45: \t\t\t\t\"loop\": {\"index\": replies},\n46: \t\t\t\t\"single_thread\": True if not topic_info[0].title else False,\n47: \t\t\t},\n48: \t\t)\n49: \n50: \t\tsidebar = frappe.render_template(\n51: \t\t\t\"frappe/templates/discussions/sidebar.html\", {\"topic\": topic_info[0]}\n52: \t\t)\n53: \n54: \t\tnew_topic_template = frappe.render_template(\n55: \t\t\t\"frappe/templates/discussions/reply_section.html\", {\"topic\": topic_info[0]}\n56: \t\t)\n57: \n58: \t\tfrappe.publish_realtime(\n59: \t\t\tevent=\"publish_message\",\n60: \t\t\troom=get_website_room(),",
+          "line": 40,
+          "path": "frappe/website/doctype/discussion_reply/discussion_reply.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "23c9ece40a03ea02c2c877e63d7c6df2e4818b957db7ecf66c062c559a4be4e2",
+          "context": "204: \t\t\tif len(columns) > 8:\n205: \t\t\t\toptions[\"orientation\"] = \"landscape\"\n206: \t\t\thtml = get_formatted_html(subject=self.name, message=self.get_html_table(columns, data))\n207: \t\t\treturn get_pdf(html, options)\n208: \n209: \t\telse:\n210: \t\t\tfrappe.throw(_(\"Invalid Output Format\"))\n211: \n212: \tdef get_html_table(self, columns=None, data=None):\n213: \t\tdate_time = global_date_format(now()) + \" \" + format_time(now())\n214: \t\treport_doctype = frappe.db.get_value(\"Report\", self.report, \"ref_doctype\")\n215: \n216: \t\treturn frappe.render_template(\n217: \t\t\t\"frappe/templates/emails/auto_email_report.html\",\n218: \t\t\t{\n219: \t\t\t\t\"title\": self.name,\n220: \t\t\t\t\"description\": self.description,\n221: \t\t\t\t\"date_time\": date_time,\n222: \t\t\t\t\"columns\": columns,\n223: \t\t\t\t\"data\": data,\n224: \t\t\t\t\"report_url\": get_url_to_report(self.report, self.report_type, report_doctype),\n225: \t\t\t\t\"report_name\": self.report,\n226: \t\t\t\t\"edit_report_settings\": get_link_to_form(\"Auto Email Report\", self.name),\n227: \t\t\t},\n228: \t\t)\n229: \n230: \tdef get_file_name(self):\n231: \t\treturn \"{}.{}\".format(self.report.replace(\" \", \"-\").replace(\"/\", \"-\"), self.format.lower())\n232: \n233: \tdef prepare_dynamic_filters(self):\n234: \t\tself.filters = frappe.parse_json(self.filters)\n235: \n236: \t\tto_date = today()\n237: \n238: \t\tif self.use_first_day_of_period:\n239: \t\t\tfrom_date = to_date\n240: \t\t\tif self.dynamic_date_period == \"Daily\":",
+          "line": 216,
+          "path": "frappe/email/doctype/auto_email_report/auto_email_report.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "2aeba7ce38925a1653d20bae285a87b93fa6ebe2eda155458c60e2bd173ac70e",
+          "context": "526: \n527: \tif report:\n528: \t\tfor customer, report_pdf in report.items():\n529: \t\t\tcontext = get_context(customer, doc)\n530: \t\t\tfilename = frappe.render_template(doc.pdf_name, context, restrict_globals=True)\n531: \t\t\tattachments = [{\"fname\": filename + \".pdf\", \"fcontent\": report_pdf}]\n532: \n533: \t\t\trecipients, cc = get_recipients_and_cc(customer, doc)\n534: \t\t\tif not recipients:\n535: \t\t\t\tcontinue\n536: \n537: \t\t\tsubject = frappe.render_template(doc.subject, context, restrict_globals=True)\n538: \t\t\tmessage = frappe.render_template(doc.body, context, restrict_globals=True)\n539: \n540: \t\t\tif doc.sender:\n541: \t\t\t\tsender_email = frappe.db.get_value(\"Email Account\", doc.sender, \"email_id\")\n542: \t\t\telse:\n543: \t\t\t\tsender_email = frappe.session.user\n544: \n545: \t\t\tfrappe.enqueue(\n546: \t\t\t\tqueue=\"short\",\n547: \t\t\t\tmethod=frappe.sendmail,\n548: \t\t\t\trecipients=recipients,\n549: \t\t\t\tsender=sender_email,\n550: \t\t\t\tcc=cc,",
+          "line": 538,
+          "path": "erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "2ff3e632b876c32cf1bf2923c28ff2e6b869ba58f0d86342282d2245e1c1350b",
+          "context": "326: \t\telse:\n327: \t\t\tsender = frappe.session.user not in STANDARD_USERS and frappe.session.user or None\n328: \n329: \t\tmessage_template = self.mfs_html if self.use_html else self.message_for_supplier\n331: \t\trendered_message = frappe.render_template(message_template, doc_args, restrict_globals=True)\n332: \n333: \t\tsubject_source = (\n334: \t\t\tself.subject\n335: \t\t\tor frappe.get_value(\"Email Template\", self.email_template, \"subject\")\n336: \t\t\tor _(\"Request for Quotation\")\n337: \t\t)\n338: \t\trendered_subject = frappe.render_template(subject_source, doc_args, restrict_globals=True)\n339: \t\tif preview:\n340: \t\t\treturn {\n341: \t\t\t\t\"message\": rendered_message,\n342: \t\t\t\t\"subject\": rendered_subject,\n343: \t\t\t}\n344: \n345: \t\tattachments = []\n346: \t\tif self.send_attached_files:\n347: \t\t\tattachments = self.get_attachments()\n348: \n349: \t\tif self.send_document_print:\n350: \t\t\tsupplier_language = frappe.db.get_value(\"Supplier\", data.supplier, \"language\")",
+          "line": 338,
+          "path": "erpnext/buying/doctype/request_for_quotation/request_for_quotation.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "36a63fa5150bdd1f814f5179428ac00e103326681f65d6cd8badafd939ee832a",
+          "context": "168: \tif not address:\n169: \t\treturn\n170: \n171: \tif not isinstance(address, dict):\n172: \t\taddress = frappe.get_cached_doc(\"Address\", address)\n173: \t\tif check_permissions:\n174: \t\t\taddress.check_permission()\n175: \t\taddress = address.as_dict()\n176: \n177: \tname, template = get_address_templates(address)\n178: \n179: \ttry:\n180: \t\treturn frappe.render_template(template, address)\n181: \texcept TemplateSyntaxError:\n182: \t\tfrappe.throw(_(\"There is an error in your Address Template {0}\").format(name))\n183: \n184: \n185: def get_territory_from_address(address):\n186: \t\"\"\"Tries to match city, state and country of address to existing territory\"\"\"\n187: \tif not address:\n188: \t\treturn\n189: \n190: \tif isinstance(address, str):\n191: \t\taddress = frappe.get_cached_doc(\"Address\", address)\n192: ",
+          "line": 180,
+          "path": "frappe/contacts/doctype/address/address.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "43db9a3060a455068c7b225bd6f7c607bca681c62b1733bb45f94e5857669b76",
+          "context": "261: \t\tfrappe.get_system_settings(\"otp_issuer_name\")\n262: \t)\n263: \treturn frappe.render_template(subject_template, kwargs_dict)\n264: \n265: \n266: def get_email_body_for_2fa(kwargs_dict):\n267: \t\"\"\"Get email body for 2fa.\"\"\"\n268: \tbody_template = \"\"\"\n269: \t\tEnter this code to complete your login:\n270: \t\t<br><br>\n271: \t\t<b style=\"font-size: 18px;\">{{ otp }}</b>\n272: \t\"\"\"\n273: \treturn frappe.render_template(body_template, kwargs_dict)\n274: \n275: \n276: def get_email_subject_for_qr_code(kwargs_dict):\n277: \t\"\"\"Get QRCode email subject.\"\"\"\n278: \tsubject_template = _(\"One Time Password (OTP) Registration Code from {}\").format(\n279: \t\tfrappe.get_system_settings(\"otp_issuer_name\")\n280: \t)\n281: \treturn frappe.render_template(subject_template, kwargs_dict)\n282: \n283: \n284: def get_email_body_for_qr_code(kwargs_dict):\n285: \t\"\"\"Get QRCode email body.\"\"\"",
+          "line": 273,
+          "path": "frappe/twofactor.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "5037ec76975ef09c933de558d7b75b380a80dab9967f54fd1ccfa518ac0411b7",
+          "context": "117: \t\telse:\n118: \t\t\ttemplate = self.template\n119: \n120: \t\treturn template\n121: \n122: \tdef render(self, values=None):\n123: \t\tif not values:\n124: \t\t\tvalues = {}\n125: \t\tvalues = frappe.parse_json(values)\n126: \t\tvalues.update({\"values\": values})\n127: \t\ttemplate = self.get_template(self.standard)\n128: \n129: \t\treturn frappe.render_template(template, values)",
+          "line": 129,
+          "path": "frappe/website/doctype/web_template/web_template.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "52d333946db8791233b6e1b32dec87cc53c771b0f24f9789e2ee6cf256a784dd",
+          "context": "319: \t\t\t\t\"user_fullname\": full_name,\n320: \t\t\t}\n321: \t\t)\n322: \n323: \t\tfixed_procurement_email = frappe.db.get_single_value(\"Buying Settings\", \"fixed_email\")\n324: \t\tif fixed_procurement_email:\n325: \t\t\tsender = frappe.db.get_value(\"Email Account\", fixed_procurement_email, \"email_id\")\n326: \t\telse:\n327: \t\t\tsender = frappe.session.user not in STANDARD_USERS and frappe.session.user or None\n328: \n329: \t\tmessage_template = self.mfs_html if self.use_html else self.message_for_supplier\n331: \t\trendered_message = frappe.render_template(message_template, doc_args, restrict_globals=True)\n332: \n333: \t\tsubject_source = (\n334: \t\t\tself.subject\n335: \t\t\tor frappe.get_value(\"Email Template\", self.email_template, \"subject\")\n336: \t\t\tor _(\"Request for Quotation\")\n337: \t\t)\n338: \t\trendered_subject = frappe.render_template(subject_source, doc_args, restrict_globals=True)\n339: \t\tif preview:\n340: \t\t\treturn {\n341: \t\t\t\t\"message\": rendered_message,\n342: \t\t\t\t\"subject\": rendered_subject,\n343: \t\t\t}",
+          "line": 331,
+          "path": "erpnext/buying/doctype/request_for_quotation/request_for_quotation.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "546ca2fe8c29288a45a77731073e7690a046c2ffd3c183a59d921f0de7366da4",
+          "context": "317: \treturn mr_list\n318: \n319: \n320: def send_email_notification(company_wise_mr):\n321: \t\"\"\"Notify user about auto creation of indent\"\"\"\n322: \n323: \tfor company, mr_list in company_wise_mr.items():\n324: \t\temail_list = get_email_list(company)\n325: \n326: \t\tif not email_list:\n327: \t\t\tcontinue\n328: \n329: \t\tmsg = frappe.render_template(\"templates/emails/reorder_item.html\", {\"mr_list\": mr_list})\n330: \n331: \t\tfrappe.sendmail(recipients=email_list, subject=_(\"Auto Material Requests Generated\"), message=msg)\n332: \n333: \n334: def get_email_list(company):\n335: \tusers = get_comapny_wise_users(company)\n336: \tuser_table = frappe.qb.DocType(\"User\")\n337: \trole_table = frappe.qb.DocType(\"Has Role\")\n338: \n339: \tquery = (\n340: \t\tfrappe.qb.from_(user_table)\n341: \t\t.inner_join(role_table)",
+          "line": 329,
+          "path": "erpnext/stock/reorder_item.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "555adcbba5a237fa14bd0f54ab691067a62a6968cd4277266f4846b189c55357",
+          "context": "234: \t\t\t\tif not end_date or (end_date and now_date < end_date):\n235: \t\t\t\t\tfrappe.db.set_value(\"Web Page\", page.name, \"published\", 1)\n236: \n237: \n238: def get_web_blocks_html(blocks):\n239: \t\"\"\"Convert a list of blocks into Raw HTML and extract out their scripts for deduplication.\"\"\"\n240: \n241: \tout = frappe._dict(html=\"\", scripts={}, styles={})\n242: \textracted_scripts = {}\n243: \textracted_styles = {}\n244: \tfor block in blocks:\n245: \t\tweb_template = frappe.get_cached_doc(\"Web Template\", block.web_template)\n246: \t\trendered_html = frappe.render_template(\n247: \t\t\t\"templates/includes/web_block.html\",\n248: \t\t\tcontext={\n249: \t\t\t\t\"web_block\": block,\n250: \t\t\t\t\"web_template_html\": web_template.render(block.web_template_values),\n251: \t\t\t\t\"web_template_type\": web_template.type,\n252: \t\t\t},\n253: \t\t)\n254: \t\thtml, scripts, styles = extract_script_and_style_tags(rendered_html)\n255: \t\tout.html += html\n256: \t\tif block.web_template not in extracted_scripts:\n257: \t\t\textracted_scripts.setdefault(block.web_template, [])\n258: \t\t\textracted_scripts[block.web_template] += scripts\n259: \n260: \t\tif block.web_template not in extracted_styles:\n261: \t\t\textracted_styles.setdefault(block.web_template, [])\n262: \t\t\textracted_styles[block.web_template] += styles\n263: \n264: \tout.scripts = extracted_scripts\n265: \tout.styles = extracted_styles",
+          "line": 246,
+          "path": "frappe/website/doctype/web_page/web_page.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "5b00aa1bb66f20abe01c9281aaedf46561efdc00ca1d5b4425992267b85f2a6f",
+          "context": "277: \t\"\"\"Get QRCode email subject.\"\"\"\n278: \tsubject_template = _(\"One Time Password (OTP) Registration Code from {}\").format(\n279: \t\tfrappe.get_system_settings(\"otp_issuer_name\")\n280: \t)\n281: \treturn frappe.render_template(subject_template, kwargs_dict)\n282: \n283: \n284: def get_email_body_for_qr_code(kwargs_dict):\n285: \t\"\"\"Get QRCode email body.\"\"\"\n286: \tbody_template = _(\n287: \t\t\"Please click on the following link and follow the instructions on the page. {0}\"\n288: \t).format(\"<br><br> <a href='{{qrcode_link}}'>{{qrcode_link}}</a>\")\n289: \treturn frappe.render_template(body_template, kwargs_dict)\n290: \n291: \n292: def get_link_for_qrcode(user, totp_uri):\n293: \t\"\"\"Get link to temporary page showing QRCode.\"\"\"\n294: \tkey = frappe.generate_hash(length=20)\n295: \tkey_user = f\"{key}_user\"\n296: \tkey_uri = f\"{key}_uri\"\n297: \tlifespan = int(frappe.get_system_settings(\"lifespan_qrcode_image\")) or 240\n298: \tfrappe.cache.set_value(key_uri, totp_uri, expires_in_sec=lifespan)\n299: \tfrappe.cache.set_value(key_user, user, expires_in_sec=lifespan)\n300: \treturn get_url(f\"/qrcode?k={key}\")\n301: ",
+          "line": 289,
+          "path": "frappe/twofactor.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "60276fc7b63996a462057869f2a61bb5eb65b54007b4af27e8fbb9bb56c3914b",
+          "context": "62: \t]\n63: \tfields = [\"*\"]\n64: \tif address and frappe.db.get_value(\"Dynamic Link\", {\"parent\": address, \"link_name\": company}):\n65: \t\tfilters.append([\"Address\", \"name\", \"=\", address])\n66: \tif not address:\n67: \t\tfilters.append([\"Address\", \"is_shipping_address\", \"=\", 1])\n68: \n69: \taddress = frappe.get_all(\"Address\", filters=filters, fields=fields) or {}\n70: \n71: \tif address:\n72: \t\taddress_as_dict = address[0]\n73: \t\tname, address_template = get_address_templates(address_as_dict)\n74: \t\treturn address_as_dict.get(\"name\"), frappe.render_template(\n75: \t\t\taddress_template, address_as_dict, restrict_globals=True\n76: \t\t)",
+          "line": 74,
+          "path": "erpnext/accounts/custom/address.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "774e8b57f1056d7f4038fcf32deefd05899b73019ae76ce8756e1fb823b59fcc",
+          "context": "351: def safe_get_value(*args, **kwargs):\n352: \tkwargs[\"run\"] = True\n353: \treturn frappe.db.get_value(*args, **kwargs)\n354: \n355: \n356: def safe_get_single_value(*args, **kwargs):\n357: \tkwargs[\"run\"] = True\n358: \treturn frappe.db.get_single_value(*args, **kwargs)\n359: \n360: \n361: def safe_render_template(*args, **kwargs):\n362: \tkwargs.pop(\"restrict_globals\", None)\n363: \treturn frappe.render_template(*args, restrict_globals=True, **kwargs)\n364: \n365: \n366: ALLOWED_SCHEMES = frozenset({\"http\", \"https\"})\n367: \n368: \n369: def make_safe_get_request(url: str, **kwargs):\n370: \timport ipaddress\n371: \timport socket\n372: \tfrom urllib.parse import urlparse\n373: \n374: \tparsed = urlparse(url)\n375: ",
+          "line": 363,
+          "path": "frappe/utils/safe_exec.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "9c1b60b69981c515e9085abfe3265231b1aaf188e016585d646b33b2356f4054",
+          "context": "37: \n38: @frappe.whitelist()\n39: def get_terms_and_conditions(template_name, doc):\n40: \tif isinstance(doc, str):\n41: \t\tdoc = json.loads(doc)\n42: \n43: \ttnc = frappe.get_cached_doc(\"Terms and Conditions\", template_name)\n44: \ttnc.check_permission()\n45: \n46: \tif not tnc.terms:\n47: \t\treturn\n48: \n49: \treturn frappe.render_template(tnc.terms, doc, restrict_globals=1)",
+          "line": 49,
+          "path": "erpnext/setup/doctype/terms_and_conditions/terms_and_conditions.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "a055114913df2fc0f2af7862ab88158d4b011f9fc3792947a827c74012903bdc",
+          "context": "90: \t\t\tfields=[\"name\", \"status\", \"modified\", \"modified_by\"],\n91: \t\t\tlimit_start=start,\n92: \t\t\tlimit_page_length=10,\n93: \t\t)\n94: \t\tif len(info):\n95: \t\t\ttimesheet.update(info[0])\n96: \treturn timesheets\n97: \n98: \n99: @frappe.whitelist()\n100: def get_timesheet_html(project: str, start: int = 0):\n101: \tvalidate_and_get_project_user(project=project)\n102: \treturn frappe.render_template(\n103: \t\t\"erpnext/templates/includes/projects/project_timesheets.html\",\n104: \t\t{\"doc\": {\"timesheets\": get_timesheets(project, start)}},\n105: \t\tis_path=True,\n106: \t)\n107: \n108: \n109: def get_attachments(project):\n110: \treturn frappe.get_all(\n111: \t\t\"File\",\n112: \t\tfilters={\"attached_to_name\": project, \"attached_to_doctype\": \"Project\", \"is_private\": 0},\n113: \t\tfields=[\"file_name\", \"file_url\", \"file_size\"],\n114: \t)\n115: \n116: \n117: def validate_and_get_project_user(project: str):\n118: \tproject_doc = frappe.get_doc(\"Project\", project)",
+          "line": 102,
+          "path": "erpnext/templates/pages/projects.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "aa290153ddb5d119a45d19933f028a1961d2e103a1fdc48076220c7dd3588071",
+          "context": "310: \t# fetching custom print format for Process Statement of Accounts\n311: \tif process_soa_html and process_soa_html.get(doc.report):\n312: \t\ttemplate_path = process_soa_html[doc.report][-1]\n313: \n314: \tif doc.print_format:\n315: \t\tcustom_html, custom_css = frappe.db.get_value(\"Print Format\", doc.print_format, [\"html\", \"css\"])\n316: \t\ttemplate_path = f\"<style>{custom_css}</style> {custom_html}\"\n317: \n318: \tif doc.letter_head:\n319: \t\tfrom frappe.www.printview import get_letter_head\n320: \n321: \t\tletter_head = get_letter_head(doc, 0)\n322: \thtml = frappe.render_template(\n323: \t\ttemplate_path,\n324: \t\t{\n325: \t\t\t\"filters\": filters,\n326: \t\t\t\"data\": res,\n327: \t\t\t\"report\": {\"report_name\": doc.report, \"columns\": col},\n328: \t\t\t\"ageing\": ageing[0] if (doc.include_ageing and ageing) else None,\n329: \t\t\t\"letter_head\": letter_head if doc.letter_head else None,\n330: \t\t\t\"terms_and_conditions\": frappe.db.get_value(\n331: \t\t\t\t\"Terms and Conditions\", doc.terms_and_conditions, \"terms\"\n332: \t\t\t)\n333: \t\t\tif doc.terms_and_conditions\n334: \t\t\telse None,\n335: \t\t},\n336: \t)\n337: \thtml = frappe.render_template(\n338: \t\tbase_template_path,\n339: \t\t{\"body\": html, \"css\": get_print_style(), \"title\": \"Statement For \" + entry.customer},\n340: \t)\n341: \treturn html\n342: \n343: \n344: def get_customers_based_on_territory_or_customer_group(customer_collection, collection_name):\n345: \tfields_dict = {\n346: \t\t\"Customer Group\": \"customer_group\",\n347: \t\t\"Territory\": \"territory\",\n348: \t}",
+          "line": 322,
+          "path": "erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "b45f4af51295650ddfca32a7a08527c76fc9c0c0f161d41b6b822ce88a29b198",
+          "context": "49: \tfor task in tasks:\n50: \t\tif task.is_group:\n51: \t\t\tchild_tasks = list(filter(lambda x: x.parent_task == task.name, tasks))\n52: \t\t\tif len(child_tasks):\n53: \t\t\t\ttask.children = child_tasks\n54: \t\ttask_nest.append(task)\n55: \treturn list(filter(lambda x: not x.parent_task, tasks))\n56: \n57: \n58: @frappe.whitelist()\n59: def get_task_html(project: str, start: int = 0, item_status: str | None = None):\n60: \tvalidate_and_get_project_user(project=project)\n61: \treturn frappe.render_template(\n62: \t\t\"erpnext/templates/includes/projects/project_tasks.html\",\n63: \t\t{\n64: \t\t\t\"doc\": {\n65: \t\t\t\t\"name\": project,\n66: \t\t\t\t\"project_name\": project,\n67: \t\t\t\t\"tasks\": get_tasks(project, start, item_status=item_status),\n68: \t\t\t}\n69: \t\t},\n70: \t\tis_path=True,\n71: \t)\n72: \n73: \n74: def get_timesheets(project, start=0, search=None):\n75: \tfilters = {\"project\": project}\n76: \tif search:\n77: \t\tfilters[\"activity_type\"] = (\"like\", f\"%{search}%\")\n78: \n79: \ttimesheets = frappe.get_all(\n80: \t\t\"Timesheet Detail\",\n81: \t\tfilters=filters,\n82: \t\tfields=[\"project\", \"activity_type\", \"from_time\", \"to_time\", \"parent\"],\n83: \t\tlimit_start=start,",
+          "line": 61,
+          "path": "erpnext/templates/pages/projects.py"
+        },
+        {
+          "application": "wiki",
+          "case_id": "bc769a78294b268e2b7a558c6a6b12802fd8a0b4dfb829d46e87029cebfbb474",
+          "context": "340: \n341: \t\tsidebar_html = frappe.cache().hget(\"wiki_sidebar\", topmost)\n342: \t\tif not sidebar_html or frappe.conf.disable_website_cache or frappe.conf.developer_mode:\n343: \t\t\tcontext = frappe._dict({})\n344: \t\t\twiki_settings = frappe.get_single(\"Wiki Settings\")\n345: \t\t\tcontext.active_sidebar_group = frappe.get_value(\n346: \t\t\t\t\"Wiki Group Item\", {\"wiki_page\": self.name}, [\"parent_label\"]\n347: \t\t\t)\n348: \t\t\tcontext.current_route = self.route\n349: \t\t\tcontext.collapse_sidebar_groups = wiki_settings.collapse_sidebar_groups\n350: \t\t\tcontext.sidebar_items = sidebar_items\n351: \t\t\tcontext.wiki_search_scope = self.get_space_route()\n352: \t\t\tsidebar_html = frappe.render_template(\n353: \t\t\t\t\"wiki/wiki/doctype/wiki_page/templates/web_sidebar.html\", context\n354: \t\t\t)\n355: \t\t\tfrappe.cache().hset(\"wiki_sidebar\", topmost, sidebar_html)\n356: \t\treturn sidebar_html\n357: \n358: \tdef get_sidebar_items(self):\n359: \t\twiki_sidebar = frappe.get_doc(\"Wiki Space\", {\"route\": self.get_space_route()}).wiki_sidebars\n360: \t\tsidebar = {}\n361: \n362: \t\tfor sidebar_item in wiki_sidebar:\n363: \t\t\tif sidebar_item.hide_on_sidebar:\n364: \t\t\t\tcontinue\n365: \n366: \t\t\twiki_page = frappe.get_cached_doc(\"Wiki Page\", sidebar_item.wiki_page)",
+          "line": 352,
+          "path": "wiki/wiki/doctype/wiki_page/wiki_page.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "cb120c69b4fe62914a75807dafbf28d07be8417b7044567254f9e71c67937b32",
+          "context": "325: \t\t\t\"filters\": filters,\n326: \t\t\t\"data\": res,\n327: \t\t\t\"report\": {\"report_name\": doc.report, \"columns\": col},\n328: \t\t\t\"ageing\": ageing[0] if (doc.include_ageing and ageing) else None,\n329: \t\t\t\"letter_head\": letter_head if doc.letter_head else None,\n330: \t\t\t\"terms_and_conditions\": frappe.db.get_value(\n331: \t\t\t\t\"Terms and Conditions\", doc.terms_and_conditions, \"terms\"\n332: \t\t\t)\n333: \t\t\tif doc.terms_and_conditions\n334: \t\t\telse None,\n335: \t\t},\n336: \t)\n337: \thtml = frappe.render_template(\n338: \t\tbase_template_path,\n339: \t\t{\"body\": html, \"css\": get_print_style(), \"title\": \"Statement For \" + entry.customer},\n340: \t)\n341: \treturn html\n342: \n343: \n344: def get_customers_based_on_territory_or_customer_group(customer_collection, collection_name):\n345: \tfields_dict = {\n346: \t\t\"Customer Group\": \"customer_group\",\n347: \t\t\"Territory\": \"territory\",\n348: \t}\n349: \tcollection = frappe.get_doc(customer_collection, collection_name)\n350: \tselected = [\n351: \t\tcustomer.name\n352: \t\tfor customer in frappe.get_list(",
+          "line": 337,
+          "path": "erpnext/accounts/doctype/process_statement_of_accounts/process_statement_of_accounts.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "d1816ffc223f51574ad6e835805ba0ac1c4e63d41996b31cb96523b312a45dcb",
+          "context": "106: \ttemplate = frappe.get_doc(\"Print Format\", \"IRS 1099 Form\").html\n107: \toutput = PdfWriter()\n108: \n109: \tfor row in data:\n110: \t\trow[\"fiscal_year\"] = fiscal_year\n111: \t\trow[\"company\"] = filters.company\n112: \t\trow[\"company_tin\"] = company_tin\n113: \t\trow[\"payer_street_address\"] = company_address\n114: \t\trow[\"recipient_street_address\"], row[\"recipient_city_state\"] = get_street_address_html(\n115: \t\t\t\"Supplier\", row.supplier\n116: \t\t)\n117: \t\trow[\"payments\"] = fmt_money(row[\"payments\"], precision=0, currency=\"USD\")\n118: \t\tget_pdf(render_template(template, row), output=output if output else None)\n119: \n120: \tfrappe.local.response.filename = (\n121: \t\tf\"{filters.fiscal_year} {filters.company} IRS 1099 Forms{IRS_1099_FORMS_FILE_EXTENSION}\"\n122: \t)\n123: \tfrappe.local.response.filecontent = read_multi_pdf(output)\n124: \tfrappe.local.response.type = \"download\"\n125: \n126: \n127: def get_payer_address_html(company):\n128: \taddress_list = frappe.db.sql(\n129: \t\t\"\"\"\n130: \t\tSELECT",
+          "line": 118,
+          "path": "erpnext/regional/report/irs_1099/irs_1099.py"
+        },
+        {
+          "application": "erpnext",
+          "case_id": "f302b1a979bd589c88a7373aa517817940f1dae170f3fc386e59af7b083576c7",
+          "context": "43: \tnetloc = url_data.netloc\n44: \n45: \tserver_url = f\"{scheme}://{netloc}/api/method/{endpoint}\"\n46: \n47: \treturn server_url\n48: \n49: \n50: def get_tracking_url(carrier, tracking_number):\n51: \t# Return the formatted Tracking URL.\n52: \ttracking_url = \"\"\n53: \turl_reference = frappe.get_value(\"Parcel Service\", carrier, \"url_reference\")\n54: \tif url_reference:\n55: \t\ttracking_url = frappe.render_template(url_reference, {\"tracking_number\": tracking_number})\n56: \treturn tracking_url",
+          "line": 55,
+          "path": "erpnext/erpnext_integrations/utils.py"
+        }
+      ],
+      "claim_id": "B",
+      "title": "Server-side template rendering calls"
+    },
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "case_id": "fdae53ddb0e6b70c703ac21e98568ba9b4ed3cc98773b3f608b7cdbab62e20a8",
+          "context": "476: \tfrappe.init(site)\n477: \tapp_base_path = frappe.get_app_source_path(app)\n478: \tsite_url = frappe.utils.get_site_url(site)\n479: \tadmin_password = frappe.get_conf().admin_password\n480: \n481: \t# override baseUrl using env variable\n482: \tsite_env = f\"CYPRESS_baseUrl={site_url}\"\n483: \tpassword_env = f\"CYPRESS_adminPassword={admin_password}\" if admin_password else \"\"\n484: \tcoverage_env = f\"CYPRESS_coverage={str(with_coverage).lower()}\"\n485: \n486: \tos.chdir(app_base_path)\n487: \n488: \tnode_bin = subprocess.run(\n489: \t\t\"(cd ../frappe && yarn bin)\",\n490: \t\tshell=True,\n491: \t\tstdout=subprocess.PIPE,\n492: \t\tstderr=subprocess.DEVNULL,\n493: \t\ttext=True,\n494: \t).stdout.strip()\n495: \tcypress_path = f\"{node_bin}/cypress\"\n496: \tdrag_drop_plugin_path = f\"{node_bin}/../@4tw/cypress-drag-drop\"\n497: \treal_events_plugin_path = f\"{node_bin}/../cypress-real-events\"\n498: \ttesting_library_path = f\"{node_bin}/../@testing-library\"\n499: \tcoverage_plugin_path = f\"{node_bin}/../@cypress/code-coverage\"\n500: \tcypress_split_path = f\"{node_bin}/../cypress-split\"\n501: \n502: \t# check if cypress in path...if not, install it.\n503: \tif not (\n504: \t\tos.path.exists(cypress_path)\n505: \t\tand os.path.exists(drag_drop_plugin_path)\n506: \t\tand os.path.exists(real_events_plugin_path)",
+          "line": 488,
+          "path": "frappe/commands/testing.py"
+        }
+      ],
+      "claim_id": "C",
+      "title": "Subprocess calls with a shell enabled"
+    },
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "case_id": "5c8050b09ecb109f81a15fce22c484210f4ec585e1c789fcaef1b118c1c66c0e",
+          "context": "829: \n830: \t\tchanged_value = not current_value\n831: \t\tfrappe.db.set_single_value(\"System Settings\", \"deny_multiple_sessions\", changed_value)\n832: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n833: \t\tself.assertEqual(current_value, changed_value)\n834: \n835: \t\tchanged_value = not current_value\n836: \t\tfrappe.db.set_single_value(\"System Settings\", \"deny_multiple_sessions\", changed_value)\n837: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n838: \t\tself.assertEqual(current_value, changed_value)\n839: \n840: \tdef test_none_no_set_value(self):\n841: \t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n842: \t\twith self.assertQueryCount(0):\n843: \t\t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n844: \t\t\tfrappe.db.set_value(\"User\", \"User\", \"middle_name\", \"test\")\n845: \n846: \tdef test_update_single_row_single_column(self):\n847: \t\tfrappe.db.set_value(\"ToDo\", self.todo1.name, \"description\", \"test_set_value change 1\")\n848: \t\tupdated_value = frappe.db.get_value(\"ToDo\", self.todo1.name, \"description\")\n849: \t\tself.assertEqual(updated_value, \"test_set_value change 1\")\n850: \n851: \t@patch(\"frappe.db.set_single_value\")\n852: \tdef test_set_single_value_with_set_value(self, single_set):\n853: \t\tfrappe.db.set_value(\"Contact Us Settings\", None, \"country\", \"India\")",
+          "line": 841,
+          "path": "frappe/tests/test_db.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "b5eafa6d6c57ceb81e302b7e441e60011b68efe4c39c53aeafc9d0da8a77e36c",
+          "context": "841: \t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n842: \t\twith self.assertQueryCount(0):\n843: \t\t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n844: \t\t\tfrappe.db.set_value(\"User\", \"User\", \"middle_name\", \"test\")\n845: \n846: \tdef test_update_single_row_single_column(self):\n847: \t\tfrappe.db.set_value(\"ToDo\", self.todo1.name, \"description\", \"test_set_value change 1\")\n848: \t\tupdated_value = frappe.db.get_value(\"ToDo\", self.todo1.name, \"description\")\n849: \t\tself.assertEqual(updated_value, \"test_set_value change 1\")\n850: \n851: \t@patch(\"frappe.db.set_single_value\")\n852: \tdef test_set_single_value_with_set_value(self, single_set):\n853: \t\tfrappe.db.set_value(\"Contact Us Settings\", None, \"country\", \"India\")\n854: \t\tsingle_set.assert_called_once()\n855: \n856: \tdef test_update_single_row_multiple_columns(self):\n857: \t\tdescription, status = \"Upated by test_update_single_row_multiple_columns\", \"Closed\"\n858: \n859: \t\tfrappe.db.set_value(\n860: \t\t\t\"ToDo\",\n861: \t\t\tself.todo1.name,\n862: \t\t\t{\n863: \t\t\t\t\"description\": description,\n864: \t\t\t\t\"status\": status,\n865: \t\t\t},",
+          "line": 853,
+          "path": "frappe/tests/test_db.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "d436a2c610548a0cbd80b9229db6e59aef26674dfc3819ad60b2e3f3ef1a29ce",
+          "context": "831: \t\tfrappe.db.set_single_value(\"System Settings\", \"deny_multiple_sessions\", changed_value)\n832: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n833: \t\tself.assertEqual(current_value, changed_value)\n834: \n835: \t\tchanged_value = not current_value\n836: \t\tfrappe.db.set_single_value(\"System Settings\", \"deny_multiple_sessions\", changed_value)\n837: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n838: \t\tself.assertEqual(current_value, changed_value)\n839: \n840: \tdef test_none_no_set_value(self):\n841: \t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n842: \t\twith self.assertQueryCount(0):\n843: \t\t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n844: \t\t\tfrappe.db.set_value(\"User\", \"User\", \"middle_name\", \"test\")\n845: \n846: \tdef test_update_single_row_single_column(self):\n847: \t\tfrappe.db.set_value(\"ToDo\", self.todo1.name, \"description\", \"test_set_value change 1\")\n848: \t\tupdated_value = frappe.db.get_value(\"ToDo\", self.todo1.name, \"description\")\n849: \t\tself.assertEqual(updated_value, \"test_set_value change 1\")\n850: \n851: \t@patch(\"frappe.db.set_single_value\")\n852: \tdef test_set_single_value_with_set_value(self, single_set):\n853: \t\tfrappe.db.set_value(\"Contact Us Settings\", None, \"country\", \"India\")\n854: \t\tsingle_set.assert_called_once()\n855: ",
+          "line": 843,
+          "path": "frappe/tests/test_db.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "d43bba10dfb57e1ee1590273593f71b6d2a7a468cf81dfa80ef894a8ce4f6010",
+          "context": "832: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n833: \t\tself.assertEqual(current_value, changed_value)\n834: \n835: \t\tchanged_value = not current_value\n836: \t\tfrappe.db.set_single_value(\"System Settings\", \"deny_multiple_sessions\", changed_value)\n837: \t\tcurrent_value = frappe.db.get_single_value(\"System Settings\", \"deny_multiple_sessions\")\n838: \t\tself.assertEqual(current_value, changed_value)\n839: \n840: \tdef test_none_no_set_value(self):\n841: \t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n842: \t\twith self.assertQueryCount(0):\n843: \t\t\tfrappe.db.set_value(\"User\", None, \"middle_name\", \"test\")\n844: \t\t\tfrappe.db.set_value(\"User\", \"User\", \"middle_name\", \"test\")\n845: \n846: \tdef test_update_single_row_single_column(self):\n847: \t\tfrappe.db.set_value(\"ToDo\", self.todo1.name, \"description\", \"test_set_value change 1\")\n848: \t\tupdated_value = frappe.db.get_value(\"ToDo\", self.todo1.name, \"description\")\n849: \t\tself.assertEqual(updated_value, \"test_set_value change 1\")\n850: \n851: \t@patch(\"frappe.db.set_single_value\")\n852: \tdef test_set_single_value_with_set_value(self, single_set):\n853: \t\tfrappe.db.set_value(\"Contact Us Settings\", None, \"country\", \"India\")\n854: \t\tsingle_set.assert_called_once()\n855: \n856: \tdef test_update_single_row_multiple_columns(self):",
+          "line": 844,
+          "path": "frappe/tests/test_db.py"
+        }
+      ],
+      "claim_id": "D",
+      "title": "Database value mutation calls"
+    },
+    {
+      "cases": [
+        {
+          "application": "frappe",
+          "case_id": "3ce949bbbe1df4d9a8b04cf4676a194746465ca094a9d19fa12ea9fc18470890",
+          "context": "225: \t\t\t\traise frappe.PageDoesNotExistError()\n226: \n227: \t\t\tif not web_form_request and not self.has_web_form_permission(\n228: \t\t\t\tself.doc_type, frappe.form_dict.name\n229: \t\t\t):\n230: \t\t\t\tcheck_doctype_permission(self.doc_type)\n231: \t\t\t\tfrappe.throw(\n232: \t\t\t\t\t_(\"You don't have the permissions to access this document\"), frappe.PermissionError\n233: \t\t\t\t)\n234: \n235: \t\t\tcontext.has_delete_permission = self.allow_delete and (\n236: \t\t\t\tbool(web_form_request)\n237: \t\t\t\tor frappe.has_permission(self.doc_type, \"delete\", frappe.form_dict.name)\n238: \t\t\t)\n239: \n240: \t\tif frappe.local.path == self.route:\n241: \t\t\tpath = f\"/{self.route}/list\" if self.show_list else f\"/{self.route}/new\"\n242: \t\t\tself.redirect_to(path)\n243: \n244: \t\tif frappe.form_dict.is_list and not self.show_list:\n245: \t\t\tself.redirect_to(f\"/{self.route}/new\")\n246: \n247: \t\tif frappe.form_dict.is_edit and not self.allow_edit:\n248: \t\t\tcontext.in_view_mode = True\n249: \t\t\tself.redirect_to(f\"/{self.route}/{frappe.form_dict.name}\")",
+          "line": 237,
+          "path": "frappe/website/doctype/web_form/web_form.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "5dea81f56d46ddcb94336ba431f595fcf191526f8c5ac072a53cc461ef4df3e3",
+          "context": "1404: \t\t\t\t\tself.get_permission_type(field.doctype, field.parent_doctype),\n1405: \t\t\t\t)\n1406: \t\t\t\t# Check permission for the specific field in the child table\n1407: \t\t\t\tif field.fieldname in permitted_child_fields_set:\n1408: \t\t\t\t\tallowed_fields.append(field)\n1409: \t\t\telif isinstance(field, LinkTableField):\n1410: \t\t\t\t# Check permission for the link field *in the parent doctype*\n1411: \t\t\t\tif field.link_fieldname in permitted_fields_set:\n1412: \t\t\t\t\t# Also check if user has permission to read/select the target doctype\n1413: \t\t\t\t\ttarget_doctype = field.doctype\n1414: \t\t\t\t\thas_target_perm = frappe.has_permission(\n1415: \t\t\t\t\t\ttarget_doctype, \"select\", user=self.user\n1416: \t\t\t\t\t) or frappe.has_permission(target_doctype, \"read\", user=self.user)\n1417: \n1418: \t\t\t\t\tif has_target_perm:\n1419: \t\t\t\t\t\t# Finally, check if the specific field *in the target doctype* is permitted\n1420: \t\t\t\t\t\tpermitted_target_fields_set = self._get_cached_permitted_fields(\n1421: \t\t\t\t\t\t\ttarget_doctype, None, self.get_permission_type(target_doctype)\n1422: \t\t\t\t\t\t)\n1423: \t\t\t\t\t\tif field.fieldname in permitted_target_fields_set:\n1424: \t\t\t\t\t\t\tallowed_fields.append(field)\n1425: \t\t\telif isinstance(field, ChildQuery):\n1426: \t\t\t\tif parent_permission_type == \"select\":\n1427: \t\t\t\t\t# Skip child queries if parent permission is only 'select'\n1428: \t\t\t\t\tcontinue",
+          "line": 1416,
+          "path": "frappe/database/query.py"
+        },
+        {
+          "application": "frappe",
+          "case_id": "be04d9ad4746825b6218b6d3a82ed23cb845115340a6c5bbf3281b2379fea89d",
+          "context": "1402: \t\t\t\t\tfield.doctype,\n1403: \t\t\t\t\tfield.parent_doctype,\n1404: \t\t\t\t\tself.get_permission_type(field.doctype, field.parent_doctype),\n1405: \t\t\t\t)\n1406: \t\t\t\t# Check permission for the specific field in the child table\n1407: \t\t\t\tif field.fieldname in permitted_child_fields_set:\n1408: \t\t\t\t\tallowed_fields.append(field)\n1409: \t\t\telif isinstance(field, LinkTableField):\n1410: \t\t\t\t# Check permission for the link field *in the parent doctype*\n1411: \t\t\t\tif field.link_fieldname in permitted_fields_set:\n1412: \t\t\t\t\t# Also check if user has permission to read/select the target doctype\n1413: \t\t\t\t\ttarget_doctype = field.doctype\n1414: \t\t\t\t\thas_target_perm = frappe.has_permission(\n1415: \t\t\t\t\t\ttarget_doctype, \"select\", user=self.user\n1416: \t\t\t\t\t) or frappe.has_permission(target_doctype, \"read\", user=self.user)\n1417: \n1418: \t\t\t\t\tif has_target_perm:\n1419: \t\t\t\t\t\t# Finally, check if the specific field *in the target doctype* is permitted\n1420: \t\t\t\t\t\tpermitted_target_fields_set = self._get_cached_permitted_fields(\n1421: \t\t\t\t\t\t\ttarget_doctype, None, self.get_permission_type(target_doctype)\n1422: \t\t\t\t\t\t)\n1423: \t\t\t\t\t\tif field.fieldname in permitted_target_fields_set:\n1424: \t\t\t\t\t\t\tallowed_fields.append(field)\n1425: \t\t\telif isinstance(field, ChildQuery):\n1426: \t\t\t\tif parent_permission_type == \"select\":\n1427: \t\t\t\t\t# Skip child queries if parent permission is only 'select'\n1428: \t\t\t\t\tcontinue",
+          "line": 1414,
+          "path": "frappe/database/query.py"
+        }
+      ],
+      "claim_id": "E",
+      "title": "Permission-check expression use"
+    }
+  ],
+  "instructions": {
+    "blindness": "Use this packet and its source contexts only. Do not inspect rule YAML, fixtures, authored evidence, authored decisions, comparisons, the original queue, or the opaque-claim mapping before returning final labels.",
+    "case_labels": [
+      "confirmed-issue",
+      "safe-near-miss",
+      "intentional-policy",
+      "unresolved"
+    ],
+    "case_task": "Label every case and give a concise source-based basis.",
+    "claim_outcomes": [
+      "accept",
+      "narrow",
+      "split",
+      "audit-only",
+      "retire",
+      "unresolved"
+    ],
+    "claim_task": "Recommend one outcome and enforcement ceiling for every opaque claim, based only on the reviewed sample.",
+    "limits": "Static source context may establish a structural concern but cannot prove runtime exploitability, frequency, latency, or business impact."
+  },
+  "mapping_commitment_sha256": "2365d50cf402b6d9922748c33ea9432c3bc04576c2edb913ad6fc005ff607867",
+  "schema_version": 1
+}

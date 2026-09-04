@@ -1,4 +1,40 @@
 rules:
+  - id: frappe-n-plus-one-read-in-comprehension
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A Frappe database read runs once per comprehension item. Fetch the
+      required values in bulk and index them in memory, or document why the
+      iterable is deliberately bounded. Runtime query evidence is required
+      before treating this advisory as a performance regression.
+    metadata:
+      origin: custom
+      category: performance
+      confidence: MEDIUM
+      technology: [frappe]
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern-either:
+                  - pattern: "[$READ(...) for $ITEM in $ITERABLE]"
+                  - pattern: "{$READ(...) for $ITEM in $ITERABLE}"
+                  - pattern: "($READ(...) for $ITEM in $ITERABLE)"
+                  - pattern: "{$KEY: $READ(...) for $ITEM in $ITERABLE}"
+              - metavariable-regex:
+                  metavariable: $READ
+                  regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count|sql))$
+              - focus-metavariable: $READ
+          - pattern-either:
+              - pattern: "[frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE]"
+              - pattern: "{frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE}"
+              - pattern: "(frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE)"
+              - pattern: "{$KEY: frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE}"
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/patches/**"
+
   - id: frappe-n-plus-one-read-in-loop
     languages: [python]
     severity: WARNING
@@ -27,8 +63,23 @@ rules:
                         ...
               - metavariable-regex:
                   metavariable: $READ
-                  regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count|sql))$
+                  regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count))$
               - focus-metavariable: $READ
+          - patterns:
+              - pattern-either:
+                  - pattern-inside: |
+                      for $ITEM in $ITERABLE:
+                        ...
+                  - pattern-inside: |
+                      while $CONDITION:
+                        ...
+              - pattern: frappe.db.sql($QUERY, ...)
+              - pattern-not-inside: |
+                  for $ITEM in frappe.db.sql(...):
+                    ...
+              - metavariable-regex:
+                  metavariable: $QUERY
+                  regex: (?is)^(?![rubf]*(?:"""|'''|"|')\s*(?:update|delete|insert|alter|drop|truncate|replace)\b).*$
           - patterns:
               - pattern-either:
                   - pattern: |
