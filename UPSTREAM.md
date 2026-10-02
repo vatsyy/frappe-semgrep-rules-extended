@@ -8,7 +8,7 @@ Frappe's repository is the source of truth for every file under
 | Upstream repository | `https://github.com/frappe/semgrep-rules.git` |
 | Upstream branch | `develop` |
 | Relocated rules | `rules/upstream/frappe/` |
-| Last organised upstream commit | `b101a16e69df049b3fed1478bcc16223e957cca2` |
+| Last organised upstream commit | `81a6e3d47a328249e8ddf04c586e493dd5553002` |
 
 The relocation commit must not contain rule-content changes. Keeping relocation
 separate gives Git the strongest possible rename evidence during later merges.
