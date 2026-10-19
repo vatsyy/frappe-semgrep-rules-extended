@@ -161,6 +161,93 @@ def normal_save(name):
     doc.save()
 
 
+@frappe.whitelist()
+def role_gated_rows():
+    frappe.only_for("System Manager")
+    # ok: frappe-whitelisted-permission-bypass
+    return frappe.get_all("Private Record", fields=["name", "secret"])
+
+
+@frappe.whitelist()
+def doctype_gated_rows():
+    frappe.has_permission("Private Record", "read", throw=True)
+    # ok: frappe-whitelisted-permission-bypass
+    return frappe.get_all("Private Record", fields=["name", "secret"])
+
+
+@frappe.whitelist()
+def doctype_keyword_gated_delete(name):
+    frappe.has_permission(doctype="Private Record", ptype="delete", throw=True)
+    # ok: frappe-whitelisted-permission-bypass
+    frappe.delete_doc("Private Record", name, ignore_permissions=True)
+
+
+@frappe.whitelist()
+def unrelated_doctype_guard():
+    frappe.has_permission("Public Record", "read", throw=True)
+    # ruleid: frappe-whitelisted-permission-bypass
+    return frappe.get_all("Private Record", fields=["name", "secret"])
+
+
+@frappe.whitelist()
+def guard_after_bypass():
+    # ruleid: frappe-whitelisted-permission-bypass
+    rows = frappe.get_all("Private Record", fields=["name", "secret"])
+    frappe.only_for("System Manager")
+    return rows
+
+
+@frappe.whitelist()
+def guard_in_one_branch(include_secret):
+    if include_secret:
+        frappe.only_for("System Manager")
+    # ruleid: frappe-whitelisted-permission-bypass
+    return frappe.get_all("Private Record", fields=["name", "secret"])
+
+
+@frappe.whitelist()
+def document_gated_save(name):
+    doc = frappe.get_doc("Private Record", name)
+    doc.check_permission("write")
+    doc.secret = "updated"
+    # ok: frappe-whitelisted-permission-bypass
+    doc.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def document_keyword_gated_submit(name):
+    doc = frappe.get_doc("Private Record", name)
+    frappe.has_permission("Private Record", "submit", doc=doc, throw=True)
+    # ok: frappe-whitelisted-permission-bypass
+    doc.submit(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def document_positional_gated_flag(name):
+    doc = frappe.get_doc("Private Record", name)
+    frappe.has_permission("Private Record", "write", doc, throw=True)
+    # ok: frappe-whitelisted-permission-bypass
+    doc.flags.ignore_permissions = True
+
+
+@frappe.whitelist()
+def unrelated_document_guard(parent_name, name):
+    parent = frappe.get_doc("Public Record", parent_name)
+    parent.check_permission("write")
+    doc = frappe.get_doc("Private Record", name)
+    # ruleid: frappe-whitelisted-permission-bypass
+    doc.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def unchecked_permission_result(name):
+    doc = frappe.get_doc("Private Record", name)
+    # ruleid: frappe-ignored-permission-result
+    frappe.has_permission("Private Record", "write", doc)
+    # ruleid: frappe-whitelisted-permission-bypass
+    doc.save(ignore_permissions=True)
+
+
 def run_as_administrator(callback):
     previous_user = frappe.session.user
     # ruleid: frappe-setuser-outside-tests

@@ -172,16 +172,41 @@ rules:
               @frappe.whitelist(...)
               async def $FUNC(...):
                 ...
+      - pattern-not-inside: |
+          frappe.only_for(...)
+          ...
       - pattern-either:
-          - pattern: frappe.get_all(...)
-          - pattern: frappe.get_list(..., ignore_permissions=True, ...)
-          - pattern: $DOC.save(..., ignore_permissions=True, ...)
-          - pattern: $DOC.insert(..., ignore_permissions=True, ...)
-          - pattern: $DOC.submit(..., ignore_permissions=True, ...)
-          - pattern: $DOC.cancel(..., ignore_permissions=True, ...)
-          - pattern: $DOC.delete(..., ignore_permissions=True, ...)
-          - pattern: frappe.delete_doc(..., ignore_permissions=True, ...)
-          - pattern: $DOC.flags.ignore_permissions = True
+          - patterns:
+              - pattern-either:
+                  - pattern: frappe.get_all($DT, ...)
+                  - pattern: frappe.get_all(..., doctype=$DT, ...)
+                  - pattern: frappe.get_list($DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.get_list(..., doctype=$DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.delete_doc($DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.delete_doc(..., doctype=$DT, ..., ignore_permissions=True, ...)
+              - pattern-not-inside: |
+                  frappe.has_permission($DT, ..., throw=True, ...)
+                  ...
+              - pattern-not-inside: |
+                  frappe.has_permission(..., doctype=$DT, ..., throw=True, ...)
+                  ...
+          - patterns:
+              - pattern-either:
+                  - pattern: $DOC.save(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.insert(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.submit(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.cancel(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.delete(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.flags.ignore_permissions = True
+              - pattern-not-inside: |
+                  $DOC.check_permission(...)
+                  ...
+              - pattern-not-inside: |
+                  frappe.has_permission(..., doc=$DOC, ..., throw=True, ...)
+                  ...
+              - pattern-not-inside: |
+                  frappe.has_permission($DT, $PTYPE, $DOC, ..., throw=True, ...)
+                  ...
     paths:
       exclude:
         - "**/test_*.py"
