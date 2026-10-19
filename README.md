@@ -59,7 +59,7 @@ actually finds.**
 
 ## Current rule coverage
 
-The current development portfolio contains **72 rules** across:
+The current development portfolio contains **73 rules** across:
 
 ```text
 rules/
@@ -80,6 +80,7 @@ Custom coverage currently includes patterns such as:
 - direct Python `eval` and `exec`;
 - dynamic template rendering with unrestricted globals;
 - ignored permission-check results;
+- CSV rows written without formula escaping;
 - subprocess execution and `shell=True`;
 - Frappe controller override compatibility risks.
 

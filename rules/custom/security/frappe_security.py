@@ -1,6 +1,10 @@
+import csv
 import shlex
+from io import StringIO
 
 import frappe
+from frappe import _
+from frappe.utils.csvutils import UnicodeWriter, escape_formula_injection
 
 
 def direct_python_execution(expression):
@@ -262,3 +266,63 @@ def run_as_administrator(callback):
 def current_user_name():
     # ok: frappe-setuser-outside-tests
     return frappe.session.user
+
+
+def export_bank_lines(lines):
+    buffer = StringIO()
+    writer = csv.writer(buffer)
+    # ok: frappe-csv-row-without-formula-escape
+    writer.writerow(["Date", "Description", _("Amount")])
+    for line in lines:
+        # ruleid: frappe-csv-row-without-formula-escape
+        writer.writerow([line.date, line.description, line.amount])
+    return buffer.getvalue()
+
+
+def export_rows(headers, rows):
+    buffer = StringIO()
+    writer = csv.writer(buffer)
+    # ruleid: frappe-csv-row-without-formula-escape
+    writer.writerow(headers)
+    # ruleid: frappe-csv-row-without-formula-escape
+    writer.writerows(rows)
+    return buffer.getvalue()
+
+
+def export_with_literal_header(rows):
+    buffer = StringIO()
+    writer = csv.writer(buffer)
+    header = ["Account", "Debit", "Credit"]
+    # ruleid: frappe-csv-row-without-formula-escape
+    writer.writerow([rows[0].account, rows[0].description])
+    # ok: frappe-csv-row-without-formula-escape
+    writer.writerow(header)
+    # ok: frappe-csv-row-without-formula-escape
+    writer.writerows([escape_formula_injection(cell) for cell in row] for row in rows)
+    return buffer.getvalue()
+
+
+def export_with_computed_header(columns, rows):
+    buffer = StringIO()
+    writer = csv.writer(buffer)
+    header = [column.label for column in columns]
+    # ruleid: frappe-csv-row-without-formula-escape
+    writer.writerow(header)
+    return buffer.getvalue()
+
+
+def export_escaped_beforehand(rows):
+    escaped = [[escape_formula_injection(cell) for cell in row] for row in rows]
+    buffer = StringIO()
+    writer = csv.writer(buffer)
+    # ok: frappe-csv-row-without-formula-escape
+    writer.writerows(escaped)
+    return buffer.getvalue()
+
+
+def export_through_unicode_writer(rows):
+    writer = UnicodeWriter()
+    for row in rows:
+        # ok: frappe-csv-row-without-formula-escape
+        writer.writerow(row)
+    return writer.getvalue()

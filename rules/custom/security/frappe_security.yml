@@ -265,3 +265,41 @@ rules:
         - "**/test_*.py"
         - "**/tests/**"
         - "**/conftest.py"
+
+  - id: frappe-csv-row-without-formula-escape
+    languages: [python]
+    severity: WARNING
+    message: >-
+      CSV rows are written without escape_formula_injection. A cell that starts
+      with =, +, - or @ is evaluated as a formula when the file is opened in a
+      spreadsheet. Escape string cells with
+      frappe.utils.csvutils.escape_formula_injection or write through
+      frappe.utils.csvutils.UnicodeWriter. Files read back only by code may
+      keep raw values if the reader never opens them in a spreadsheet.
+    metadata:
+      origin: custom
+      category: security
+      confidence: LOW
+      technology: [frappe]
+      cwe:
+        - "CWE-1236: Improper Neutralization of Formula Elements in a CSV File"
+    patterns:
+      - pattern-inside: |
+          $WRITER = csv.writer(...)
+          ...
+      - pattern-either:
+          - pattern: $WRITER.writerow($ROWS)
+          - pattern: $WRITER.writerows($ROWS)
+      - pattern-not: $WRITER.writerow(<... escape_formula_injection(...) ...>)
+      - pattern-not: $WRITER.writerows(<... escape_formula_injection(...) ...>)
+      - pattern-not-inside: |
+          $ROWS = <... escape_formula_injection(...) ...>
+          ...
+      - pattern-not-regex: >-
+          \.writerow\(\s*\[\s*(?:(?:"[^"\n]*"|'[^'\n]*'|_\(\s*(?:"[^"\n]*"|'[^'\n]*')\s*\))\s*,?\s*)*\]\s*\)
+      - pattern-not-regex: >-
+          \b(\w+)\s*=\s*\[\s*(?:(?:"[^"\n]*"|'[^'\n]*'|_\(\s*(?:"[^"\n]*"|'[^'\n]*')\s*\))\s*,?\s*)*\]\s*\n[\s\S]*?\K\b\w+\.writerow\(\s*\1\s*\)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
