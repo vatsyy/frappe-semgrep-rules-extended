@@ -59,7 +59,7 @@ actually finds.**
 
 ## Current rule coverage
 
-The current development portfolio contains **73 rules** across:
+The current development portfolio contains **74 rules** across:
 
 ```text
 rules/
@@ -76,6 +76,7 @@ Custom coverage currently includes patterns such as:
 - async callback completion races;
 - N+1 reads in loops and comprehensions;
 - malformed SQL placeholder lists;
+- GL Entry reads that filter on docstatus without is_cancelled;
 - whitelisted methods performing raw SQL;
 - direct Python `eval` and `exec`;
 - dynamic template rendering with unrestricted globals;

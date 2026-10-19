@@ -70,3 +70,54 @@ rules:
       exclude:
         - "**/test_*.py"
         - "**/tests/**"
+
+  - id: frappe-gl-entry-read-without-is-cancelled
+    languages: [python]
+    severity: WARNING
+    message: >-
+      This GL Entry read filters on docstatus but not on is_cancelled. Cancelling
+      a voucher keeps its GL Entries submitted (docstatus 1) and sets
+      is_cancelled 1, so the result includes cancelled postings. Add
+      "is_cancelled": 0 to the filters.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: MEDIUM
+      technology: [frappe, erpnext]
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern-either:
+                  - pattern: 'frappe.$GET("GL Entry", ..., filters={..., "docstatus": $D, ...}, ...)'
+                  - pattern: 'frappe.db.$GET("GL Entry", ..., filters={..., "docstatus": $D, ...}, ...)'
+                  - pattern: 'frappe.$GET("GL Entry", {..., "docstatus": $D, ...}, ...)'
+                  - pattern: 'frappe.db.$GET("GL Entry", {..., "docstatus": $D, ...}, ...)'
+              - pattern-not: 'frappe.$GET("GL Entry", ..., filters={..., "is_cancelled": $C, ...}, ...)'
+              - pattern-not: 'frappe.db.$GET("GL Entry", ..., filters={..., "is_cancelled": $C, ...}, ...)'
+              - pattern-not: 'frappe.$GET("GL Entry", {..., "is_cancelled": $C, ...}, ...)'
+              - pattern-not: 'frappe.db.$GET("GL Entry", {..., "is_cancelled": $C, ...}, ...)'
+          - patterns:
+              - pattern-inside: |
+                  $FILTERS = {..., "docstatus": $D, ...}
+                  ...
+              - pattern-not-inside: |
+                  $FILTERS = {..., "is_cancelled": $C, ...}
+                  ...
+              - pattern-not-inside: |
+                  $FILTERS["is_cancelled"] = $C
+                  ...
+              - pattern-not-inside: |
+                  $FILTERS.update({..., "is_cancelled": $C, ...})
+                  ...
+              - pattern-either:
+                  - pattern: frappe.$GET("GL Entry", ..., filters=$FILTERS, ...)
+                  - pattern: frappe.db.$GET("GL Entry", ..., filters=$FILTERS, ...)
+                  - pattern: frappe.$GET("GL Entry", $FILTERS, ...)
+                  - pattern: frappe.db.$GET("GL Entry", $FILTERS, ...)
+      - metavariable-regex:
+          metavariable: $GET
+          regex: ^(get_all|get_list)$
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
