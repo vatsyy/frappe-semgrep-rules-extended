@@ -59,7 +59,7 @@ actually finds.**
 
 ## Current rule coverage
 
-The current development portfolio contains **68 rules** across:
+The current development portfolio contains **72 rules** across:
 
 ```text
 rules/

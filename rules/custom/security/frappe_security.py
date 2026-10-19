@@ -159,3 +159,19 @@ def normal_save(name):
     doc = frappe.get_doc("Private Record", name)
     # ok: frappe-whitelisted-permission-bypass
     doc.save()
+
+
+def run_as_administrator(callback):
+    previous_user = frappe.session.user
+    # ruleid: frappe-setuser-outside-tests
+    frappe.set_user("Administrator")
+    try:
+        return callback()
+    finally:
+        # ruleid: frappe-setuser-outside-tests
+        frappe.set_user(previous_user)
+
+
+def current_user_name():
+    # ok: frappe-setuser-outside-tests
+    return frappe.session.user

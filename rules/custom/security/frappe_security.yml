@@ -217,3 +217,26 @@ rules:
       exclude:
         - "**/test_*.py"
         - "**/tests/**"
+
+  - id: frappe-setuser-outside-tests
+    languages: [python]
+    severity: WARNING
+    message: >-
+      frappe.set_user switches the session user, so every later permission
+      check in this request runs as that user. Verify that no remote caller can
+      choose the target user, and restore the previous user in a finally block.
+      This is the upstream frappe-setuser check without test code; run it with
+      --exclude-rule for the upstream ID to drop test-helper findings.
+    metadata:
+      origin: custom
+      category: security
+      confidence: LOW
+      technology: [frappe]
+      cwe:
+        - "CWE-269: Improper Privilege Management"
+    pattern: frappe.set_user(...)
+    paths:
+      exclude:
+        - "**/test_*.py"
+        - "**/tests/**"
+        - "**/conftest.py"
