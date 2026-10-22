@@ -328,6 +328,9 @@ rules:
               async def $FUNC(...):
                 ...
       - pattern: frappe.db.sql(...)
+      - pattern-not-inside: |
+          frappe.only_for(...)
+          ...
     paths:
       exclude:
         - "**/test_*.py"

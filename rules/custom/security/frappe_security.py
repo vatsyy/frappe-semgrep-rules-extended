@@ -594,3 +594,26 @@ def path_opened_before_rejection(path):
         # ruleid: frappe-whitelisted-direct-file-path
         open(path).read()
         frappe.throw("Invalid path")
+
+
+@frappe.whitelist(methods=["POST"])
+def role_gated_raw_read():
+    frappe.only_for("System Manager")
+    # ok: frappe-whitelisted-raw-sql
+    return frappe.db.sql("select name from `tabGL Entry`")
+
+
+@frappe.whitelist()
+def raw_read_before_role_gate():
+    # ruleid: frappe-whitelisted-raw-sql
+    rows = frappe.db.sql("select name from `tabGL Entry`")
+    frappe.only_for("System Manager")
+    return rows
+
+
+@frappe.whitelist()
+def role_gate_in_unshared_branch(strict):
+    if strict:
+        frappe.only_for("System Manager")
+    # ruleid: frappe-whitelisted-raw-sql
+    return frappe.db.sql("select name from `tabGL Entry`")
