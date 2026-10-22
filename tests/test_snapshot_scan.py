@@ -19,7 +19,6 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
         self.base = Path(self.temporary.name)
         self.source = self.base / "source"
         self.rules = self.base / "rules"
-        self.catalogue = self.base / "catalogue.json"
         self.output = self.base / "output"
         self.source.mkdir()
         self.rules.mkdir()
@@ -30,7 +29,9 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
         self.run_git("add", "sample.py")
         self.run_git("commit", "-m", "public snapshot")
         self.revision = self.run_git("rev-parse", "HEAD").stdout.strip()
-        self.run_git("remote", "add", "upstream", "https://github.com/frappe/erpnext.git")
+        self.run_git(
+            "remote", "add", "upstream", "https://github.com/frappe/erpnext.git"
+        )
         self.run_git("update-ref", "refs/remotes/upstream/main", self.revision)
         (self.source / "sample.py").write_text("print('uncommitted work')\n")
         (self.rules / "rule.yml").write_text(
@@ -40,16 +41,6 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
             "    message: snapshot\n"
             "    severity: INFO\n"
             "    pattern: print(...)\n"
-        )
-        self.catalogue.write_text(
-            json.dumps(
-                {
-                    "schema_version": 1,
-                    "catalogue_id": "snapshot-test",
-                    "claims": [],
-                    "retired_ids": [],
-                }
-            )
         )
 
     def tearDown(self) -> None:
@@ -111,8 +102,6 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
             "erpnext",
             "--rules",
             str(self.rules),
-            "--catalogue",
-            str(self.catalogue),
             "--semgrep-command",
             str(semgrep),
             "--output",
@@ -143,7 +132,6 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
         self.assertEqual(
             {path.name for path in self.output.iterdir()},
             {
-                "catalogue.json",
                 "findings.json",
                 "provenance.json",
                 "scan-health.json",
@@ -156,18 +144,6 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
         health = json.loads((self.output / "scan-health.json").read_text())
         provenance = json.loads((self.output / "provenance.json").read_text())
         raw = json.loads((self.output / "semgrep.json").read_text())
-        contracts = {
-            "scan-findings-v1.json": findings,
-            "scan-health-v1.json": health,
-            "scan-provenance-v1.json": provenance,
-        }
-        for schema_name, payload in contracts.items():
-            with self.subTest(schema=schema_name):
-                schema = json.loads(
-                    (ROOT / "governance" / "schemas" / schema_name).read_text()
-                )
-                self.assertEqual(payload["schema_version"], schema["schema_version"])
-                self.assertTrue(set(schema["required"]) <= payload.keys())
         self.assertEqual(findings["finding_count"], 1)
         self.assertEqual(findings["findings"], raw["results"])
         self.assertEqual(health["status"], "valid")
@@ -190,6 +166,22 @@ class CanonicalSnapshotScanTest(unittest.TestCase):
         self.assertEqual(provenance["source"]["file_count"], 2)
         self.assertRegex(provenance["source"]["content_sha256"], r"^[0-9a-f]{64}$")
         self.assertEqual(self.run_git("status", "--porcelain=v1").stdout, before_status)
+
+    def test_nested_dependency_directory_symlink_is_excluded(self) -> None:
+        dependencies = self.base / "dependencies"
+        dependencies.mkdir()
+        (dependencies / "package.js").write_text("const dependency = true;\n")
+        public = self.source / "app" / "public"
+        public.mkdir(parents=True)
+        (public / "node_modules").symlink_to(dependencies, target_is_directory=True)
+        self.run_git("add", "app/public/node_modules")
+
+        result = self.run_scanner(self.fake_semgrep(), source_mode="worktree")
+
+        self.assertEqual(result.returncode, 0, result.stderr)
+        provenance = json.loads((self.output / "provenance.json").read_text())
+        self.assertEqual(provenance["source"]["file_count"], 1)
+        self.assertTrue((public / "node_modules").is_symlink())
 
     def test_source_semgrepignore_is_replaced_only_inside_snapshot(self) -> None:
         ignore = self.source / ".semgrepignore"

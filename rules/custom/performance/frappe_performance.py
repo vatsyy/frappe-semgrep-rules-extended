@@ -34,6 +34,88 @@ def direct_reads_in_while(names):
         names.pop()
 
 
+def conditional_doctype_reads(rows):
+    # ACF log cleanup checks each configured DocType before purging its logs.
+    for row in rows:
+        doctype = (getattr(row, "ref_doctype", None) or "").strip()
+        if not doctype:
+            continue
+        # ruleid: frappe-n-plus-one-read-in-loop
+        if not frappe.db.exists("DocType", doctype):
+            continue
+        print(doctype)
+
+
+def conditional_migration_reads():
+    # A bounded migration-style check is still a hotspot, not a proven defect.
+    for doctype in ("API Request Log", "Driver Log"):
+        # ruleid: frappe-n-plus-one-read-in-loop
+        if frappe.db.exists("DocType", doctype):
+            print(doctype)
+
+
+def conditional_status_reads(names, enabled):
+    for name in names:
+        # ruleid: frappe-n-plus-one-read-in-loop
+        if enabled and frappe.db.get_value("ToDo", name, "status") == "Open":
+            print(name)
+        # ruleid: frappe-n-plus-one-read-in-loop
+        elif frappe.db.exists("ToDo", {"name": name, "allocated_to": "Administrator"}):
+            print("allocated", name)
+
+
+def conditional_count_in_while(names):
+    while names:
+        name = names.pop()
+        # ruleid: frappe-n-plus-one-read-in-loop
+        if frappe.db.count("ToDo", filters={"reference_name": name}) > 0:
+            print(name)
+
+
+def conditional_list_reads(names):
+    for name in names:
+        # ruleid: frappe-n-plus-one-read-in-loop
+        if frappe.get_list("ToDo", filters={"reference_name": name}, limit=1):
+            print(name)
+
+
+def query_guard_outside_loop_is_ok(names):
+    # ok: frappe-n-plus-one-read-in-loop
+    if frappe.db.exists("DocType", "ToDo"):
+        for name in names:
+            print(name)
+
+
+def iterable_query_with_in_memory_guard_is_ok():
+    # ok: frappe-n-plus-one-read-in-loop
+    for row in frappe.get_all("ToDo", fields=["name", "status"]):
+        if row.status == "Open":
+            print(row.name)
+
+
+def prefetched_guard_in_loop_is_ok(names):
+    # ok: frappe-n-plus-one-read-in-loop
+    existing = set(frappe.get_all("ToDo", pluck="name"))
+    for name in names:
+        # ok: frappe-n-plus-one-read-in-loop
+        if name in existing:
+            print(name)
+
+
+def unrelated_conditional_call_is_ok(names, records):
+    for name in names:
+        # ok: frappe-n-plus-one-read-in-loop
+        if records.exists(name):
+            print(name)
+
+
+def conditional_document_construction_is_ok(rows):
+    for row in rows:
+        # ok: frappe-n-plus-one-read-in-loop
+        if frappe.get_doc({"doctype": "ToDo", "description": row.description}):
+            print(row.description)
+
+
 def sql_reads_and_writes(names):
     for name in names:
         # ruleid: frappe-n-plus-one-read-in-loop

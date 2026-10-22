@@ -39,9 +39,10 @@ rules:
     languages: [python]
     severity: WARNING
     message: >-
-      A Frappe database read runs inside a loop. This can scale as one query per
-      item. Fetch the required fields in bulk, pre-index the results, or add a
-      narrow nosemgrep explanation when the loop is intentionally bounded.
+      A Frappe database read call appears in a loop body. It may repeat per
+      item, including in conditional checks. Review batching, guards and cache
+      behaviour; confirm runtime query counts before treating this advisory as
+      a performance defect.
     metadata:
       origin: custom
       category: performance
@@ -60,6 +61,18 @@ rules:
                       while $CONDITION:
                         ...
                         $READ(...)
+                        ...
+                  - pattern: |
+                      for $ITEM in $ITERABLE:
+                        ...
+                        if <... $READ(...) ...>:
+                          ...
+                        ...
+                  - pattern: |
+                      while $CONDITION:
+                        ...
+                        if <... $READ(...) ...>:
+                          ...
                         ...
               - metavariable-regex:
                   metavariable: $READ

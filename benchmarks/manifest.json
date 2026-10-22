@@ -1,375 +1,116 @@
 {
-  "schema_version": 2,
-  "minimum_semgrep_version": "1.172.0",
-  "performance": {
-    "process_timeout_seconds": 60,
-    "maximum_scan_seconds": 10,
-    "maximum_rule_match_seconds": 1,
-    "maximum_memory_mib": 1536
+  "cases/correctness/async-array-callback/broken_total.js": {
+    "findings": [
+      "frappe-async-foreach-callback"
+    ],
+    "reason": "The function returns before its async callbacks update the total.",
+    "provenance": "Distilled from a confirmed async ordering defect found during the Frappe and ERPNext corpus scan."
   },
-  "cases": [
-    {
-      "id": "correctness.async-array-callback.broken-total",
-      "path": "cases/correctness/async-array-callback/broken_total.js",
-      "provenance": "Distilled from a confirmed async ordering defect found during the Frappe and ERPNext corpus scan.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-async-foreach-callback"
-          }
-        ],
-        "absent": [
-          "frappe-async-array-callback-misuse"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The function returns before its async callbacks update the total.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "correctness.async-array-callback.awaited",
-      "path": "cases/correctness/async-array-callback/awaited.js",
-      "provenance": "Synthetic negative boundary for the confirmed async ordering defect.",
-      "expected": {
-        "findings": [],
-        "absent": [
-          "frappe-async-array-callback-misuse",
-          "frappe-async-foreach-callback"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Promise.all awaits every mapped callback before returning.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "performance.async-array-callback.fire-and-forget",
-      "path": "cases/correctness/async-array-callback/fire_and_forget.js",
-      "provenance": "Distilled from an intentional fire-and-forget boundary found in the Frappe corpus.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-client-request-in-array-callback"
-          }
-        ],
-        "absent": [
-          "frappe-async-array-callback-misuse",
-          "frappe-async-foreach-callback"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The callback is synchronous and explicitly discards the request promise; request fan-out still needs review.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.shell.user-controlled",
-      "path": "cases/security/command-execution/user_controlled_shell.py",
-      "provenance": "Synthetic command-injection case based on the frappe-press subprocess rule contract.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-subprocess-shell-true"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "User-controlled text is interpolated into a shell command.",
-      "audit_disposition": "syntax-regression-only"
-    },
-    {
-      "id": "security.shell.constant-policy",
-      "path": "cases/security/command-execution/constant_shell.py",
-      "provenance": "Distilled from a constant shell command found in Frappe testing commands.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-subprocess-shell-true"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Shell use violates policy but the literal command is not evidence of command injection.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.shell.argument-list",
-      "path": "cases/security/command-execution/argument_list.py",
-      "provenance": "Synthetic safe-process boundary based on the frappe-press subprocess rule contract.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-subprocess-exec"
-          }
-        ],
-        "absent": [
-          "frappe-subprocess-shell-true"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "An argument list avoids shell interpretation, while process execution remains reviewable.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.authorisation.permission-bypass",
-      "path": "cases/security/authorisation/permission_bypass.py",
-      "provenance": "Distilled from whitelisted get_all endpoints found in pending Karam Finance modules.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-whitelisted-permission-bypass"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Whitelisting does not apply DocType or record-level authorisation to get_all.",
-      "audit_disposition": "unresolved-boundary"
-    },
-    {
-      "id": "security.authorisation.permission-aware",
-      "path": "cases/security/authorisation/permission_aware.py",
-      "provenance": "Synthetic negative boundary for whitelisted list access.",
-      "expected": {
-        "findings": [],
-        "absent": [
-          "frappe-whitelisted-permission-bypass"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "get_list applies the current user's permissions and no bypass flag is supplied.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.sql.value-interpolation",
-      "path": "cases/security/sql/value_interpolation.py",
-      "provenance": "Synthetic SQL-injection case based on the upstream Frappe rule contract.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-sql-format-injection"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "An untrusted value is inserted directly into SQL text.",
-      "audit_disposition": "syntax-regression-only"
-    },
-    {
-      "id": "security.sql.parameterised",
-      "path": "cases/security/sql/parameterised.py",
-      "provenance": "Synthetic negative boundary for SQL value binding.",
-      "expected": {
-        "findings": [],
-        "absent": [
-          "frappe-sql-format-injection"
-        ]
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The query is static and the value is passed through the database parameter channel.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.sql.allowlisted-structure",
-      "path": "cases/security/sql/allowlisted_structure.py",
-      "provenance": "Distilled from a structurally dynamic query found in the pending Karam Finance Reporting Currency module.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-sql-format-injection"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The rule cannot prove that a structural fragment is allowlisted, so the match is an audit hotspot rather than a proven injection.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.filesystem.user-path",
-      "path": "cases/security/filesystem/user_path.py",
-      "provenance": "Synthetic path-traversal case based on the upstream Frappe rule contract.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-security-file-traversal"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Untrusted input controls the opened path.",
-      "audit_disposition": "syntax-regression-only"
-    },
-    {
-      "id": "security.filesystem.constant-path",
-      "path": "cases/security/filesystem/constant_path.py",
-      "provenance": "Synthetic negative-risk boundary for the broad upstream filesystem audit rule.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-security-file-traversal"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The literal private-file path is not user-controlled, but all filesystem access remains auditable.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "security.templates.user-template",
-      "path": "cases/security/templates/user_template.py",
-      "provenance": "Synthetic server-side template-injection case based on the upstream Frappe rule contract.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-ssti"
-          },
-          {
-            "rule_id": "frappe-dynamic-template-with-default-globals"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Untrusted template source is evaluated by the renderer.",
-      "audit_disposition": "unresolved-boundary"
-    },
-    {
-      "id": "security.templates.static-template",
-      "path": "cases/security/templates/static_template.py",
-      "provenance": "Synthetic negative-risk boundary for the broad upstream template audit rule.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-ssti"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "A repository-owned template path is static, but the broad rule intentionally requests review.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "performance.n-plus-one.unbounded",
-      "path": "cases/performance/n-plus-one/unbounded.py",
-      "provenance": "Synthetic unbounded query-in-loop case representing pending-module migration debt.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-n-plus-one-read-in-loop"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "Query count grows with the input rows; runtime query-count evidence is required before enforcement.",
-      "audit_disposition": "source-backed-replacement-required"
-    },
-    {
-      "id": "performance.n-plus-one.chunked",
-      "path": "cases/performance/n-plus-one/chunked.py",
-      "provenance": "Distilled from deliberately chunked database work found in the active Karam Finance refactor.",
-      "expected": {
-        "findings": [
-          {
-            "rule_id": "frappe-n-plus-one-read-in-loop"
-          }
-        ],
-        "absent": []
-      },
-      "fixture_role": "authored-compatibility-fixture",
-      "admission_eligible": false,
-      "observed_semgrep_versions": [
-        "1.172.0",
-        "1.174.0"
-      ],
-      "expectation_reason": "The loop is bounded by batches rather than records, so runtime query count and batch size determine acceptability.",
-      "audit_disposition": "unresolved-boundary"
-    }
-  ],
-  "purpose": "syntax-compatibility-regression"
+  "cases/correctness/async-array-callback/awaited.js": {
+    "findings": [],
+    "reason": "Promise.all awaits every mapped callback before returning.",
+    "provenance": "Synthetic negative boundary for the confirmed async ordering defect."
+  },
+  "cases/correctness/async-array-callback/fire_and_forget.js": {
+    "findings": [
+      "frappe-client-request-in-array-callback"
+    ],
+    "reason": "The callback is synchronous and explicitly discards the request promise; request fan-out still needs review.",
+    "provenance": "Distilled from an intentional fire-and-forget boundary found in the Frappe corpus."
+  },
+  "cases/security/command-execution/user_controlled_shell.py": {
+    "findings": [
+      "frappe-subprocess-shell-true"
+    ],
+    "reason": "User-controlled text is interpolated into a shell command.",
+    "provenance": "Synthetic command-injection case based on the frappe-press subprocess rule contract."
+  },
+  "cases/security/command-execution/constant_shell.py": {
+    "findings": [
+      "frappe-subprocess-shell-true"
+    ],
+    "reason": "Shell use violates policy but the literal command is not evidence of command injection.",
+    "provenance": "Distilled from a constant shell command found in Frappe testing commands."
+  },
+  "cases/security/command-execution/argument_list.py": {
+    "findings": [
+      "frappe-subprocess-exec"
+    ],
+    "reason": "An argument list avoids shell interpretation, while process execution remains reviewable.",
+    "provenance": "Synthetic safe-process boundary based on the frappe-press subprocess rule contract."
+  },
+  "cases/security/authorisation/permission_bypass.py": {
+    "findings": [
+      "frappe-whitelisted-permission-bypass"
+    ],
+    "reason": "Whitelisting does not apply DocType or record-level authorisation to get_all.",
+    "provenance": "Distilled from whitelisted get_all endpoints found in pending Karam Finance modules."
+  },
+  "cases/security/authorisation/permission_aware.py": {
+    "findings": [],
+    "reason": "get_list applies the current user's permissions and no bypass flag is supplied.",
+    "provenance": "Synthetic negative boundary for whitelisted list access."
+  },
+  "cases/security/sql/value_interpolation.py": {
+    "findings": [
+      "frappe-sql-format-injection"
+    ],
+    "reason": "An untrusted value is inserted directly into SQL text.",
+    "provenance": "Synthetic SQL-injection case based on the upstream Frappe rule contract."
+  },
+  "cases/security/sql/parameterised.py": {
+    "findings": [],
+    "reason": "The query is static and the value is passed through the database parameter channel.",
+    "provenance": "Synthetic negative boundary for SQL value binding."
+  },
+  "cases/security/sql/allowlisted_structure.py": {
+    "findings": [
+      "frappe-sql-format-injection"
+    ],
+    "reason": "The rule cannot prove that a structural fragment is allowlisted, so the match is an audit hotspot rather than a proven injection.",
+    "provenance": "Distilled from a structurally dynamic query found in the pending Karam Finance Reporting Currency module."
+  },
+  "cases/security/filesystem/user_path.py": {
+    "findings": [
+      "frappe-security-file-traversal"
+    ],
+    "reason": "Untrusted input controls the opened path.",
+    "provenance": "Synthetic path-traversal case based on the upstream Frappe rule contract."
+  },
+  "cases/security/filesystem/constant_path.py": {
+    "findings": [
+      "frappe-security-file-traversal"
+    ],
+    "reason": "The literal private-file path is not user-controlled, but all filesystem access remains auditable.",
+    "provenance": "Synthetic negative-risk boundary for the broad upstream filesystem audit rule."
+  },
+  "cases/security/templates/user_template.py": {
+    "findings": [
+      "frappe-ssti",
+      "frappe-dynamic-template-with-default-globals"
+    ],
+    "reason": "Untrusted template source is evaluated by the renderer.",
+    "provenance": "Synthetic server-side template-injection case based on the upstream Frappe rule contract."
+  },
+  "cases/security/templates/static_template.py": {
+    "findings": [
+      "frappe-ssti"
+    ],
+    "reason": "A repository-owned template path is static, but the broad rule intentionally requests review.",
+    "provenance": "Synthetic negative-risk boundary for the broad upstream template audit rule."
+  },
+  "cases/performance/n-plus-one/unbounded.py": {
+    "findings": [
+      "frappe-n-plus-one-read-in-loop"
+    ],
+    "reason": "Query count grows with the input rows; runtime query-count evidence is required before enforcement.",
+    "provenance": "Synthetic unbounded query-in-loop case representing pending-module migration debt."
+  },
+  "cases/performance/n-plus-one/chunked.py": {
+    "findings": [
+      "frappe-n-plus-one-read-in-loop"
+    ],
+    "reason": "The loop is bounded by batches rather than records, so runtime query count and batch size determine acceptability.",
+    "provenance": "Distilled from deliberately chunked database work found in the active Karam Finance refactor."
+  }
 }

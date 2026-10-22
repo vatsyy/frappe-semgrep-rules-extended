@@ -20,3 +20,24 @@ add a runtime query-count or request-count test for every intentional exception.
 The N+1 rule deliberately excludes the query that produces a loop iterable and
 the dictionary form of `frappe.get_doc`, which constructs a new document
 without reading one from the database.
+
+## Reads in loop conditions
+
+`frappe-n-plus-one-read-in-loop` also matches `if`/`elif` predicates in
+`for`/`while` bodies for its existing named read APIs, including `db.exists`,
+`db.get_value`, `db.count` and list queries. Negation, comparisons and boolean
+guards can still contain repeated reads. The fixtures mirror ACF's
+`clear_expired_logs` and `_ensure_custom_fields_from_dir`, which check
+`frappe.db.exists("DocType", doctype)` before processing each configured DocType.
+
+Safe negatives include a query before a loop, a query producing the iterable,
+membership checks against prefetched names, unrelated `exists` methods and
+in-memory document construction. The predicate uses Semgrep's
+[deep expression operator](https://semgrep.dev/docs/writing-rules/pattern-syntax/#deep-expression-operator).
+
+These are structural review hotspots. Guards can skip reads; caching, fixed
+configuration and chunked bulk lookups can make matches intentional. The rule
+does not establish reachability, query counts, data volume or a performance
+defect. This extension does not add coverage for `while` headers, helper calls,
+aliases or reads across function boundaries. SQL/document-read patterns and
+test/patch exclusions remain as before; comprehension reads have a separate rule.

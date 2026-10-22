@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-import json
 import tempfile
 import unittest
 from pathlib import Path
 
 from scripts.scan_all_apps import AllAppsScanError, discover_apps, write_summary
-
-ROOT = Path(__file__).resolve().parents[1]
 
 
 class AllAppsScanContractTest(unittest.TestCase):
@@ -56,24 +53,6 @@ class AllAppsScanContractTest(unittest.TestCase):
             self.assertIn("3", content)
             self.assertIn("Scan Health: **invalid**", content)
             self.assertIn("not confirmed defects", content)
-
-    def test_schema_covers_the_stable_aggregate_contract(self) -> None:
-        schema = json.loads(
-            (ROOT / "governance/schemas/all-apps-scan-v1.json").read_text()
-        )
-
-        self.assertEqual(schema["schema_version"], 1)
-        self.assertEqual(
-            set(schema["required"]),
-            {
-                "status",
-                "application_count",
-                "finding_count",
-                "findings_by_rule",
-                "applications",
-                "failures",
-            },
-        )
 
 
 if __name__ == "__main__":

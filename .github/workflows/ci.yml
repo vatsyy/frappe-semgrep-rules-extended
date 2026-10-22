@@ -17,28 +17,14 @@ jobs:
       with:
         fetch-depth: 0
     - name: Verify pinned Semgrep engine
-      id: engine
       run: |
         python -m pip install "semgrep==${SEMGREP_VERSION}"
         test "$(semgrep --version)" = "${SEMGREP_VERSION}"
     - name: Record immutable rules provenance
-      id: provenance
       run: |
         echo "repository_commit=$(git rev-parse HEAD)"
         echo "rules_tree=$(git rev-parse HEAD:rules)"
         echo "semgrep_version=$(semgrep --version)"
     - name: Repository acceptance
-      id: repository
       run: |
         make test
-    - name: Summarise acceptance boundaries
-      if: always()
-      run: |
-        {
-          echo "### Rules CI provenance"
-          echo
-          echo "- Engine qualification: ${{ steps.engine.outcome }}"
-          echo "- Rules provenance: ${{ steps.provenance.outcome }}"
-          echo "- Repository acceptance: ${{ steps.repository.outcome }}"
-          echo "- Analysis Coverage: not evaluated by rules CI; application Scan Health is a separate contract"
-        } >> "${GITHUB_STEP_SUMMARY}"
