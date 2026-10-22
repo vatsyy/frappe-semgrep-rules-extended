@@ -1,0 +1,30 @@
+rules:
+  - id: frappe-decimal-amount-stringifies-bytes
+    languages: [python]
+    severity: WARNING
+    message: >-
+      This decimal_amount helper stringifies its input before Decimal conversion.
+      If a database result is bytes, str(b'0.0000') produces "b'0.0000'" and
+      Decimal raises InvalidOperation. Decode numeric bytes before conversion.
+      This structural warning does not prove the caller supplies bytes; review
+      the input contract. Preserve precision and reject malformed amounts.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: MEDIUM
+      technology: [frappe]
+    options:
+      go_deeper_stmt: false
+    patterns:
+      - pattern-inside: |
+          def decimal_amount($VALUE, ...):
+            ...
+      - pattern-either:
+          - pattern: decimal.Decimal(str($VALUE))
+          - pattern: decimal.Decimal(str($VALUE or 0))
+      # Recognise the reviewed fix only when the guard immediately precedes
+      # the return. A decode of another variable or later reassignment is unsafe.
+      - pattern-not-inside: |
+          if isinstance($VALUE, bytes):
+            $VALUE = $VALUE.decode("ascii")
+          return ...

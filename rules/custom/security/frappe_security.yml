@@ -45,10 +45,11 @@ rules:
       - pattern-not: frappe.render_template($TEMPLATE, ..., restrict_globals=1, ...)
       - pattern-not: render_template($TEMPLATE, ..., is_path=True, ...)
       - pattern-not: frappe.render_template($TEMPLATE, ..., is_path=True, ...)
-      - metavariable-regex:
+      # Exclude literal strings, not every expression beginning with a quote.
+      - metavariable-pattern:
           metavariable: $TEMPLATE
-          regex: >-
-            (?s)^(?![rubfRUBF]*(?:"|')).+
+          patterns:
+            - pattern-not: '"..."'
     paths:
       exclude:
         - "**/test_*.py"
@@ -67,12 +68,22 @@ rules:
       technology: [frappe]
       cwe:
         - "CWE-862: Missing Authorization"
+    # Only omitted or explicitly false throw values establish this warning.
     patterns:
-      - pattern: frappe.has_permission(...)
-      - pattern-not: frappe.has_permission(..., throw=True, ...)
-      - pattern-not: frappe.has_permission(..., throw=$THROW, ...)
+      - pattern-either:
+          - patterns:
+              - pattern: frappe.has_permission(...)
+              - pattern-not: frappe.has_permission(..., throw=$THROW, ...)
+              - pattern-not: frappe.has_permission($DOCTYPE, $PTYPE, $DOC, $USER, $THROW, ...)
+          - pattern: frappe.has_permission(..., throw=False, ...)
+          - pattern: frappe.has_permission(..., throw=0, ...)
+          - pattern: frappe.has_permission(..., throw=None, ...)
+          - pattern: frappe.has_permission($DOCTYPE, $PTYPE, $DOC, $USER, False, ...)
+          - pattern: frappe.has_permission($DOCTYPE, $PTYPE, $DOC, $USER, 0, ...)
+          - pattern: frappe.has_permission($DOCTYPE, $PTYPE, $DOC, $USER, None, ...)
       - pattern-not-inside: $VALUE = <... frappe.has_permission(...) ...>
       - pattern-not-inside: "return <... frappe.has_permission(...) ...>"
+      - pattern-not-inside: "yield <... frappe.has_permission(...) ...>"
       - pattern-not-inside: "if <... frappe.has_permission(...) ...>: ..."
       - pattern-not-inside: "assert <... frappe.has_permission(...) ...>"
       - pattern-not-inside: "$TRUE if frappe.has_permission(...) else $FALSE"
@@ -80,6 +91,11 @@ rules:
       - pattern-not-inside: "{$VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>}"
       - pattern-not-inside: "($VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>)"
       - pattern-not-inside: "{$KEY: $VALUE for $ITEM in $ITERABLE if <... frappe.has_permission(...) ...>}"
+      - pattern-not-inside: "$CONSUMER(..., <... frappe.has_permission(...) ...>, ...)"
+      - pattern-not-inside: "while <... frappe.has_permission(...) ...>: ..."
+      - pattern-not-inside: "$CONSUMER(..., $KEY=<... frappe.has_permission(...) ...>, ...)"
+      - pattern-not-inside: "frappe.has_permission(...) or $FALLBACK"
+      - pattern-not-inside: "frappe.has_permission(...) and $ACTION"
     paths:
       exclude:
         - "**/test_*.py"
@@ -99,12 +115,44 @@ rules:
       technology: [frappe]
       cwe:
         - "CWE-22: Improper Limitation of a Pathname to a Restricted Directory"
-    patterns:
-      - pattern-inside: |
-          @frappe.whitelist(...)
-          def $FUNC(..., $PATH, ...):
-            ...
-      - pattern: open($PATH, ...)
+    mode: taint
+    options:
+      # Selecting a fixed allowlisted value is not caller-controlled file data.
+      taint_assume_safe_indexes: true
+    pattern-sources:
+      - patterns:
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              def $FUNC(..., $INPUT, ...):
+                ...
+          - focus-metavariable: $INPUT
+    pattern-sanitizers:
+      # Only a fixed tuple and a sole terminating statement establish this guard.
+      - patterns:
+          - pattern: |
+              if $PATH not in $ALLOWED:
+                frappe.throw(...)
+          - metavariable-regex:
+              metavariable: $ALLOWED
+              regex: >-
+                ^\(\s*(?:"[^"\\]*"|'[^'\\]*')\s*(?:,\s*(?:"[^"\\]*"|'[^'\\]*')\s*)*,?\s*\)$
+          - pattern-not-inside: |
+              try:
+                ...
+              except ...:
+                ...
+          - focus-metavariable: $PATH
+        by-side-effect: true
+    pattern-sinks:
+      - patterns:
+          - pattern-inside: |
+              @frappe.whitelist(...)
+              def $FUNC(...):
+                ...
+          - pattern-either:
+              - pattern: open($PATH, ...)
+              - pattern: open(..., file=$PATH, ...)
+          - focus-metavariable: $PATH
     paths:
       exclude:
         - "**/test_*.py"
@@ -126,9 +174,32 @@ rules:
       cwe:
         - "CWE-78: Improper Neutralization of Special Elements used in an OS Command"
     mode: taint
+    options:
+      # Resolve simple quoted-variable assignments in the concatenation exclusions.
+      symbolic_propagation: true
     pattern-sources:
-      - pattern: f"..."
-      - pattern: $TEMPLATE.format(...)
+      - patterns:
+          - pattern-either:
+              - pattern: f"...{$VALUE}..."
+              - pattern: $TEMPLATE.format(..., $VALUE, ...)
+              - pattern: $TEMPLATE.format(..., $KEY=$VALUE, ...)
+              - pattern: '"..." % $VALUE'
+              - pattern: '"..." + $VALUE'
+              - pattern: '$VALUE + "..."'
+              - pattern: '"..." % (..., $VALUE, ...)'
+          - pattern-not: '"..." + shlex.quote(...)'
+          - pattern-not: '"..." + shlex.join(...)'
+          - focus-metavariable: $VALUE
+          - metavariable-pattern:
+              metavariable: $VALUE
+              patterns:
+                - pattern-not: '"..."'
+                - pattern-not: '(...,)'
+                - pattern-not: shlex.quote(...)
+                - pattern-not: shlex.join(...)
+          - pattern-not-inside: shlex.quote(...)
+          - pattern-not-inside: shlex.join(...)
+        exact: true
       - patterns:
           - pattern: $SEPARATOR.join(...)
           - pattern-not: shlex.join(...)
@@ -140,6 +211,8 @@ rules:
           - pattern-either:
               - pattern: frappe.utils.execute_in_shell($COMMAND, ...)
               - pattern: execute_in_shell($COMMAND, ...)
+              - pattern: frappe.utils.execute_in_shell(..., cmd=$COMMAND, ...)
+              - pattern: execute_in_shell(..., cmd=$COMMAND, ...)
           - focus-metavariable: $COMMAND
     paths:
       exclude:
@@ -180,10 +253,20 @@ rules:
               - pattern-either:
                   - pattern: frappe.get_all($DT, ...)
                   - pattern: frappe.get_all(..., doctype=$DT, ...)
+                  - pattern: frappe.db.get_all($DT, ...)
+                  - pattern: frappe.db.get_all(..., doctype=$DT, ...)
                   - pattern: frappe.get_list($DT, ..., ignore_permissions=True, ...)
                   - pattern: frappe.get_list(..., doctype=$DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.get_list($DT, ..., ignore_permissions=1, ...)
+                  - pattern: frappe.get_list(..., doctype=$DT, ..., ignore_permissions=1, ...)
+                  - pattern: frappe.db.get_list($DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.db.get_list(..., doctype=$DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.db.get_list($DT, ..., ignore_permissions=1, ...)
+                  - pattern: frappe.db.get_list(..., doctype=$DT, ..., ignore_permissions=1, ...)
                   - pattern: frappe.delete_doc($DT, ..., ignore_permissions=True, ...)
                   - pattern: frappe.delete_doc(..., doctype=$DT, ..., ignore_permissions=True, ...)
+                  - pattern: frappe.delete_doc($DT, ..., ignore_permissions=1, ...)
+                  - pattern: frappe.delete_doc(..., doctype=$DT, ..., ignore_permissions=1, ...)
               - pattern-not-inside: |
                   frappe.has_permission($DT, ..., throw=True, ...)
                   ...
@@ -193,11 +276,17 @@ rules:
           - patterns:
               - pattern-either:
                   - pattern: $DOC.save(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.save(..., ignore_permissions=1, ...)
                   - pattern: $DOC.insert(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.insert(..., ignore_permissions=1, ...)
                   - pattern: $DOC.submit(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.submit(..., ignore_permissions=1, ...)
                   - pattern: $DOC.cancel(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.cancel(..., ignore_permissions=1, ...)
                   - pattern: $DOC.delete(..., ignore_permissions=True, ...)
+                  - pattern: $DOC.delete(..., ignore_permissions=1, ...)
                   - pattern: $DOC.flags.ignore_permissions = True
+                  - pattern: $DOC.flags.ignore_permissions = 1
               - pattern-not-inside: |
                   $DOC.check_permission(...)
                   ...
@@ -211,6 +300,7 @@ rules:
       exclude:
         - "**/test_*.py"
         - "**/tests/**"
+
 
   - id: frappe-whitelisted-raw-sql
     languages: [python]

@@ -32,8 +32,8 @@ guards can still contain repeated reads. The fixtures mirror ACF's
 
 Safe negatives include a query before a loop, a query producing the iterable,
 membership checks against prefetched names, unrelated `exists` methods and
-in-memory document construction. The predicate uses Semgrep's
-[deep expression operator](https://semgrep.dev/docs/writing-rules/pattern-syntax/#deep-expression-operator).
+in-memory document construction. Reads inside conditional expressions remain
+covered.
 
 These are structural review hotspots. Guards can skip reads; caching, fixed
 configuration and chunked bulk lookups can make matches intentional. The rule
@@ -41,3 +41,17 @@ does not establish reachability, query counts, data volume or a performance
 defect. This extension does not add coverage for `while` headers, helper calls,
 aliases or reads across function boundaries. SQL/document-read patterns and
 test/patch exclusions remain as before; comprehension reads have a separate rule.
+
+## Deferred functions
+
+The Python loop-read and JavaScript array-callback rules exclude nested function
+bodies: defining or storing a function does not execute its database call or
+request. Direct calls in the same iteration remain covered, including calls in
+conditional blocks. These two rules use Semgrep's `match` syntax to scope the
+exclusion to functions inside the iteration; an enclosing function is not an
+exclusion. JavaScript also distinguishes the array callback itself from a
+function defined within it.
+
+This is structural analysis, not call-graph analysis. A local helper invoked
+inside the loop may still need manual review. Python lambda exclusions cover
+zero or one argument; other lambda signatures remain review leads.

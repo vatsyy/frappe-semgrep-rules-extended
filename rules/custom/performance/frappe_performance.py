@@ -201,3 +201,124 @@ def bulk_is_ok(names):
         fields=["name", "status"],
     )
     return {row.name: row.status for row in rows}
+
+
+def comprehension_expression_boundaries(names):
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    filtered = [frappe.db.get_value("ToDo", name, "status") for name in names if name]
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    predicate = [name for name in names if frappe.db.exists("ToDo", name)]
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    wrapped = [str(frappe.db.get_value("ToDo", name, "status")) for name in names]
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    statuses = {str(frappe.db.get_value("ToDo", name, "status")) for name in names if name}
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    pending = (name for name in names if frappe.db.exists("ToDo", name))
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    mapped = {name: str(frappe.db.get_value("ToDo", name, "status")) for name in names if name}
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    keys = {frappe.db.get_value("ToDo", name, "status"): name for name in names}
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    docs = [frappe.get_doc("ToDo", name) for name in names if name]
+    # ok: frappe-n-plus-one-read-in-comprehension
+    once = [name for name in frappe.get_all("ToDo", pluck="name") if name]
+    # ok: frappe-n-plus-one-read-in-comprehension
+    constructed = [frappe.get_doc({"doctype": "ToDo", "description": name}) for name in names if name]
+    # ok: frappe-n-plus-one-read-in-comprehension
+    cached = {name: str(name) for name in names if name}
+
+
+def parenthesised_comprehension_receivers(items):
+    # Regression from Letter Reconciliation: inspecting this expression must
+    # not produce a Semgrep String.sub / Bytes.sub analysis error.
+    # ok: frappe-n-plus-one-read-in-comprehension
+    accounts = {(item.get("account") or "").strip() for item in items if item.get("account")}
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    descriptions = {(frappe.db.get_value("ToDo", name, "description") or "").strip() for name in items}
+
+
+def bulk_query_with_comprehension_filter(rows):
+    # ok: frappe-n-plus-one-read-in-comprehension
+    return frappe.get_all("ToDo", filters={"name": ["in", [row["name"] for row in rows]]})
+
+
+def count_zero_limits(limit):
+    # ruleid: frappe-materialises-list-only-to-count
+    len(frappe.get_all("ToDo", limit=0))
+    # ruleid: frappe-unbounded-list-query, frappe-materialises-list-only-to-count
+    len(frappe.get_all("ToDo", limit_page_length=0))
+    # ruleid: frappe-materialises-list-only-to-count
+    len(frappe.db.get_all("ToDo", limit=0))
+    # ruleid: frappe-unbounded-list-query, frappe-materialises-list-only-to-count
+    len(frappe.db.get_list("ToDo", limit_page_length=0))
+    # ok: frappe-materialises-list-only-to-count
+    len(frappe.get_all("ToDo", limit=10))
+    # ok: frappe-materialises-list-only-to-count
+    len(frappe.get_all("ToDo", limit=limit))
+    # ok: frappe-materialises-list-only-to-count
+    len(frappe.get_all("ToDo", limit=0, limit_page_length=10))
+
+
+def two_generator_reads(groups):
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    values = [frappe.db.get_value("ToDo", name, "status") for group in groups for name in group]
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    filtered = {frappe.db.get_value("ToDo", name, "status") for group in groups for name in group if name}
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    existing = (name for group in groups for name in group if frappe.db.exists("ToDo", name))
+    # ruleid: frappe-n-plus-one-read-in-comprehension
+    docs = {name: frappe.get_doc("ToDo", name) for group in groups for name in group}
+    # ok: frappe-n-plus-one-read-in-comprehension
+    plain = [str(name) for group in groups for name in group]
+    # ok: frappe-n-plus-one-read-in-comprehension
+    outer_query = [name for group in frappe.get_all("ToDo", fields=["name"]) for name in group]
+    # ok: frappe-n-plus-one-read-in-comprehension
+    bulk_query = frappe.get_all("ToDo", filters={"name": ["in", [name for group in groups for name in group]]})
+
+
+def effective_query_limits(limit):
+    # ok: frappe-unbounded-list-query
+    frappe.get_all("ToDo", limit_page_length=0, limit=10)
+    # ok: frappe-unbounded-list-query
+    frappe.db.get_list("ToDo", limit_page_length=0, page_length=10)
+    # ok: frappe-unbounded-list-query
+    frappe.get_all("ToDo", limit_page_length=0, limit=limit)
+    # ruleid: frappe-unbounded-list-query
+    frappe.get_all("ToDo", limit_page_length=0, limit=0)
+    # ruleid: frappe-unbounded-list-query
+    frappe.get_all("ToDo", limit_page_length=0, page_length=0)
+    # ruleid: frappe-unbounded-list-query
+    frappe.get_all("ToDo", limit_page_length=0, limit=0, page_length=10)
+
+
+def deferred_reads(names, callbacks):
+    for name in names:
+        def fetch_later():
+            # ok: frappe-n-plus-one-read-in-loop
+            return frappe.db.get_value("ToDo", name, "status")
+        callbacks.append(fetch_later)
+        # ruleid: frappe-n-plus-one-read-in-loop
+        value = frappe.db.get_value("ToDo", name, "status")
+
+
+def deferred_and_conditional_reads(names, callbacks, enabled):
+    for name in names:
+        # ok: frappe-n-plus-one-read-in-loop
+        callbacks.append(lambda: frappe.db.get_value("ToDo", name, "status"))
+        async def async_fetch_later():
+            # ok: frappe-n-plus-one-read-in-loop
+            return frappe.db.sql("SELECT status FROM `tabToDo` WHERE name=%s", name)
+        callbacks.append(async_fetch_later)
+        if enabled:
+            try:
+                # ruleid: frappe-n-plus-one-read-in-loop
+                frappe.db.get_value("ToDo", name, "status")
+            except Exception:
+                pass
+
+
+def iterable_and_body_same_api():
+    # ok: frappe-n-plus-one-read-in-loop
+    for row in frappe.get_all("ToDo", fields=["name"]):
+        # ruleid: frappe-n-plus-one-read-in-loop
+        frappe.get_all("ToDo", filters={"reference_name": row.name})

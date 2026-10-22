@@ -1,0 +1,137 @@
+rules:
+  - id: frappe-synchronous-browser-request
+    languages: [javascript]
+    severity: WARNING
+    message: >-
+      This synchronous request blocks the browser while it waits. Use an
+      asynchronous request and explicitly handle completion and failure before
+      continuing dependent work.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: HIGH
+      technology: [frappe]
+    pattern-either:
+      - pattern: 'frappe.call({..., async: false, ...})'
+      - pattern: '$.ajax({..., async: false, ...})'
+      - pattern: '$.ajax($URL, {..., async: false, ...})'
+      - pattern: 'jQuery.ajax({..., async: false, ...})'
+      - pattern: 'jQuery.ajax($URL, {..., async: false, ...})'
+    paths:
+      exclude: ["**/*.test.js", "**/tests/**"]
+
+  - id: frappe-requests-without-timeout
+    languages: [python]
+    severity: WARNING
+    message: >-
+      This direct Requests call has no explicit timeout, or disables it with
+      None. Set suitable connect/read timeouts and handle failure. A Requests
+      timeout is not a total deadline for the complete response download.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: HIGH
+      technology: [frappe]
+      references:
+        - https://requests.readthedocs.io/en/latest/user/quickstart/#timeouts
+    patterns:
+      - pattern: requests.$METHOD(...)
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(get|post|put|patch|delete|head|options|request)$
+      - pattern-either:
+          - pattern: requests.$METHOD(..., timeout=None, ...)
+          - patterns:
+              - pattern: requests.$METHOD(...)
+              - pattern-not: requests.$METHOD(..., timeout=$TIMEOUT, ...)
+              # A forwarded dictionary may already supply a timeout.
+              - pattern-not: requests.$METHOD(..., **$OPTIONS)
+    paths:
+      exclude: ["**/test_*.py", "**/tests/**"]
+
+  - id: frappe-read-modify-write
+    languages: [python]
+    severity: WARNING
+    message: >-
+      A value read from this record is used to replace the same field. Concurrent
+      requests can lose updates unless another mechanism serialises this work.
+      Review an atomic update or transaction with locking while preserving the
+      required document hooks. This structural match does not prove a race.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: MEDIUM
+      technology: [frappe]
+    options:
+      go_deeper_stmt: false
+    patterns:
+      # Adjacent statements only; do not infer across locks or other operations.
+      # The exact three-argument read deliberately excludes for_update reads.
+      - pattern-either:
+          - pattern: |
+              $VALUE = frappe.db.get_value($DOCTYPE, $NAME, $FIELD)
+              $WRITE($DOCTYPE, $NAME, $FIELD, $VALUE + $DELTA, ...)
+          - pattern: |
+              $VALUE = frappe.db.get_value($DOCTYPE, $NAME, $FIELD)
+              $WRITE($DOCTYPE, $NAME, $FIELD, $VALUE - $DELTA, ...)
+          - pattern: |
+              $VALUE = frappe.db.get_value($DOCTYPE, $NAME, $FIELD)
+              $VALUE += $DELTA
+              $WRITE($DOCTYPE, $NAME, $FIELD, $VALUE, ...)
+          - pattern: |
+              $VALUE = frappe.db.get_value($DOCTYPE, $NAME, $FIELD)
+              $VALUE -= $DELTA
+              $WRITE($DOCTYPE, $NAME, $FIELD, $VALUE, ...)
+      - metavariable-regex:
+          metavariable: $WRITE
+          regex: ^frappe\.db\.set_value$
+      - focus-metavariable: $WRITE
+    paths:
+      exclude: ["**/test_*.py", "**/tests/**", "**/patches/**"]
+
+  - id: frappe-enqueue-after-write
+    languages: [python]
+    severity: WARNING
+    message: >-
+      Background work is enqueued immediately after a database write without
+      deferring until commit. If the job depends on this transaction, pass
+      enqueue_after_commit=True. Review the dependency; unrelated jobs may be
+      intentional. Deferring enqueue alone does not guarantee job delivery.
+    metadata:
+      origin: custom
+      category: correctness
+      confidence: MEDIUM
+      technology: [frappe]
+      references:
+        - https://docs.frappe.io/framework/user/en/api/database#database-transaction-hooks
+    options:
+      go_deeper_stmt: false
+    patterns:
+      - pattern-inside: |
+          def $FUNC(...):
+            ...
+      # Keep the write and enqueue adjacent so a commit between them is safe.
+      - pattern: |
+          $WRITE(...)
+          $ENQUEUE(...)
+      - metavariable-regex:
+          metavariable: $WRITE
+          regex: ^frappe\.(db\.(set_value|delete)|delete_doc)$
+      - metavariable-regex:
+          metavariable: $ENQUEUE
+          regex: ^frappe\.(enqueue|enqueue_doc)$
+      - pattern-either:
+          - pattern: $ENQUEUE(..., enqueue_after_commit=False, ...)
+          - patterns:
+              - pattern: $ENQUEUE(...)
+              - pattern-not: $ENQUEUE(..., enqueue_after_commit=$POLICY, ...)
+              # Controller defaults are already covered by the upstream rule.
+              - pattern-not-inside: |
+                  class $CONTROLLER(...):
+                    ...
+      - pattern-not: $ENQUEUE(..., now=True, ...)
+      - pattern-not: $ENQUEUE(..., is_async=False, ...)
+      - pattern-not: $ENQUEUE(..., **$OPTIONS)
+      - focus-metavariable: $ENQUEUE
+    paths:
+      exclude: ["**/test_*.py", "**/tests/**", "**/patches/**"]

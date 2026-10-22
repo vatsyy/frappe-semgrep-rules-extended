@@ -41,3 +41,51 @@ function independentDomUpdates(keys) {
     document.querySelector(`[data-key="${key}"]`).textContent = await getTitle(key);
   });
 }
+
+// Inline callback matching must tolerate comments and formatting.
+function callbackForms(rows) {
+  // ruleid: frappe-async-foreach-callback
+  rows.forEach(/* explanation */ async (row) => { await work(row); });
+  // ruleid: frappe-async-foreach-callback
+  rows.forEach(/* explanation */ async function (row) { await work(row); });
+  // ruleid: frappe-async-foreach-callback
+  rows.forEach(
+    /* explanation */ async row => work(row)
+  );
+  // ruleid: frappe-async-array-callback-misuse
+  rows.filter(/* explanation */ async row => canRead(row));
+  // ruleid: frappe-async-array-callback-misuse
+  rows.find(/* explanation */ async function (row) { return canRead(row); });
+  // ruleid: frappe-async-array-callback-misuse
+  rows.some(
+    /* explanation */ async (row) => { return canRead(row); }
+  );
+  // ruleid: frappe-async-array-callback-misuse
+  rows.every(/* explanation */ async function check(row) { return canRead(row); });
+  // ruleid: frappe-async-array-callback-misuse
+  rows.sort(/* explanation */ async (a, b) => score(a) - score(b));
+
+  // ok: frappe-async-foreach-callback
+  rows.forEach(/* explanation */ row => workSynchronously(row));
+  // ok: frappe-async-array-callback-misuse
+  rows.filter(/* explanation */ row => row.enabled);
+  // ok: frappe-async-array-callback-misuse
+  rows.find(row => row.enabled);
+  // ok: frappe-async-array-callback-misuse
+  rows.some(row => row.enabled);
+  // ok: frappe-async-array-callback-misuse
+  rows.every(row => row.enabled);
+  // ok: frappe-async-array-callback-misuse
+  rows.sort((a, b) => a.rank - b.rank);
+}
+
+function keywordBoundaries(rows) {
+  // ok: frappe-async-foreach-callback
+  rows.forEach(async => workSynchronously(async));
+  // ok: frappe-async-array-callback-misuse
+  rows.filter(async /* parameter, not keyword */ => async.enabled);
+  // ruleid: frappe-async-foreach-callback
+  rows.forEach(async /* keyword */ (row) => work(row));
+  // ruleid: frappe-async-array-callback-misuse
+  rows.filter(async /* keyword */ row => canRead(row));
+}

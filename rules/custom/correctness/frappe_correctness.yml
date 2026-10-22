@@ -13,15 +13,23 @@ rules:
       technology: [frappe]
       references:
         - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+    # Match callback syntax so comments and whitespace cannot hide async.
     patterns:
-      - pattern-either:
-          - pattern: $ARRAY.filter(...)
-          - pattern: $ARRAY.find(...)
-          - pattern: $ARRAY.some(...)
-          - pattern: $ARRAY.every(...)
-          - pattern: $ARRAY.sort(...)
-      - pattern-regex: >-
-          \.(?:filter|find|some|every|sort)\s*\(\s*async\b
+      - pattern: $ARRAY.$METHOD($CALLBACK, ...)
+      - metavariable-regex:
+          metavariable: $METHOD
+          regex: ^(filter|find|some|every|sort)$
+      - metavariable-pattern:
+          metavariable: $CALLBACK
+          pattern-either:
+            - pattern: 'async (...) => { ... }'
+            - pattern: 'async function (...) { ... }'
+            - pattern: 'async function $NAME(...) { ... }'
+      # CE 1.174.0 ignores async in syntax matching. Check the captured
+      # callback prefix, excluding a synchronous arrow parameter named async.
+      - metavariable-regex:
+          metavariable: $CALLBACK
+          regex: '(?s)^async\b(?!(?:\s|/\*.*?\*/|//[^\r\n]*)*=>)'
     paths:
       exclude:
         - "**/*.test.js"
@@ -42,9 +50,18 @@ rules:
       references:
         - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
     patterns:
-      - pattern: $ARRAY.forEach(...)
-      - pattern-regex: >-
-          \.forEach\s*\(\s*async\b
+      - pattern: $ARRAY.forEach($CALLBACK, ...)
+      - metavariable-pattern:
+          metavariable: $CALLBACK
+          pattern-either:
+            - pattern: 'async (...) => { ... }'
+            - pattern: 'async function (...) { ... }'
+            - pattern: 'async function $NAME(...) { ... }'
+      # CE 1.174.0 ignores async in syntax matching. Check the captured
+      # callback prefix, excluding a synchronous arrow parameter named async.
+      - metavariable-regex:
+          metavariable: $CALLBACK
+          regex: '(?s)^async\b(?!(?:\s|/\*.*?\*/|//[^\r\n]*)*=>)'
     paths:
       exclude:
         - "**/*.test.js"

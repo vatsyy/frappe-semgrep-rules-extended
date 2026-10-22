@@ -10,7 +10,7 @@ check-contract:
 	python3 scripts/check_rule_contract.py
 
 test-scanners:
-	python3 -m unittest discover -s tests
+	SEMGREP="$(SEMGREP)" python3 -m unittest discover -s tests
 
 test-benchmark:
 	python3 benchmarks/run.py --semgrep-command "$(SEMGREP)"

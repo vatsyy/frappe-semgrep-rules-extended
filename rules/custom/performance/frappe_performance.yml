@@ -3,7 +3,7 @@ rules:
     languages: [python]
     severity: WARNING
     message: >-
-      A Frappe database read runs once per comprehension item. Fetch the
+      A Frappe database read may repeat in a comprehension result or filter. Fetch the
       required values in bulk and index them in memory, or document why the
       iterable is deliberately bounded. Runtime query evidence is required
       before treating this advisory as a performance regression.
@@ -12,23 +12,79 @@ rules:
       category: performance
       confidence: MEDIUM
       technology: [frappe]
+    # Keep the read structurally inside the result/key/filter expression.
+    # Neither the outer iterable nor an enclosing bulk query repeats per item.
+    # CE matches clause lists exactly: cover one/two generators and a trailing
+    # filter. Deeper nesting or filters between generators need separate cases.
     patterns:
       - pattern-either:
           - patterns:
               - pattern-either:
-                  - pattern: "[$READ(...) for $ITEM in $ITERABLE]"
-                  - pattern: "{$READ(...) for $ITEM in $ITERABLE}"
-                  - pattern: "($READ(...) for $ITEM in $ITERABLE)"
-                  - pattern: "{$KEY: $READ(...) for $ITEM in $ITERABLE}"
+                  - pattern: "[<... $READ(...) ...> for $ITEM in $ITERABLE]"
+                  - pattern: "[<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE]"
+                  - pattern: "[<... $READ(...) ...> for $ITEM in $ITERABLE if ...]"
+                  - pattern: "[<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...]"
+                  - pattern: "{<... $READ(...) ...> for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ(...) ...> for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "(<... $READ(...) ...> for $ITEM in $ITERABLE)"
+                  - pattern: "(<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE)"
+                  - pattern: "(<... $READ(...) ...> for $ITEM in $ITERABLE if ...)"
+                  - pattern: "(<... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...)"
+                  - pattern: "{$KEY: <... $READ(...) ...> for $ITEM in $ITERABLE}"
+                  - pattern: "{$KEY: <... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{$KEY: <... $READ(...) ...> for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{$KEY: <... $READ(...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ(...) ...>: $VALUE for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ(...) ...>: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ(...) ...>: $VALUE for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ(...) ...>: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "[$VALUE for $ITEM in $ITERABLE if <... $READ(...) ...>]"
+                  - pattern: "[$VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ(...) ...>]"
+                  - pattern: "{$VALUE for $ITEM in $ITERABLE if <... $READ(...) ...>}"
+                  - pattern: "{$VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ(...) ...>}"
+                  - pattern: "($VALUE for $ITEM in $ITERABLE if <... $READ(...) ...>)"
+                  - pattern: "($VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ(...) ...>)"
+                  - pattern: "{$KEY: $VALUE for $ITEM in $ITERABLE if <... $READ(...) ...>}"
+                  - pattern: "{$KEY: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ(...) ...>}"
               - metavariable-regex:
                   metavariable: $READ
                   regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count|sql))$
-              - focus-metavariable: $READ
-          - pattern-either:
-              - pattern: "[frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE]"
-              - pattern: "{frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE}"
-              - pattern: "(frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE)"
-              - pattern: "{$KEY: frappe.get_doc($DOCTYPE, $NAME, ...) for $ITEM in $ITERABLE}"
+          - patterns:
+              - pattern-either:
+                  - pattern: "[<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE]"
+                  - pattern: "[<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE]"
+                  - pattern: "[<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE if ...]"
+                  - pattern: "[<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...]"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "(<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE)"
+                  - pattern: "(<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE)"
+                  - pattern: "(<... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE if ...)"
+                  - pattern: "(<... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...)"
+                  - pattern: "{$KEY: <... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE}"
+                  - pattern: "{$KEY: <... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{$KEY: <... $READ($DOCTYPE, $NAME, ...) ...> for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{$KEY: <... $READ($DOCTYPE, $NAME, ...) ...> for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...>: $VALUE for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...>: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...>: $VALUE for $ITEM in $ITERABLE if ...}"
+                  - pattern: "{<... $READ($DOCTYPE, $NAME, ...) ...>: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if ...}"
+                  - pattern: "[$VALUE for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>]"
+                  - pattern: "[$VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>]"
+                  - pattern: "{$VALUE for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>}"
+                  - pattern: "{$VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>}"
+                  - pattern: "($VALUE for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>)"
+                  - pattern: "($VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>)"
+                  - pattern: "{$KEY: $VALUE for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>}"
+                  - pattern: "{$KEY: $VALUE for $GROUP in $GROUPS for $ITEM in $ITERABLE if <... $READ($DOCTYPE, $NAME, ...) ...>}"
+              - metavariable-regex:
+                  metavariable: $READ
+                  regex: ^frappe\.get_doc$
+      - focus-metavariable: $READ
     paths:
       exclude:
         - "**/test_*.py"
@@ -48,77 +104,57 @@ rules:
       category: performance
       confidence: MEDIUM
       technology: [frappe]
-    patterns:
-      - pattern-either:
-          - patterns:
-              - pattern-either:
-                  - pattern: |
-                      for $ITEM in $ITERABLE:
-                        ...
-                        $READ(...)
-                        ...
-                  - pattern: |
-                      while $CONDITION:
-                        ...
-                        $READ(...)
-                        ...
-                  - pattern: |
-                      for $ITEM in $ITERABLE:
-                        ...
-                        if <... $READ(...) ...>:
-                          ...
-                        ...
-                  - pattern: |
-                      while $CONDITION:
-                        ...
-                        if <... $READ(...) ...>:
-                          ...
-                        ...
-              - metavariable-regex:
-                  metavariable: $READ
+    # Nested negation keeps deferred bodies out without excluding outer functions.
+    match:
+      all:
+        - inside:
+            any:
+              - pattern: |
+                  for $ITEM in $ITERABLE:
+                    $...BODY
+                where:
+                  - focus: $...BODY
+              - pattern: |
+                  while $CONDITION:
+                    $...BODY
+                where:
+                  - focus: $...BODY
+        - any:
+            - pattern: $READ(...)
+              where:
+                - metavariable: $READ
                   regex: ^frappe\.(get_all|get_list|get_single|db\.(get_value|get_values|get_single_value|get_list|get_all|exists|count))$
-              - focus-metavariable: $READ
-          - patterns:
-              - pattern-either:
-                  - pattern-inside: |
-                      for $ITEM in $ITERABLE:
-                        ...
-                  - pattern-inside: |
-                      while $CONDITION:
-                        ...
-              - pattern: frappe.db.sql($QUERY, ...)
-              - pattern-not-inside: |
-                  for $ITEM in frappe.db.sql(...):
-                    ...
-              - metavariable-regex:
-                  metavariable: $QUERY
-                  regex: (?is)^(?![rubf]*(?:"""|'''|"|')\s*(?:update|delete|insert|alter|drop|truncate|replace)\b).*$
-          - patterns:
-              - pattern-either:
-                  - pattern: |
-                      for $ITEM in $ITERABLE:
-                        ...
-                        $READ($DOCTYPE, $NAME, ...)
-                        ...
-                  - pattern: |
-                      while $CONDITION:
-                        ...
-                        $READ($DOCTYPE, $NAME, ...)
-                        ...
-                  - pattern: |
-                      for $ITEM in $ITERABLE:
-                        ...
-                        $READ(doctype=$DOCTYPE, name=$NAME, ...)
-                        ...
-                  - pattern: |
-                      while $CONDITION:
-                        ...
-                        $READ(doctype=$DOCTYPE, name=$NAME, ...)
-                        ...
-              - metavariable-regex:
-                  metavariable: $READ
+            - pattern: $READ($QUERY, ...)
+              where:
+                - metavariable: $READ
+                  regex: ^frappe\.db\.sql$
+                - metavariable: $QUERY
+                  regex: (?is)^(?![rubf]*(?:"""|'''|"|')?\s*(?:update|delete|insert|alter|drop|truncate|replace)\b).*$
+            - any:
+                - $READ($DOCTYPE, $NAME, ...)
+                - $READ(doctype=$DOCTYPE, name=$NAME, ...)
+              where:
+                - metavariable: $READ
                   regex: ^frappe\.get_doc$
-              - focus-metavariable: $READ
+        - not:
+            inside:
+              all:
+                - inside:
+                    any:
+                      - |
+                          for $ITEM in $ITERABLE:
+                            ...
+                      - |
+                          while $CONDITION:
+                            ...
+                - any:
+                    - |
+                        def $DEFERRED(...):
+                          ...
+                    - 'lambda $ARG: $EXPR'
+                    - 'lambda: $EXPR'
+      where:
+        - focus: $READ
     paths:
       exclude:
         - "**/test_*.py"
@@ -169,11 +205,27 @@ rules:
       category: performance
       confidence: HIGH
       technology: [frappe]
-    pattern-either:
-      - pattern: frappe.get_all(..., limit_page_length=0, ...)
-      - pattern: frappe.get_list(..., limit_page_length=0, ...)
-      - pattern: frappe.db.get_all(..., limit_page_length=0, ...)
-      - pattern: frappe.db.get_list(..., limit_page_length=0, ...)
+    # In v16, an explicit limit wins; otherwise page_length can supply a bound.
+    # Unknown limits are not evidence that the query is unbounded.
+    patterns:
+      - pattern: $GET(..., limit_page_length=0, ...)
+      - metavariable-regex:
+          metavariable: $GET
+          regex: ^frappe\.(db\.)?get_(all|list)$
+      - pattern-either:
+          - pattern: $GET(..., limit=0, ...)
+          - patterns:
+              - pattern-either:
+                  - pattern: $GET(..., limit=None, ...)
+                  - patterns:
+                      - pattern: $GET(...)
+                      - pattern-not: $GET(..., limit=$LIMIT, ...)
+              - pattern-either:
+                  - pattern: $GET(..., page_length=0, ...)
+                  - pattern: $GET(..., page_length=None, ...)
+                  - patterns:
+                      - pattern: $GET(...)
+                      - pattern-not: $GET(..., page_length=$PAGE_LENGTH, ...)
     paths:
       exclude:
         - "**/test_*.py"
@@ -191,20 +243,27 @@ rules:
       category: performance
       confidence: HIGH
       technology: [frappe]
+    # Unknown or nonzero bounds stay outside this rule; zero is not a bound.
     patterns:
+      - pattern: len($GET(...))
+      - metavariable-regex:
+          metavariable: $GET
+          regex: ^frappe\.(db\.)?get_(all|list)$
       - pattern-either:
-          - pattern: len(frappe.get_all(...))
-          - pattern: len(frappe.get_list(...))
-          - pattern: len(frappe.db.get_all(...))
-          - pattern: len(frappe.db.get_list(...))
-      - pattern-not: len(frappe.get_all(..., limit=$LIMIT, ...))
-      - pattern-not: len(frappe.get_all(..., limit_page_length=$LIMIT, ...))
-      - pattern-not: len(frappe.get_list(..., limit=$LIMIT, ...))
-      - pattern-not: len(frappe.get_list(..., limit_page_length=$LIMIT, ...))
-      - pattern-not: len(frappe.db.get_all(..., limit=$LIMIT, ...))
-      - pattern-not: len(frappe.db.get_all(..., limit_page_length=$LIMIT, ...))
-      - pattern-not: len(frappe.db.get_list(..., limit=$LIMIT, ...))
-      - pattern-not: len(frappe.db.get_list(..., limit_page_length=$LIMIT, ...))
+          - pattern: len($GET(..., limit=0, ...))
+          - patterns:
+              - pattern: len($GET(...))
+              - pattern-not: len($GET(..., limit=$LIMIT, ...))
+      - pattern-either:
+          - pattern: len($GET(..., limit_page_length=0, ...))
+          - patterns:
+              - pattern: len($GET(...))
+              - pattern-not: len($GET(..., limit_page_length=$LIMIT, ...))
+      - pattern-either:
+          - pattern: len($GET(..., page_length=0, ...))
+          - patterns:
+              - pattern: len($GET(...))
+              - pattern-not: len($GET(..., page_length=$LIMIT, ...))
     paths:
       exclude:
         - "**/test_*.py"
@@ -298,6 +357,10 @@ rules:
               while ($CONDITION) {
                 ...
               }
+          - pattern-inside: |
+              do {
+                ...
+              } while ($CONDITION);
       - pattern-either:
           - pattern: frappe.call(...)
           - pattern: frappe.xcall(...)
@@ -323,21 +386,30 @@ rules:
       category: performance
       confidence: MEDIUM
       technology: [frappe]
-    patterns:
-      - pattern-either:
-          - pattern-inside: $ITEMS.forEach(($ITEM) => { ... })
-          - pattern-inside: $ITEMS.map(($ITEM) => { ... })
-          - pattern-inside: $ITEMS.forEach(async ($ITEM) => { ... })
-          - pattern-inside: $ITEMS.map(async ($ITEM) => { ... })
-      - pattern-either:
-          - pattern: frappe.call(...)
-          - pattern: frappe.xcall(...)
-          - pattern: frappe.db.get_value(...)
-          - pattern: frappe.db.get_list(...)
-          - pattern: frappe.db.get_doc(...)
-          - pattern: frappe.db.exists(...)
-          - pattern: frappe.db.count(...)
-          - pattern: frm.call(...)
+    # Compare the nested function with the callback itself before excluding it.
+    match:
+      all:
+        - inside: $ITEMS.$METHOD($CALLBACK, ...)
+        - $REQUEST(...)
+        - not:
+            inside:
+              all:
+                - inside: $ITEMS.$METHOD($CALLBACK, ...)
+                - any:
+                    - pattern: (...) => $EXPR
+                      as: $DEFERRED
+                    - pattern: function (...) { ... }
+                      as: $DEFERRED
+                    - pattern: function $NAME(...) { ... }
+                      as: $DEFERRED
+              where:
+                - comparison: str($DEFERRED) != str($CALLBACK)
+      where:
+        - metavariable: $METHOD
+          regex: ^(forEach|map)$
+        - metavariable: $REQUEST
+          regex: ^(frappe\.(call|xcall|db\.(get_value|get_list|get_doc|exists|count))|frm\.call)$
+        - focus: $REQUEST
     paths:
       exclude:
         - "**/*.test.js"
